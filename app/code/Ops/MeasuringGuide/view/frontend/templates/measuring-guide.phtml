@@ -1,0 +1,51 @@
+<?php
+/** @var \Ops\MeasuringGuide\Block\MeasuringGuide $block */
+if (!$block->shouldDisplayMeasuringGuide()):
+    return;
+endif;
+
+$content = $block->getMeasuringGuideContent();
+if (empty($content)):
+    return;
+endif;
+
+$products = $block->getAssignedProducts();
+?>
+<section class="measuring-guide-section">
+    <div class="measuring-guide-header">
+        <h2 class="measuring-guide-title">Measuring Guide</h2>
+    </div>
+    <div class="measuring-guide-content">
+        <?= /* @noEscape */ $content ?>
+    </div>
+    <?php if (!empty($products)): ?>
+        <div class="measuring-guide-products">
+            <h3 class="measuring-guide-products-title">Related Products</h3>
+            <div class="measuring-guide-products-list">
+                <?php foreach ($products as $product): ?>
+                    <div class="measuring-guide-product-item">
+                        <a href="<?= $block->escapeUrl($product->getProductUrl()) ?>" class="measuring-guide-product-link">
+                            <?php
+                            $imageUrl = $block->getImageHelper()
+                                ->init($product, 'small_image')
+                                ->setImageFile($product->getSmallImage())
+                                ->getUrl();
+                            ?>
+                            <div class="measuring-guide-product-image">
+                                <img src="<?= $block->escapeUrl($imageUrl) ?>" 
+                                     alt="<?= $block->escapeHtmlAttr($product->getName()) ?>" />
+                            </div>
+                            <div class="measuring-guide-product-info">
+                                <h4 class="measuring-guide-product-name"><?= $block->escapeHtml($product->getName()) ?></h4>
+                                <?php if ($product->getSku()): ?>
+                                    <p class="measuring-guide-product-sku">SKU: <?= $block->escapeHtml($product->getSku()) ?></p>
+                                <?php endif; ?>
+                            </div>
+                        </a>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    <?php endif; ?>
+</section>
+

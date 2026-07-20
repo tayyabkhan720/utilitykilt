@@ -1,0 +1,23 @@
+{
+  "name": "mollie/magento2-hyva-compatibility",
+  "description": "Hyvä Themes Compatibility module for Mollie Payments",
+  "type": "magento2-module",
+  "license": [
+    "OSL-3.0",
+    "AFL-3.0"
+  ],
+  "require": {
+    "magento/framework": "*",
+    "hyva-themes/magento2-compat-module-fallback": "*",
+    "magewirephp/magewire": "^1.13.3",
+    "mollie/magento2": "^3.0.0"
+  },
+  "autoload": {
+    "files": [
+        "src/registration.php"
+    ],
+    "psr-4": {
+      "Mollie\\HyvaCompatibility\\": "src"
+    }
+  }
+}

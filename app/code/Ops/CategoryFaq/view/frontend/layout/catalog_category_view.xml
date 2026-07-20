@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Ops. All rights reserved.
+ * Add FAQ JSON-LD schema as separate block after Amasty's block
+ * This prevents conflicts by keeping outputs completely separate
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="Ops_CategoryFaq::css/faq.css"/>
+    </head>
+    <body>
+        <!-- FAQ accordion block for visual display -->
+        <referenceContainer name="content">
+            <block class="Ops\CategoryFaq\Block\Faq" name="ops.category.faq" template="Ops_CategoryFaq::faq.phtml" after="category.products"/>
+        </referenceContainer>
+        
+        <!-- FAQ JSON-LD schema is added to Amasty's JsonLd block via preference -->
+    </body>
+</page>

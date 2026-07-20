@@ -1,0 +1,172 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\ProductAttributes;
+use Hyva\Theme\ViewModel\ProductCompare;
+use Hyva\Theme\ViewModel\ProductPage;
+use Hyva\Theme\ViewModel\Wishlist;
+use Magento\Catalog\Model\Product;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var ProductPage $productViewModel */
+$productViewModel = $viewModels->require(ProductPage::class);
+
+/** @var ProductAttributes $attributesViewModel */
+$attributesViewModel = $viewModels->require(ProductAttributes::class);
+
+/** @var Product $product */
+$product = $productViewModel->getProduct();
+$productType = $product->getTypeId();
+
+$product = $block->getProduct();
+$skuValue = $product->getData('sku');
+$measuringGuide = $product->getData('measuring_guide');
+
+
+?>
+<div class="card mb-6">
+    <?= $block->getChildHtml('product.info.title') ?>
+
+     <div role="group" aria-label="<?= $escaper->escapeHtmlAttr('Price') ?>">
+            <?= $block->getChildHtml("product.info.price") ?>
+        </div>
+    <div class="my-2 flex">
+        <?= $block->getChildHtml('product.info.review') ?>
+    </div>
+
+    <div class="flex flex-col sm:flex-row justify-between my-4">
+        <div class="inline-flex flex-wrap items-center gap-x-6">
+            <?= $block->getChildHtml("product.info.stockstatus") ?>
+            <?= $block->getChildHtml("product.info.stockqty") ?>
+        </div>
+        
+        <?= $block->getChildHtml("alert.urls") ?>
+    </div>
+
+     <?php if ($skuValue): ?>
+        <div class="my-4">
+            <strong>SKU:</strong>
+            <?= $escaper->escapeHtml($skuValue  ) ?>
+        </div>
+    <?php endif; ?>
+
+    <?php if ($measuringGuide): ?>
+        <div class="my-4">
+           <div x-data="{ open: false }">
+
+                <!-- Button -->
+                <button
+                    @click="open = true"
+                    class="px-4 py-2 bg-blue-600 btn text-white rounded">
+                    <span class="measuring-guide-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h18v18H3zM7 3v18M17 3v18M3 7h18M3 17h18"></path> </svg>
+                        </span> 
+                    <span>Measuring Guide</span>
+                </button>
+
+             <!-- Overlay -->
+                <div
+                    x-show="open"
+                    class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+                    x-transition>
+
+                    <!-- Modal -->
+                    <div
+                        class="relative max-w-[900px] max-h-[90vh] my-[5vh] mx-auto bg-white rounded-lg shadow-2xl overflow-hidden flex flex-col"
+                        @click.outside="open = false">
+
+                        <div class="flex justify-between items-center py-5 px-[30px] border-b-2 border-[#f0f0f0] bg-[#f8f8f8]">
+                    
+                            <h2 class="text-xl font-bold">
+                                Size Guide
+                            </h2>
+                                    <button
+                                class=" text-xl"
+                                @click="open = false">
+                                ×
+                            </button>
+
+                        </div>
+                        <div class="overflow-y-auto p-4">
+                                       <?= /* @noEscape */ html_entity_decode($measuringGuide, ENT_QUOTES) ?>
+
+                 
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    <?php endif; ?>
+        
+
+    <dl id="product-details" class="hidden">
+        <?php foreach ($block->getAttributes() as $attributeConfig):
+            $attribute = $attributesViewModel->getAttributeFromLayoutConfig($attributeConfig); ?>
+            <?php if ($value = $attribute['value'] ?? null): ?>
+                <div class="flex border-t border-gray-300 py-2 last:mb-6 last:border-b attribute-<?=/* @noEscape */ $attribute['code'] ?: "" ?>">
+                    <dt class="w-1/2 text-left text-gray-700 product-detail-label">
+                        <?= $escaper->escapeHtml($attribute['label']) ?>
+                    </dt>
+                    <dd class="w-1/2 ml-2 text-left text-gray-900 product-detail-value">
+                        <?= $escaper->escapeHtml($value) ?>
+                    </dd>
+                </div>
+            <?php endif ?>
+        <?php endforeach; ?>
+    </dl>
+
+    <?= $block->getChildHtml('product.info.form') ?>
+
+    <div class="flex flex-col sm:flex-row items-end my-4">
+
+        <?php if ($productType === 'bundle'): ?>
+            <span class="sr-only">
+                <?= $escaper->escapeHtml(__('The price depends on the chosen options')) ?>
+            </span>
+        <?php endif; ?>
+
+       
+
+        <div class="flex gap-2 mt-4 sm:mt-0">
+            <?php if ($product->isSaleable()): ?>
+                <?= $block->getChildHtml("product.info.quantity") ?>
+                <?= $block->getChildHtml("product.info.addtocart") ?>
+            <?php endif; ?>
+        </div>
+
+    </div>
+
+    <?php if ($product->isSaleable() && $block->getChildHtml('addtocart.shortcut.buttons')): ?>
+        <div class="flex mt-4 justify-end">
+            <?= $block->getChildHtml('addtocart.shortcut.buttons') ?>
+        </div>
+    <?php endif; ?>
+
+    <?php if ($additionalActions = $block->getChildHtml('product.info.additional.actions')): ?>
+        <div class="flex mt-4 justify-start">
+            <?= /** @noEscape */ $additionalActions; ?>
+        </div>
+    <?php endif; ?>
+
+    <?php if ($tierPriceBlock = $block->getChildHtml("product.price.tier")): ?>
+        <div class="py-4 my-2 tier-price-container">
+            <?= /** @noEscape */ $tierPriceBlock ?>
+        </div>
+    <?php endif; ?>
+
+    <?= $block->getChildHtml("product.info.additional") ?>
+</div>

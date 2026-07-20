@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright 2014 Adobe
+ * All Rights Reserved.
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <attribute name="class" value="page-product-downloadable"/>
+        <referenceBlock name="head.components">
+            
+            
+        </referenceBlock>
+        <referenceContainer name="product.info.main">
+            
+        </referenceContainer>
+        <referenceContainer name="product.info.type">
+            
+        </referenceContainer>
+        <referenceBlock name="product.info.options.wrapper">
+            
+        </referenceBlock>
+        <referenceContainer name="product.info.options.wrapper.bottom">
+            
+        </referenceContainer>
+        
+        
+    </body>
+</page>

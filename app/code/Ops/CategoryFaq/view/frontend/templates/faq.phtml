@@ -1,0 +1,64 @@
+<?php
+/** @var \Ops\CategoryFaq\Block\Faq $block */
+if (!$block->shouldDisplayFaq()):
+    return;
+endif;
+
+$faqItems = $block->getFaqItems();
+if (empty($faqItems)):
+    return;
+endif;
+?>
+<style>
+/* Critical inline styles to ensure accordion works */
+.category-faq-item {
+    border: 1px solid #222 !important;
+}
+.category-faq-item:not(.active) .category-faq-answer,
+.category-faq-item:not(.active) .category-faq-answer-content {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+.category-faq-answer {
+    display: none !important;
+}
+.category-faq-item.active .category-faq-answer {
+    display: block !important;
+}
+.category-faq-item.active .category-faq-answer-content {
+    display: block !important;
+    padding: 15px 20px 20px 55px !important;
+}
+</style>
+<section class="category-faq-section">
+    <div class="category-faq-header">
+        <h2 class="category-faq-title">FREQUENTLY ASKED QUESTION</h2>
+    </div>
+    <div class="category-faq-list">
+        <?php foreach ($faqItems as $index => $item): ?>
+            <div class="category-faq-item" data-faq-index="<?= $index ?>">
+                <button type="button" class="category-faq-question" aria-expanded="false">
+                    <span class="category-faq-icon category-faq-icon-plus">+</span>
+                    <span class="category-faq-icon category-faq-icon-minus">-</span>
+                    <span class="category-faq-question-text"><?= $block->escapeHtml($item['question']) ?></span>
+                </button>
+                <div class="category-faq-answer">
+                    <div class="category-faq-answer-content">
+                        <?= /* @noEscape */ $item['answer'] ?>
+                    </div>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+</section>
+<script type="text/x-magento-init">
+{
+    ".category-faq-section": {
+        "Ops_CategoryFaq/js/faq": {}
+    }
+}
+</script>

@@ -1,0 +1,216 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\DeployMode;
+use Hyva\Theme\ViewModel\HyvaCsp;
+use Hyva\Theme\ViewModel\Modal;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+// phpcs:disable Generic.Files.LineLength.TooLong
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var HyvaCsp $hyvaCsp */
+/** @var ViewModelRegistry $viewModels */
+
+$deployMode = $viewModels->require(DeployMode::class);
+
+?>
+<script>
+    (function () {
+        const modals = [];
+        <?php /* Shared across instances: Escape keydown events bubble through nested native dialogs,
+                 triggering hide() on multiple instances for a single key press. */ ?>
+        let lastHide = 0;
+
+        <?php /* Resolve a DOM element from an Element reference, Alpine $refs key, or CSS selector string. */ ?>
+        function resolveElement($refs, value) {
+            if (!value) return null;
+            <?php /* if show('name', document.querySelector('...')) was called, use that as the trigger */ ?>
+            if (value instanceof Element) return value;
+            <?php /* if show('name', 'trigger') was called with the ref name or selector of the trigger element */ ?>
+            if (typeof value === 'string') {
+                try {
+                    return ($refs && $refs[value]) || document.querySelector(value) || null;
+                } catch (e) {<?php /* Intentionally left empty because we don't know if trigger is intended as a valid selector string */ ?>}
+            }
+            return null;
+        }
+
+        <?php /* Determine which DOM element opened the modal so focus can be restored on hide. */ ?>
+        function determineTrigger($refs, dialog, trigger) {
+            <?php /* if show() was called without arguments use the event target as open trigger */ ?>
+            if (!trigger && dialog?.target instanceof HTMLElement) {
+                return dialog.target;
+            }
+
+            <?php /* if show('name', $event) was called with the event as the second argument use the event target as trigger */ ?>
+            if (typeof dialog === 'string' && trigger?.target instanceof HTMLElement) {
+                return trigger.target;
+            }
+
+            return resolveElement($refs, trigger);
+        }
+
+        <?php /* Focus the first [x-focus-first] element of the opened dialog that is not part of a nested dialog. */ ?>
+        function setFocusFirstElement(dialogElement) {
+            if (!dialogElement) return;
+
+            window.setTimeout(() => {
+                const candidates = dialogElement.querySelectorAll('[x-focus-first]');
+                for (const candidate of candidates) {
+                    if (candidate.closest('dialog') === dialogElement) {
+                        candidate.focus();
+                        return;
+                    }
+                }
+            }, 50);
+        }
+
+        window.hyva.modal = function(options = {}) {
+            <?php /* $el is not defined when hyva.modal is called within Object.assign() for example */ ?>
+            if (this.$el && this.$el.dataset && this.$el.dataset.options) {
+                try {
+                    options = Object.assign(options, JSON.parse(this.$el.dataset.options || '{}'));
+                } catch (e) {
+                    throw new Error('Cannot read the dialog options from the data-options attribute: not valid JSON');
+                }
+            }
+
+            const config = Object.assign({
+                dialog: '<?= /* @noEscape */ Modal::DEFAULT_NAME ?>', <?php /* default dialog ref name */ ?>
+                duration: 300, <?php /* ms before allowing subsequent hiding of modals for nested modals (see transition duration) */ ?>
+                transitionEnter: 'transition ease-out duration-300',
+                transitionEnterStart: 'opacity-0',
+                transitionEnterEnd: 'opacity-100',
+                transitionLeave: 'transition ease-in duration-300',
+                transitionLeaveStart: 'opacity-100',
+                transitionLeaveEnd: 'opacity-0',
+            }, options);
+
+            return {
+                opened: {},
+                show(dialog, trigger) {
+                    const name = typeof dialog === 'string' ? dialog : config.dialog;
+                    if (!name || this.opened[name]) return;
+
+                    this.opened[name] = true;
+                    const focusTarget = determineTrigger(this.$refs, dialog, trigger);
+                    const dialogEl = this.$refs && this.$refs[name];
+                    const frame = { name, instance: this, focusTarget, time: Date.now() };
+                    modals.push(frame);
+                    setFocusFirstElement(dialogEl);
+                    return new Promise(resolve => { frame.resolve = resolve; });
+                },
+                cancel() {
+                    this.hide(false);
+                },
+                ok() {
+                    this.hide(true);
+                },
+                hide(value) {
+                    <?php
+                    // Guard against Escape keydown events bubbling through nested dialogs inside one x-data
+                    // (each open ancestor dialog receives the event), and against Escape being
+                    // pressed multiple times before a transition is finished.
+                    ?>
+                    if (Date.now() - lastHide < config.duration) return;
+                    lastHide = Date.now();
+
+                    <?php /* Modals are closed in LIFO order: always close the top of the stack. */ ?>
+                    const modal = modals.pop();
+                    if (!modal) return;
+
+                    modal.instance.opened[modal.name] = false;
+
+                    <?php
+                    // Move focus to the trigger element or the configured focusAfterHide target after the
+                    // leave transition. The timeout must fire after the native dialog close() restored
+                    // focus to the previously focused element, so a custom target is not overridden.
+                    ?>
+                    const focusTarget = modal.focusTarget;
+                    focusTarget && window.setTimeout(() => focusTarget.focus(), config.duration + 50);
+                    modal.resolve && modal.resolve(value);
+                },
+                /**
+                 * @deprecated Use dialogConfig() instead, which is used by the default modal-container.phtml template.
+                 * This method is kept for backwards compatibility with custom container templates.
+                 */
+                overlay(dialog) {
+                    dialog = this.$el.dataset.dialogRefName || dialog;
+                    const name = typeof dialog === 'string' ? dialog : config.dialog;
+                    if (this.$el.tagName !== 'DIALOG' && ! window.hyva.modal.legacyModalCompatibility) {
+                        console.warn(
+                            '[hyva] Deprecated modal markup detected (x-bind="overlay" on a non-dialog element' +
+                            (name ? ` for "${name}"` : '') + ').\n' +
+                            'Escape and click-outside closing are not available for such dialogs anymore.\n' +
+                            'Install hyva-themes/magento2-legacy-modal-compatibility or migrate to the native <dialog> markup.'
+                        );
+                    }
+                    return Object.assign({}, this.dialogConfig(name), {
+                        ['@hyva-modal-show.window'](event) {
+                            event.detail && event.detail.dialog === name && this.show(name, event.detail.focusAfterHide)
+                        }
+                    });
+                },
+                dialogConfig(name) {
+                    name = name || this.$el.dataset.dialogRefName || config.dialog;
+                    return {
+                        ['x-show']: () => name ? this.opened[name] : false,
+                        ['x-transition:enter']: config.transitionEnter,
+                        ['x-transition:enter-start']: config.transitionEnterStart,
+                        ['x-transition:enter-end']: config.transitionEnterEnd,
+                        ['x-transition:leave']: config.transitionLeave,
+                        ['x-transition:leave-start']: config.transitionLeaveStart,
+                        ['x-transition:leave-end']: config.transitionLeaveEnd,
+                        ['@hyva-modal-show.window'](event) {
+                            event.detail && event.detail.dialog === name && this.show(name, event.detail.focusAfterHide);
+                        },
+                    };
+                },
+                showDialogOnInit() {
+                    const name = this.$el.dataset.dialogRefName;
+                    if (name) {
+                        this.show(name);
+                    }
+                }
+            };
+        }
+
+        window.hyva.modal.peek = () => modals.length > 0 && modals[modals.length - 1]
+
+        window.hyva.modal.pop = function () {
+            if (modals.length > 0) {
+                modals[modals.length - 1].instance.hide();
+            }
+        }
+
+        /**
+         * @deprecated Native <dialog> handles focus trapping automatically.
+         * Calling this function has no effect. Kept for backwards compatibility.
+         */
+        window.hyva.modal.excludeSelectorsFromFocusTrap = function (selectors) {}
+
+        /**
+         * @deprecated Native <dialog> with x-htmldialog handles ESC key and click-outside events.
+         * These functions have no effect. Kept for backwards compatibility.
+         */
+        window.hyva.modal.eventListeners = {
+            keydown: event => {},
+            click: event => {}
+        };
+    })();
+
+    window.addEventListener('alpine:init', () => {
+        Alpine.data('hyvaModal', window.hyva.modal);
+    }, {once: true});
+</script>
+<?php $hyvaCsp->registerInlineScript() ?>

@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright 2020 Adobe
+ * All Rights Reserved.
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <title>Review Order</title>
+    </head>
+    <update handle="checkout_onepage_review_item_renderers"/>
+    <body>
+        <referenceBlock name="head.components">
+            
+            
+        </referenceBlock>
+        <referenceContainer name="page.messages">
+            
+        </referenceContainer>
+        <referenceContainer name="content">
+            
+        </referenceContainer>
+        
+    </body>
+</page>

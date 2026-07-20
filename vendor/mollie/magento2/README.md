@@ -1,0 +1,109 @@
+<p align="center">
+  <img src="mollie-logo.svg" />
+</p>
+
+<h1 align="center">Mollie for Magento 2.4.5 and higher</h1>
+
+> **Magento 1.x** users check out our [Mollie Magento 1 plugin](https://github.com/mollie/Magento).
+
+## Version 3.0
+
+We recently released version 3.0 of the Mollie Payment extension. Some of the highlights of this release are:
+
+- PHP 8.1 and Magento 2.4.5 or higher are required.
+- Removed Orders API integration
+- Queue-based transaction processing enabled by default.
+- Handle refunds from external sources
+- Optional invoices
+- Cancel order on manual checkout return
+
+For more information, see the upgrade guides in [English](docs/en/UPGRADING.md) and [Dutch](docs/nl/UPGRADING.md).
+
+## Installation & Update the Mollie Payments plugin
+
+[1. Installation through Magento Marketplace](docs/en/INSTALLATION.md#installation-via-magento-marketplace)
+
+[2. Installation by Composer](docs/en/INSTALLATION.md#installation-via-composer)
+
+[3. Update by Composer](docs/en/INSTALLATION.md#update-an-existing-installation)
+
+[- Configuration](docs/en/CONFIGURATION.md)
+
+[- Troubleshooting](docs/en/TROUBLESHOOTING.md)
+
+## About Mollie Payments
+With Mollie, you can accept payments and donations online and expand your customer base internationally with support for all major payment methods through a single integration. No need to spend weeks on paperwork or security compliance procedures. No more lost conversions because you don’t support a shopper’s favourite payment method or because they don’t feel safe. We made our products and API expansive, intuitive, and safe for merchants, customers and developers alike. 
+
+Mollie requires no minimum costs, no fixed contracts, no hidden costs. At Mollie you only pay for successful transactions. More about this pricing model can be found [here](https://www.mollie.com/en/pricing/). You can create an account [here](https://www.mollie.com/dashboard/signup). The Mollie Magento 2 plugin quickly integrates all major payment methods ready-made into your Magento webshop.
+
+## Supported Mollie Payment Methods
+
+- Apple Pay (direct)
+- Alma
+- Bancontact
+- Bancomat Pay
+- Bank transfer
+- Belfius Pay Button
+- Billie
+- Bizum
+- Blik
+- Credit card (VISA, MasterCard, Maestro and American Express)
+- EPS
+- Gift cards (Webshop Giftcard, Podium Cadeaukaart, VVV Cadeaukaart, YourGift etc.)
+- Google Pay
+- iDEAL
+- in3
+- KBC/CBC Payment Button
+- Klarna One
+- Klarna Pay now
+- Klarna Pay later
+- Klarna Slice it
+- Meal vouchers, eco vouchers, and various other gift vouchers (Appetiz, Cadeau Pass, Chèque Déjeuner, Eco Pass, Lunch Pass, Monizze, PassRestaurant, Swile)
+- Pay by Bank
+- PayPal
+- Paysafecard
+- Point Of Sale (POS)
+- Payconiq
+- Przelewy24
+- Satispay
+- SEPA Direct Debit
+- SOFORT Banking
+- Swish
+- TWINT
+- Vipps
+
+## Additional modules
+
+To extend the functionality of the Mollie Magento 2 plugin, we have developed a number of additional modules.
+
+- [Subscriptions](https://github.com/mollie/magento2-subscriptions) - Create and manage subscriptions in your Magento 2 webshop.
+- [Multi shipping](https://github.com/mollie/magento2-multishipping) - Enable multi shipping in your Magento 2 webshop.
+
+> The former [Analytics](https://github.com/mollie/magento2-analytics) addon is now part of the main module.
+
+### Support for other alternative frontends
+
+- [Hyvä Checkout](https://github.com/mollie/magento2-hyva-compatibility)
+- [Hyvä React Checkout](https://github.com/mollie/magento2-hyva-react-checkout)
+- [Scandi PWA](https://github.com/mollie/magento2-scandipwa)
+
+## Configuration, FAQ and Troubleshooting
+If you experience problems with the extension installation, setup or whenever you need more information about how to setup the Mollie Payment extension, please see the [full documentation](docs/en/README.md) or send an e-mail to [info@mollie.com](mailto:info@mollie.com) with an exact description of the problem.
+
+## Compatible modules
+
+These modules are tested and known to be working with the Mollie Payment extension:
+
+- Aheadworks Add Free Gift
+- Amasty Extra Fee
+- Fooman Totals
+- Magento Giftcard
+- Magento Gift Wrapping
+- MageWorx Reward Points
+- Mirasvit Rewards
+- Weee Fee
+- Geissweb EU Vat
+
+## License
+[BSD (Berkeley Software Distribution) License](http://www.opensource.org/licenses/bsd-license.php).
+Copyright (c) 2011-2025, Mollie B.V.

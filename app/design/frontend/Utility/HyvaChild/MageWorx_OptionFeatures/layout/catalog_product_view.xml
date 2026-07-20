@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+         <remove src="MageWorx_OptionFeatures::css/swatches.css"/>
+        <remove src="MageWorx_OptionFeatures::css/jquery.qtip.css"/>
+        <remove src="MageWorx_OptionFeatures::css/style.css"/>
+    </head>
+    <body>
+
+        <referenceBlock name="mageworx.option.features" remove="true"/>
+        <referenceBlock name="mageworx_optionfeatures_additional_wrapper" remove="true"/>
+       
+    </body>
+</page>

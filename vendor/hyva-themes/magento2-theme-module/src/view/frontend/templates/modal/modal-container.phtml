@@ -1,0 +1,52 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\Modal\ModalInterface;
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\HyvaCsp;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var HyvaCsp $hyvaCsp */
+/** @var ViewModelRegistry $viewModels */
+/** @var ModalInterface $modal */
+
+/**
+ * This is the default modal container template using the native HTML <dialog> element.
+ * @see \Hyva\Theme\Model\Modal\ModalBuilderInterface
+ */
+
+/**
+ * The following dialog classes are used by default. They are included here so they are not purged by Tailwind.
+ * mt-1 mb-1 ms-1 me-1 z-50 inset-y-0
+ */
+?>
+<dialog
+    class="<?= $escaper->escapeHtmlAttr($modal->getDialogClasses()) ?>"
+    data-dialog-ref-name="<?= $escaper->escapeHtmlAttr($modal->getDialogRefName()) ?>"
+    closeby="<?= $escaper->escapeHtmlAttr($modal->getCloseby()) ?>"
+    <?php if ($modal->getAriaLabel()): ?>
+        aria-label="<?= $escaper->escapeHtmlAttr($modal->getAriaLabel()) ?>"
+    <?php endif; ?>
+    <?php if ($modal->getAriaLabelledby()): ?>
+        aria-labelledby="<?= $escaper->escapeHtmlAttr($modal->getAriaLabelledby()) ?>"
+    <?php endif; ?>
+    x-bind="dialogConfig"
+    <?php if ($modal->isOverlayDisabled()): ?>
+        x-htmldialog.modeless="hide"
+    <?php else: ?>
+        x-htmldialog="hide"
+    <?php endif; ?>
+    x-ref="<?= $escaper->escapeHtmlAttr($modal->getDialogRefName()) ?>"
+    <?php if (! $modal->isInitiallyHidden()): ?>
+        x-init="showDialogOnInit"
+    <?php endif; ?>
+><?= $modal->getContentHtml() ?></dialog>

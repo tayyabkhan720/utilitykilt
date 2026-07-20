@@ -1,0 +1,615 @@
+Array
+(
+    [1] => Array
+        (
+            [product] => Array
+                (
+                    [status] => 1
+                    [name] => Test
+                    [sku] => test
+                    [price] => 233.00
+                    [tax_class_id] => 2
+                    [quantity_and_stock_status] => Array
+                        (
+                            [is_in_stock] => 1
+                            [qty] => 1000
+                        )
+
+                    [weight] => 1
+                    [category_ids] => Array
+                        (
+                        )
+
+                    [visibility] => 4
+                    [button] => 6
+                    [media_gallery] => Array
+                        (
+                            [images] => Array
+                                (
+                                )
+
+                            [values] => Array
+                                (
+                                )
+
+                        )
+
+                    [url_key] => test
+                    [meta_title] => Test
+                    [meta_keyword] => Test
+                    [meta_description] => Test
+                    [tier_price] => Array
+                        (
+                        )
+
+                    [msrp_display_actual_price_type] => 0
+                    [price_per_unit] => 0
+                    [page_layout] => product-full-width
+                    [options_container] => container2
+                    [gift_message_available] => 
+                    [attribute_set_id] => 4
+                    [stock_data] => Array
+                        (
+                            [item_id] => 1
+                            [product_id] => 1
+                            [stock_id] => 1
+                            [qty] => 1000
+                            [min_qty] => 0
+                            [use_config_min_qty] => 1
+                            [is_qty_decimal] => 0
+                            [backorders] => 0
+                            [use_config_backorders] => 1
+                            [min_sale_qty] => 1
+                            [use_config_min_sale_qty] => 1
+                            [max_sale_qty] => 10000
+                            [use_config_max_sale_qty] => 1
+                            [is_in_stock] => 1
+                            [low_stock_date] => 
+                            [notify_stock_qty] => 1
+                            [use_config_notify_stock_qty] => 1
+                            [manage_stock] => 1
+                            [use_config_manage_stock] => 1
+                            [stock_status_changed_auto] => 0
+                            [use_config_qty_increments] => 1
+                            [qty_increments] => 0
+                            [use_config_enable_qty_inc] => 1
+                            [enable_qty_increments] => 0
+                            [is_decimal_divided] => 0
+                            [website_id] => 0
+                            [type_id] => simple
+                            [min_qty_allowed_in_shopping_cart] => 1
+                        )
+
+                    [links_title] => Links
+                    [links_purchased_separately] => 0
+                    [samples_title] => Samples
+                    [use_config_gift_message_available] => 1
+                    [current_product_id] => 1
+                    [copy_to_stores] => Array
+                        (
+                            [2] => Array
+                                (
+                                    [0] => Array
+                                        (
+                                            [storeView] => Irish Kilt Shop View
+                                            [copy_from] => 0
+                                            [copy_to] => 2
+                                        )
+
+                                )
+
+                            [3] => Array
+                                (
+                                    [0] => Array
+                                        (
+                                            [storeView] => The Utility Kilt View
+                                            [copy_from] => 0
+                                            [copy_to] => 3
+                                        )
+
+                                )
+
+                            [4] => Array
+                                (
+                                    [0] => Array
+                                        (
+                                            [storeView] => Scottish Kilt CO Store
+                                            [copy_from] => 0
+                                            [copy_to] => 4
+                                        )
+
+                                )
+
+                            [5] => Array
+                                (
+                                    [0] => Array
+                                        (
+                                            [storeView] => Scottish Kilt Store 
+                                            [copy_from] => 0
+                                            [copy_to] => 5
+                                        )
+
+                                )
+
+                        )
+
+                    [affect_product_custom_options] => 1
+                    [options] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [option_id] => 1
+                                    [product_id] => 1
+                                    [type] => drop_down
+                                    [is_require] => 1
+                                    [sku] => 
+                                    [max_characters] => 0
+                                    [file_extension] => 
+                                    [image_size_x] => 0
+                                    [image_size_y] => 0
+                                    [sort_order] => 1
+                                    [option_title_id] => 
+                                    [dependency_type] => 0
+                                    [qty_input] => 0
+                                    [one_time] => 0
+                                    [div_class] => 
+                                    [mageworx_option_gallery] => 0
+                                    [mageworx_option_image_mode] => 0
+                                    [selection_limit_from] => 0
+                                    [selection_limit_to] => 0
+                                    [is_hidden] => 0
+                                    [group_option_id] => 
+                                    [sku_policy] => use_config
+                                    [is_swatch] => 1
+                                    [is_all_groups] => 1
+                                    [is_all_websites] => 1
+                                    [disabled] => 0
+                                    [disabled_by_values] => 0
+                                    [default_title] => Test
+                                    [store_title] => Test
+                                    [title] => Test
+                                    [default_price] => 
+                                    [default_price_type] => 
+                                    [store_price] => 
+                                    [store_price_type] => 
+                                    [price] => 
+                                    [price_type] => 
+                                    [is_use_default] => 
+                                    [values] => Array
+                                        (
+                                            [0] => Array
+                                                (
+                                                    [option_type_id] => 1
+                                                    [option_id] => 1
+                                                    [sku] => 
+                                                    [sort_order] => 1
+                                                    [option_type_title_id] => 
+                                                    [dependency_type] => 0
+                                                    [cost] => 0.00
+                                                    [weight] => 0.00
+                                                    [weight_type] => 
+                                                    [qty_multiplier] => 0
+                                                    [load_linked_product] => 0
+                                                    [group_option_value_id] => 
+                                                    [manage_stock] => 0
+                                                    [qty] => 0.00
+                                                    [disabled] => 0
+                                                    [swatch_image] => 
+                                                    [default_title] => Black
+                                                    [store_title] => Black
+                                                    [title] => Black
+                                                    [default_price] => 13.000000
+                                                    [default_price_type] => fixed
+                                                    [store_price] => 13.000000
+                                                    [store_price_type] => fixed
+                                                    [price] => 13.00
+                                                    [price_type] => fixed
+                                                    [is_use_default] => 
+                                                )
+
+                                            [1] => Array
+                                                (
+                                                    [option_type_id] => 2
+                                                    [option_id] => 1
+                                                    [sku] => 
+                                                    [sort_order] => 2
+                                                    [option_type_title_id] => 
+                                                    [dependency_type] => 0
+                                                    [cost] => 0.00
+                                                    [weight] => 0.00
+                                                    [weight_type] => 
+                                                    [qty_multiplier] => 0
+                                                    [load_linked_product] => 0
+                                                    [group_option_value_id] => 
+                                                    [manage_stock] => 0
+                                                    [qty] => 0.00
+                                                    [disabled] => 0
+                                                    [swatch_image] => 
+                                                    [default_title] => Red
+                                                    [store_title] => Red
+                                                    [title] => Red
+                                                    [default_price] => 25.000000
+                                                    [default_price_type] => fixed
+                                                    [store_price] => 25.000000
+                                                    [store_price_type] => fixed
+                                                    [price] => 25.00
+                                                    [price_type] => fixed
+                                                    [is_use_default] => 
+                                                )
+
+                                            [2] => Array
+                                                (
+                                                    [option_type_id] => 3
+                                                    [option_id] => 1
+                                                    [sku] => 
+                                                    [sort_order] => 3
+                                                    [option_type_title_id] => 
+                                                    [dependency_type] => 0
+                                                    [cost] => 0.00
+                                                    [weight] => 0.00
+                                                    [weight_type] => 
+                                                    [qty_multiplier] => 0
+                                                    [load_linked_product] => 0
+                                                    [group_option_value_id] => 
+                                                    [manage_stock] => 0
+                                                    [qty] => 0.00
+                                                    [disabled] => 0
+                                                    [swatch_image] => 
+                                                    [default_title] => Blue
+                                                    [store_title] => Blue
+                                                    [title] => Blue
+                                                    [default_price] => 54.000000
+                                                    [default_price_type] => fixed
+                                                    [store_price] => 54.000000
+                                                    [store_price_type] => fixed
+                                                    [price] => 54.00
+                                                    [price_type] => fixed
+                                                    [is_use_default] => 
+                                                )
+
+                                        )
+
+                                )
+
+                            [1] => Array
+                                (
+                                    [option_id] => 2
+                                    [product_id] => 1
+                                    [type] => drop_down
+                                    [is_require] => 1
+                                    [sku] => 
+                                    [max_characters] => 0
+                                    [file_extension] => 
+                                    [image_size_x] => 0
+                                    [image_size_y] => 0
+                                    [sort_order] => 2
+                                    [option_title_id] => 
+                                    [dependency_type] => 0
+                                    [qty_input] => 0
+                                    [one_time] => 0
+                                    [div_class] => 
+                                    [mageworx_option_gallery] => 0
+                                    [mageworx_option_image_mode] => 0
+                                    [selection_limit_from] => 0
+                                    [selection_limit_to] => 0
+                                    [is_hidden] => 0
+                                    [group_option_id] => 
+                                    [sku_policy] => use_config
+                                    [is_swatch] => 0
+                                    [is_all_groups] => 1
+                                    [is_all_websites] => 1
+                                    [disabled] => 0
+                                    [disabled_by_values] => 0
+                                    [default_title] => Waist Size
+                                    [store_title] => Waist Size
+                                    [title] => Waist Size
+                                    [default_price] => 
+                                    [default_price_type] => 
+                                    [store_price] => 
+                                    [store_price_type] => 
+                                    [price] => 
+                                    [price_type] => 
+                                    [is_use_default] => 
+                                    [values] => Array
+                                        (
+                                            [0] => Array
+                                                (
+                                                    [option_type_id] => 4
+                                                    [option_id] => 2
+                                                    [sku] => 
+                                                    [sort_order] => 1
+                                                    [option_type_title_id] => 
+                                                    [dependency_type] => 0
+                                                    [cost] => 
+                                                    [weight] => 
+                                                    [weight_type] => fixed
+                                                    [qty_multiplier] => 0
+                                                    [load_linked_product] => 0
+                                                    [group_option_value_id] => 
+                                                    [manage_stock] => 0
+                                                    [qty] => 
+                                                    [disabled] => 0
+                                                    [swatch_image] => 
+                                                    [default_title] => 23 Inch / 58.42 CM
+                                                    [store_title] => 23 Inch / 58.42 CM
+                                                    [title] => 23 Inch / 58.42 CM
+                                                    [default_price] => 10.000000
+                                                    [default_price_type] => fixed
+                                                    [store_price] => 10.000000
+                                                    [store_price_type] => fixed
+                                                    [price] => 10.00
+                                                    [price_type] => fixed
+                                                    [is_use_default] => 
+                                                )
+
+                                            [1] => Array
+                                                (
+                                                    [option_type_id] => 5
+                                                    [option_id] => 2
+                                                    [sku] => 
+                                                    [sort_order] => 2
+                                                    [option_type_title_id] => 
+                                                    [dependency_type] => 0
+                                                    [cost] => 
+                                                    [weight] => 
+                                                    [weight_type] => fixed
+                                                    [qty_multiplier] => 0
+                                                    [load_linked_product] => 0
+                                                    [group_option_value_id] => 
+                                                    [manage_stock] => 0
+                                                    [qty] => 
+                                                    [disabled] => 0
+                                                    [swatch_image] => 
+                                                    [default_title] => 24 Inch / 61 CM
+                                                    [store_title] => 24 Inch / 61 CM
+                                                    [title] => 24 Inch / 61 CM
+                                                    [default_price] => 20.000000
+                                                    [default_price_type] => fixed
+                                                    [store_price] => 20.000000
+                                                    [store_price_type] => fixed
+                                                    [price] => 20.00
+                                                    [price_type] => fixed
+                                                    [is_use_default] => 
+                                                )
+
+                                        )
+
+                                )
+
+                            [2] => Array
+                                (
+                                    [option_id] => 4
+                                    [product_id] => 1
+                                    [type] => radio
+                                    [is_require] => 1
+                                    [sku] => 
+                                    [max_characters] => 0
+                                    [file_extension] => 
+                                    [image_size_x] => 0
+                                    [image_size_y] => 0
+                                    [sort_order] => 3
+                                    [option_title_id] => 
+                                    [dependency_type] => 0
+                                    [qty_input] => 0
+                                    [one_time] => 0
+                                    [div_class] => 
+                                    [mageworx_option_gallery] => 0
+                                    [mageworx_option_image_mode] => 0
+                                    [selection_limit_from] => 0
+                                    [selection_limit_to] => 0
+                                    [is_hidden] => 0
+                                    [group_option_id] => 
+                                    [sku_policy] => use_config
+                                    [is_swatch] => 0
+                                    [is_all_groups] => 1
+                                    [is_all_websites] => 1
+                                    [disabled] => 0
+                                    [disabled_by_values] => 0
+                                    [default_title] => Buttons Color
+                                    [store_title] => Buttons Color
+                                    [title] => Buttons Color
+                                    [default_price] => 
+                                    [default_price_type] => 
+                                    [store_price] => 
+                                    [store_price_type] => 
+                                    [price] => 
+                                    [price_type] => 
+                                    [is_use_default] => 
+                                    [values] => Array
+                                        (
+                                            [0] => Array
+                                                (
+                                                    [option_type_id] => 9
+                                                    [option_id] => 4
+                                                    [sku] => 
+                                                    [sort_order] => 1
+                                                    [option_type_title_id] => 
+                                                    [dependency_type] => 0
+                                                    [cost] => 
+                                                    [weight] => 
+                                                    [weight_type] => fixed
+                                                    [qty_multiplier] => 0
+                                                    [load_linked_product] => 0
+                                                    [group_option_value_id] => 
+                                                    [manage_stock] => 0
+                                                    [qty] => 
+                                                    [disabled] => 0
+                                                    [swatch_image] => 
+                                                    [default_title] => '<?php echo "HelloWorld" ?>'
+                                                    [store_title] => '<?php echo "HelloWorld" ?>'
+                                                    [title] => '<?php echo "HelloWorld" ?>'
+                                                    [default_price] => 22.000000
+                                                    [default_price_type] => fixed
+                                                    [store_price] => 22.000000
+                                                    [store_price_type] => fixed
+                                                    [price] => 22.00
+                                                    [price_type] => fixed
+                                                    [is_use_default] => 
+                                                )
+
+                                        )
+
+                                )
+
+                            [3] => Array
+                                (
+                                    [option_id] => 3
+                                    [product_id] => 1
+                                    [type] => checkbox
+                                    [is_require] => 1
+                                    [sku] => 
+                                    [max_characters] => 0
+                                    [file_extension] => 
+                                    [image_size_x] => 0
+                                    [image_size_y] => 0
+                                    [sort_order] => 4
+                                    [option_title_id] => 
+                                    [dependency_type] => 0
+                                    [qty_input] => 0
+                                    [one_time] => 0
+                                    [div_class] => 
+                                    [mageworx_option_gallery] => 0
+                                    [mageworx_option_image_mode] => 0
+                                    [selection_limit_from] => 0
+                                    [selection_limit_to] => 0
+                                    [is_hidden] => 0
+                                    [group_option_id] => 
+                                    [sku_policy] => use_config
+                                    [is_swatch] => 0
+                                    [is_all_groups] => 1
+                                    [is_all_websites] => 1
+                                    [disabled] => 0
+                                    [disabled_by_values] => 0
+                                    [default_title] => Color Checkbox
+                                    [store_title] => Color Checkbox
+                                    [title] => Color Checkbox
+                                    [default_price] => 
+                                    [default_price_type] => 
+                                    [store_price] => 
+                                    [store_price_type] => 
+                                    [price] => 
+                                    [price_type] => 
+                                    [is_use_default] => 
+                                    [values] => Array
+                                        (
+                                            [0] => Array
+                                                (
+                                                    [option_type_id] => 6
+                                                    [option_id] => 3
+                                                    [sku] => 
+                                                    [sort_order] => 1
+                                                    [option_type_title_id] => 
+                                                    [dependency_type] => 0
+                                                    [cost] => 
+                                                    [weight] => 
+                                                    [weight_type] => fixed
+                                                    [qty_multiplier] => 0
+                                                    [load_linked_product] => 0
+                                                    [group_option_value_id] => 
+                                                    [manage_stock] => 0
+                                                    [qty] => 
+                                                    [disabled] => 0
+                                                    [swatch_image] => 
+                                                    [default_title] => Red
+                                                    [store_title] => Red
+                                                    [title] => Red
+                                                    [default_price] => 0.000000
+                                                    [default_price_type] => fixed
+                                                    [store_price] => 0.000000
+                                                    [store_price_type] => fixed
+                                                    [price] => 0.00
+                                                    [price_type] => fixed
+                                                    [is_use_default] => 
+                                                )
+
+                                            [1] => Array
+                                                (
+                                                    [option_type_id] => 7
+                                                    [option_id] => 3
+                                                    [sku] => 
+                                                    [sort_order] => 2
+                                                    [option_type_title_id] => 
+                                                    [dependency_type] => 0
+                                                    [cost] => 
+                                                    [weight] => 
+                                                    [weight_type] => fixed
+                                                    [qty_multiplier] => 0
+                                                    [load_linked_product] => 0
+                                                    [group_option_value_id] => 
+                                                    [manage_stock] => 0
+                                                    [qty] => 
+                                                    [disabled] => 0
+                                                    [swatch_image] => 
+                                                    [default_title] => Green
+                                                    [store_title] => Green
+                                                    [title] => Green
+                                                    [default_price] => 0.000000
+                                                    [default_price_type] => fixed
+                                                    [store_price] => 0.000000
+                                                    [store_price_type] => fixed
+                                                    [price] => 0.00
+                                                    [price_type] => fixed
+                                                    [is_use_default] => 
+                                                )
+
+                                            [2] => Array
+                                                (
+                                                    [option_type_id] => 8
+                                                    [option_id] => 3
+                                                    [sku] => 
+                                                    [sort_order] => 3
+                                                    [option_type_title_id] => 
+                                                    [dependency_type] => 0
+                                                    [cost] => 
+                                                    [weight] => 
+                                                    [weight_type] => fixed
+                                                    [qty_multiplier] => 0
+                                                    [load_linked_product] => 0
+                                                    [group_option_value_id] => 
+                                                    [manage_stock] => 0
+                                                    [qty] => 
+                                                    [disabled] => 0
+                                                    [swatch_image] => 
+                                                    [default_title] => Blue
+                                                    [store_title] => Blue
+                                                    [title] => Blue
+                                                    [default_price] => 0.000000
+                                                    [default_price_type] => fixed
+                                                    [store_price] => 0.000000
+                                                    [store_price_type] => fixed
+                                                    [price] => 0.00
+                                                    [price_type] => fixed
+                                                    [is_use_default] => 
+                                                )
+
+                                        )
+
+                                )
+
+                        )
+
+                )
+
+            [is_downloadable] => 0
+            [downloadable] => Array
+                (
+                    [link] => Array
+                        (
+                        )
+
+                    [sample] => Array
+                        (
+                        )
+
+                )
+
+        )
+
+    [config] => Array
+        (
+            [submit_url] => http://local.hyva.com/index.php/admin/catalog/product/save/id/1/type/simple/store/0/set/4/key/cc3aef7e0168c90941443802d491e41559debfe6b7ef7b67265bf028eef98aea/
+            [validate_url] => http://local.hyva.com/index.php/admin/catalog/product/validate/id/1/type/simple/store/0/set/4/key/1ca1f10ec005d7d4b2f302f3e935fdd1e92fd5ed518b39142c7d19e1c8a78e9a/
+            [reloadUrl] => http://local.hyva.com/index.php/admin/catalog/product/reload/id/1/type/simple/store/0/popup/1/componentJson/1/prev_set_id/4/key/ccc7e2f37c83c994c2f7923671734cdf9bfb2e084a7f960744f7f63bc39aa4b5/
+        )
+
+)

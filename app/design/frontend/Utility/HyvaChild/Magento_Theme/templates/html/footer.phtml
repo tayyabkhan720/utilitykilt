@@ -1,0 +1,98 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+declare(strict_types=1);
+
+use Magento\Framework\View\Element\Template;
+use Magento\Framework\Escaper;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+?>
+<div class="bg-[#1a1a1a]">
+    <div class="container py-8">
+        <div class="flex flex-wrap gap-y-16">
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-sm text-gray-300">
+
+                <!-- About Us -->
+                <div>
+                    <p class="text-[#0078bd] uppercase tracking-[1px] text-[16px] mb-5 border-l-3 border-[#0078bd] pl-[10px]">About Us</p>
+                    <ul class="space-y-3">
+                        <li class="flex items-start gap-2">
+                            <svg class="w-4 h-4 color-[#0078bd] mt-1 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18s6-5.686 6-10A6 6 0 1 0 4 8c0 4.314 6 10 6 10Zm0-7a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" clip-rule="evenodd"/>
+                            </svg>
+                            <a href="https://g.co/kgs/7aWqPPr" target="_blank" class="hover:text-white transition-colors">
+                                53 Lynwood Road, Blackburn, United Kingdom
+                            </a>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <svg class="w-4 h-4 color-[#0078bd]shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M2 3a1 1 0 0 1 1-1h2.153a1 1 0 0 1 .986.836l.74 4.435a1 1 0 0 1-.54 1.06l-1.548.774a11.037 11.037 0 0 0 6.105 6.105l.774-1.548a1 1 0 0 1 1.059-.54l4.435.74a1 1 0 0 1 .836.986V17a1 1 0 0 1-1 1h-2C7.82 18 2 12.18 2 5V3Z"/>
+                            </svg>
+                            <a href="tel:+441613991718" class="hover:text-white transition-colors">+44 161 3991718</a>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <svg class="w-4 h-4 color-[#0078bd] shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M3 4a2 2 0 0 0-2 2v1.161l8.441 4.221a1 1 0 0 0 .992 0L19 7.161V6a2 2 0 0 0-2-2H3Z"/>
+                                <path d="M19 8.839 11.223 12.73a2.5 2.5 0 0 1-2.446 0L1 8.839V14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.839Z"/>
+                            </svg>
+                            <a href="mailto:support@utilitykilt.co.uk" class="hover:text-white transition-colors">
+                                support@utilitykilt.co.uk
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Useful Links -->
+                <div>
+                    <p class="text-[#0078bd] uppercase tracking-[1px] text-[16px] mb-5 border-l-3 border-[#0078bd] pl-[10px]">Useful Links</p>
+                    <ul class="space-y-2">
+                        <li><a href="https://utilitykilt.co.uk/customer/account/login" class="hover:text-white transition-colors">My Account</a></li>
+                        <li><a href="https://utilitykilt.co.uk/shippings" class="hover:text-white transition-colors">Shipping Policy</a></li>
+                        <li><a href="https://utilitykilt.co.uk/return-and-exchange" class="hover:text-white transition-colors">Return &amp; Exchange</a></li>
+                        <li><a href="https://utilitykilt.co.uk/terms-and-condition" class="hover:text-white transition-colors">Terms &amp; Conditions</a></li>
+                    </ul>
+                </div>
+
+                <!-- Information -->
+                <div>
+                    <p class="text-[#0078bd] uppercase tracking-[1px] text-[16px] mb-5 border-l-3 border-[#0078bd] pl-[10px]">Information</p>
+                    <ul class="space-y-2">
+                        <li><a title="Blog" href="https://blog.utilitykilt.co.uk/" class="hover:text-white transition-colors">Blog</a></li>
+                        <li><a href="https://utilitykilt.co.uk/size-chart-for-kilt-measurment" class="hover:text-white transition-colors">Size Chart</a></li>
+                        <li><a href="https://utilitykilt.co.uk/gift-card.html" class="hover:text-white transition-colors">Gift Card</a></li>
+                        <li><a href="https://utilitykilt.co.uk/contact-us" class="hover:text-white transition-colors">Contact Us</a></li>
+                    </ul>
+                </div>
+
+                <!-- Customer Care -->
+                <div>
+                    <p class="text-[#0078bd] uppercase tracking-[1px] text-[16px] mb-5 border-l-3 border-[#0078bd] pl-[10px]">Customer Care</p>
+                    <p class="text-sm text-gray-400 leading-relaxed mb-4">
+                        We offer multiple payment methods for our customer's convenience.
+                    </p>
+                    <img src="https://theutilitykilt.com/media/tmp/catalog/product/p/a/payment-method-uk.jpg"
+                        alt="Secure Payments"
+                        class="max-w-full h-auto" />
+                </div>  
+            </div>
+
+
+        </div>
+    </div>
+    <div>
+      
+    </div>
+</div>
+  <div class="container py-2 flex items-center sm:flex-row flex-col justify-center">
+            <p class="text-[#696969]"><?= $block->getChildHtml('copyright') ?></p>
+    </div>
+
+
+    

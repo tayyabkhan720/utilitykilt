@@ -1,0 +1,52 @@
+<?php
+/** @var Magento\Framework\View\Element\Template $block */
+// Grab all the child blocks assigned to the detailed_info group from the XML
+$detailedInfoGroup = $block->getGroupChildNames('detailed_info');
+?>
+
+<?php if (!empty($detailedInfoGroup)): ?>
+    <div class="w-full my-6 product-accordion-wrapper" x-data="{ activeTab: null }">
+        <?php $index = 0; ?>
+        <?php foreach ($detailedInfoGroup as $name): ?>
+            <?php 
+                $html = $block->getChildHtml($name);
+                if (!trim($html)) continue; // Skip rendering if the tab block is empty
+                
+                $childBlock = $block->getChildBlock($name);
+                $title = $childBlock->getData('title') ?: __('Detail');
+            ?>
+            <div class="border-b border-gray-200 last:border-0 py-3">
+                <!-- Accordion Title Trigger -->
+                <button 
+                    type="button"
+                    class="flex justify-between items-center w-full text-left font-semibold text-lg py-2 focus:outline-none"
+                    @click="activeTab === <?= $index ?> ? activeTab = null : activeTab = <?= $index ?>"
+                >
+                    <span><?= $block->escapeHtml($title) ?></span>
+                    <!-- Open/Close Arrow Icon -->
+                    <svg 
+                        class="w-5 h-5 transform transition-transform duration-200" 
+                        :class="activeTab === <?= $index ?> ? 'rotate-180' : ''"
+                        fill="none" 
+                        stroke="currentColor" 
+                        viewBox="0 0 24 24"
+                    >
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+
+                <!-- Accordion Content Box -->
+                <div 
+                    class="overflow-hidden transition-all duration-300 max-h-0"
+                    x-ref="tab_<?= $index ?>"
+                    :style="activeTab === <?= $index ?> ? 'max-h: ' + $refs.tab_<?= $index ?>.scrollHeight + 'px; margin-top: 1rem;' : ''"
+                >
+                    <div class="prose max-w-none pb-4 text-gray-700">
+                        <?= /* @noEscape */ $html ?>
+                    </div>
+                </div>
+            </div>
+            <?php $index++; ?>
+        <?php endforeach; ?>
+    </div>
+<?php endif; ?>

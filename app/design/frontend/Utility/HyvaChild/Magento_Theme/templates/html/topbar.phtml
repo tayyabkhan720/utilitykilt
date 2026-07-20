@@ -1,0 +1,91 @@
+<?php
+/** @var \Magento\Framework\View\Element\Template $block */
+
+// 1. Safely initialize the Hyvä View Model passed from your XML file
+/** @var \Hyva\Theme\ViewModel\Navigation $navigationViewModel */
+$navigationViewModel = $block->getData('view_model');
+?>
+<!-- Top Promo Banner -->
+<div class="bg-[#1D81C1] text-center text-white text-sm py-2">
+    <p class="font-bold">Gear up for the games. Save 20% on all authentic Kilts, Outfits, and Accessories. Code: EGAMES20</p>
+</div>
+
+<!-- Main Topbar Area -->
+<div class="border-b border-[#1D81C1]">
+    <div class="container mx-auto flex justify-between items-center px-4">
+        
+        <!-- Social Icons Side -->
+        <div class="social-icons">
+            <ul class="flex justify-center gap-4 py-2">
+                <li>
+                    <a href="#" target="_blank" aria-label="Facebook">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="#1D81C1">
+                            <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 5 3.66 9.13 8.44 9.88v-6.99H7.9v-2.89h2.54V9.8c0-2.51 1.49-3.89 3.77-3.89 1.09 0 2.23.2 2.23.2v2.45h-1.26c-1.24 0-1.63.77-1.63 1.56v1.87h2.78l-.44 2.89h-2.34V22C18.34 21.13 22 17 22 12Z"/>
+                        </svg>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" target="_blank" aria-label="Twitter">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="#1D81C1">
+                            <path d="M22.46 6c-.77.34-1.6.57-2.47.67a4.3 4.3 0 0 0 1.88-2.37 8.6 8.6 0 0 1-2.72 1.04 4.28 4.28 0 0 0-7.3 3.9A12.14 12.14 0 0 1 3.16 4.9a4.28 4.28 0 0 0 1.33 5.72 4.24 4.24 0 0 1-1.94-.54v.05a4.28 4.28 0 0 0 3.43 4.19 4.3 4.3 0 0 1-1.93.07 4.28 4.28 0 0 0 4 2.97A8.58 8.58 0 0 1 2 19.54a12.1 12.1 0 0 0 6.56 1.92c7.88 0 12.2-6.53 12.2-12.2 0-.19 0-.37-.01-.56A8.7 8.7 0 0 0 22.46 6Z"/>
+                        </svg>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" target="_blank" aria-label="Instagram">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="#1D81C1">
+                            <path d="M7 2C4.24 2 2 4.24 2 7v10c0 2.76 2.24 5 5 5h10c2.76 0 5-2.24 5-5V7c0-2.76-2.24-5-5-5H7Zm10 2c1.65 0 3 1.35 3 3v10c0 1.65-1.35 3-3 3H7c-1.65 0-3-1.35-3-3V7c0-1.65 1.35-3 3-3h10Zm-5 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11Zm0 2a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7Zm4.75-2.25a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5Z"/>
+                        </svg>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Links Side -->
+
+        <div class="topbar-right flex items-center gap-6 py-2">
+            <?php if ($storeSwitcherHtml = $block->getChildHtml('store_switcher')): ?>
+                <div class="store-switcher-wrapper">
+                    <?= $storeSwitcherHtml ?>
+                </div>
+            <?php endif; ?>
+
+            <!-- Dynamic Hyva Sign In / Create Account States -->
+            <div class="header-links flex items-center gap-4 text-sm text-neutral-600 font-medium">
+                <?php 
+                /** @var \Magento\Customer\ViewModel\Customer $customerViewModel */
+                $customerViewModel = $block->getData('customer_view_model');
+                
+                // Checks if the visitor is securely authenticated 
+                if ($customerViewModel && $customerViewModel->isLoggedIn()): 
+                ?>
+                    <!-- LOGGED IN STATE -->
+                    <a href="<?= $block->getUrl('customer/account') ?>" class="hover:text-[#1D81C1] transition-colors">
+                        <?= $block->escapeHtml(__('My Account')) ?>
+                    </a>
+                    <span class="text-neutral-300">|</span>
+                    <a href="<?= $block->getUrl('customer/account/logout') ?>" class="hover:text-[#1D81C1] transition-colors">
+                        <?= $block->escapeHtml(__('Sign Out')) ?>
+                    </a>
+                <?php else: ?>
+                    <!-- GUEST STATE (Sign In or Create Account) -->
+                    <a href="<?= $block->getUrl('customer/account/login') ?>" class="hover:text-[#1D81C1] transition-colors">
+                        <?= $block->escapeHtml(__('Sign In')) ?>
+                    </a>
+                    <span class="text-neutral-300">or</span>
+                    <a href="<?= $block->getUrl('customer/account/create') ?>" class="hover:text-[#1D81C1] transition-colors">
+                        <?= $block->escapeHtml(__('Create an Account')) ?>
+                    </a>
+                <?php endif; ?>
+            </div>
+
+            <!-- Wishlist Area -->
+            <!-- <div class="wishlist-wrapper border-l border-neutral-200 pl-4">
+                <a href="<?= $block->getUrl('wishlist') ?>" class="wishlist-link flex items-center text-lg text-neutral-700 hover:text-[#1D81C1] transition-colors" aria-label="Wishlist">
+                    <span>♡</span>
+                </a>
+            </div> -->
+        </div>
+        
+    </div>
+</div>

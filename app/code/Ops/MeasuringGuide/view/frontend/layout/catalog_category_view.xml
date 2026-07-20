@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Ops. All rights reserved.
+ * Explicitly remove measuring guide from category pages
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <!-- Remove measuring guide block from category pages -->
+        <referenceBlock name="ops.measuring.guide" remove="true"/>
+    </body>
+</page>
+

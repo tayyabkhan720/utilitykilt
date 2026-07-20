@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="3columns" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <update handle="default_head_blocks"/>
+    <body>
+        <attribute name="id" value="html-body"/>
+        
+        <referenceContainer name="after.body.start">
+            
+            
+            
+        </referenceContainer>
+        <referenceBlock name="top.links">
+            
+        </referenceBlock>
+        <referenceContainer name="main.content">
+            
+        </referenceContainer>
+        <referenceContainer name="header.container">
+            <container name="header.panel.wrapper" htmlClass="panel wrapper" htmlTag="div" before="-">
+                <container name="header.panel" label="Page Header Panel" htmlTag="div" htmlClass="panel header">
+                    
+                    
+                    
+                </container>
+            </container>
+            <container name="header-wrapper" label="Page Header" as="header-wrapper" htmlTag="div" htmlClass="header content">
+                
+            </container>
+        </referenceContainer>
+        <referenceContainer name="page.top">
+            
+            <container name="top.container" as="topContainer" label="After Page Header Top" htmlTag="div" htmlClass="top-container"/>
+            
+        </referenceContainer>
+        <referenceContainer name="columns.top">
+            
+            <container name="page.messages" htmlTag="div" htmlClass="page messages">
+                
+                
+            </container>
+        </referenceContainer>
+        <referenceContainer name="main">
+            <container name="content.top" label="Main Content Top">
+                
+            </container>
+            <container name="content" label="Main Content Area"/>
+            <container name="content.aside" label="Main Content Aside"/>
+            <container name="content.bottom" label="Main Content Bottom"/>
+        </referenceContainer>
+        <referenceContainer name="page.bottom.container">
+            <container name="page.bottom" label="Before Page Footer" htmlTag="div" htmlClass="content"/>
+        </referenceContainer>
+        <referenceContainer name="footer-container">
+            <container name="footer" as="footer" label="Page Footer" htmlTag="div" htmlClass="footer content">
+                
+                
+                
+                
+            </container>
+        </referenceContainer>
+        <referenceContainer name="before.body.end">
+            
+        </referenceContainer>
+        <referenceContainer name="content">
+            
+        </referenceContainer>
+    </body>
+</page>

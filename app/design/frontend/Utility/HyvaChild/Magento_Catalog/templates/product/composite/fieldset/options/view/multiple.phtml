@@ -1,0 +1,159 @@
+<?php
+/**
+ * Overrides Hyvä default multiple.phtml to add MageWorx swatch support
+ * for Drop-down / Multiple select option types.
+ *
+ * Note: Alpine state (selectedValues, options, toggle()) is provided by the
+ * parent scope in Magento_Catalog/templates/product/view/options/type/select.phtml
+ */
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\ProductPrice;
+use Magento\Catalog\Block\Product\View\Options\Type\Select\Checkable;
+use Magento\Catalog\Model\Product\Option;
+use Magento\Catalog\Pricing\Price\CustomOptionPrice;
+use Magento\Framework\Escaper;
+use TJV\HyvaMageworxSwatches\ViewModel\MageworxSwatch;
+
+/**
+ * @var Checkable $block
+ * @var Escaper $escaper
+ * @var ViewModelRegistry $viewModels
+ */
+
+$product = $block->getProduct();
+
+/** @var ProductPrice $productPriceViewModel */
+$productPriceViewModel = $viewModels->require(ProductPrice::class);
+
+/** @var MageworxSwatch $swatchViewModel */
+$swatchViewModel = $viewModels->require(MageworxSwatch::class);
+
+$option = $block->getOption();
+
+if ($option):
+    $configValue = $block->getPreconfiguredValue($option);
+    if (!is_array($configValue)) {
+        $configValue = (array) $configValue;
+    }
+    $optionType = $option->getType();
+    $optionId = $option->getId();
+    $arraySign = $optionType === Option::OPTION_TYPE_MULTIPLE ? '[]' : '';
+    $isSwatch = $swatchViewModel->isSwatchOption($option);
+    ?>
+
+<div class="options-list nested"
+     id="options-<?= $escaper->escapeHtmlAttr($option->getId()) ?>-list">
+
+    <select
+        name="options[<?= $escaper->escapeHtmlAttr($option->getId()) ?>]<?= /* @noEscape */ $arraySign ?>"
+        id="options_<?= $escaper->escapeHtmlAttr($optionId) ?>"
+        class="<?= $isSwatch
+            ? 'sr-only'
+            : ($optionType === Option::OPTION_TYPE_MULTIPLE ? 'form-multiselect' : 'form-select')
+              . ' product-custom-option w-full' ?>"
+        <?php if ($optionType === Option::OPTION_TYPE_MULTIPLE): ?>
+            multiple="multiple"
+        <?php endif; ?>
+        <?php if ($option->getIsRequire()): ?>
+            required
+            data-required
+            oninvalid="this.setCustomValidity(this.dataset.validationMessage)"
+            oninput="this.setCustomValidity('')"
+            data-validation-message="<?= $escaper->escapeHtmlAttr(__("Please select one of the options.")) ?>"
+        <?php endif; ?>
+        x-ref="option-<?= $escaper->escapeHtmlAttr($optionId) ?>"
+        x-on:change="updateCustomOptionValue(
+            $dispatch, '<?= $escaper->escapeHtmlAttr($optionId) ?>', $event.currentTarget
+        )"
+    >
+    <?php if ($option->getType() === Option::OPTION_TYPE_DROP_DOWN): ?>
+        <option value=""><?= $escaper->escapeHtml(__('-- Please Select --')) ?></option>
+    <?php endif; ?>
+
+    <?php foreach ($option->getValues() as $value):
+        $checked = '';
+        if ($arraySign) {
+            $checked = is_array($configValue) && in_array($value->getOptionTypeId(), $configValue) ? 'checked' : '';
+        } else {
+            $checked = $configValue == $value->getOptionTypeId() ? 'checked' : '';
+        }
+
+        $valueOptionId = $option->getId() . '_' . $value->getOptionTypeId();
+        $valuePrice = $productPriceViewModel->getCustomOptionPrice($value, CustomOptionPrice::PRICE_CODE, $product);
+        if ($productPriceViewModel->displayPriceInclAndExclTax()) {
+            $valueBasePrice = $value->getPrice(true);
+        }
+        ?>
+            <option type="<?= $escaper->escapeHtmlAttr($optionType) ?>"
+                   value="<?= $escaper->escapeHtmlAttr($value->getOptionTypeId()) ?>"
+                   <?= $escaper->escapeHtml($checked) ?>
+                   x-ref="option-<?= $escaper->escapeHtmlAttr($valueOptionId) ?>"
+                   data-price-amount="<?= $escaper->escapeHtmlAttr($valuePrice) ?>"
+                   data-price-type="<?= $escaper->escapeHtmlAttr($value->getPriceType()) ?>"
+                   data-option-id="<?= $escaper->escapeHtmlAttr($valueOptionId) ?>"
+                <?php if (in_array($value->getOptionTypeId(), $configValue)): ?>
+                   selected="selected"
+                <?php endif; ?>
+                x-text="'<?= $escaper->escapeJs($escaper->escapeHtml($value->getTitle())) ?> '
+                    + (getFormattedOptionPrice('<?= $escaper->escapeJs($valueOptionId) ?>') || '')"
+            >
+                <?= $escaper->escapeHtml($value->getTitle()) ?>
+                <?= /* @noEscape */ $block->formatPrice($value) ?>
+            </option>
+    <?php endforeach; ?>
+    </select>
+
+    <?php if ($isSwatch): ?>
+    <div class="flex flex-wrap gap-3 mt-2">
+        <?php foreach ($option->getValues() as $value):
+            $valId = $value->getOptionTypeId();
+            $swatchType = $swatchViewModel->getSwatchType($value);
+            $swatchImageUrl = in_array($swatchType, ['image', 'color']) ? $swatchViewModel->getSwatchImageUrl($value) : null;
+            $valuePrice = $productPriceViewModel->getCustomOptionPrice($value, CustomOptionPrice::PRICE_CODE, $product);
+            ?>
+            <button type="button"
+                    class="swatch-tile cursor-pointer inline-flex flex-col items-center gap-1 rounded mr-4 border-2 border-gray-200 p-1"
+                    :class="selectedValues.includes('<?= $escaper->escapeJs($valId) ?>') ? 'swatch-selected' : ''"
+                    x-on:click="toggle('<?= $escaper->escapeJs($valId) ?>')"
+            >
+                <?php if ($swatchType === 'text'): ?>
+                    <span class="px-3 py-1 text-sm"
+                          style="max-width: <?= (int) $swatchViewModel->getTextSwatchMaxWidth() ?>px;">
+                        <?= $escaper->escapeHtml($value->getTitle()) ?>
+                    </span>
+                <?php else: ?>
+                    <span class="block rounded"
+                          style="
+                            width: <?= (int) $swatchViewModel->getSwatchWidth() ?: 32 ?>px;
+                            height: <?= (int) $swatchViewModel->getSwatchHeight() ?: 32 ?>px;
+                            <?php if ($swatchType === 'color'): ?>
+                                background-color: <?= $escaper->escapeHtmlAttr($value->getBaseImage()) ?>;
+                            <?php else: ?>
+                                background-image: url('<?= $escaper->escapeUrl($swatchImageUrl) ?>');
+                                background-size: cover;
+                                background-position: center;
+                            <?php endif; ?>
+                          "
+                    ></span>
+                <?php endif; ?>
+
+                <?php if ($swatchViewModel->isShowSwatchTitle() && $swatchType !== 'text'): ?>
+                    <span class="text-xs"><?= $escaper->escapeHtml($value->getTitle()) ?></span>
+                <?php endif; ?>
+
+                <?php if ($swatchViewModel->isShowSwatchPrice() && $valuePrice): ?>
+                    <span class="text-xs text-gray-500">
+                        <?= $swatchViewModel->formatPrice((float) $valuePrice, $product->getStore()) ?>
+                    </span>
+                <?php endif; ?>
+            </button>
+        <?php endforeach; ?>
+    </div>
+    <style>
+        .swatch-tile.swatch-selected { border-color: var(--color-primary, #1976d2); box-shadow: 0 0 0 2px var(--color-primary, #1976d2); }
+    </style>
+    <?php endif; ?>
+</div>
+<?php endif; ?>

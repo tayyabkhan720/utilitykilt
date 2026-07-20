@@ -1,0 +1,442 @@
+/**
+ * Copyright © Ops. All rights reserved.
+ * Measuring Guide Styles
+ */
+
+/* Category Page Styles */
+.measuring-guide-section {
+    margin: 40px 0;
+    padding: 30px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+/* Product Page Modal Styles */
+.measuring-guide-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    transition: background-color 0.3s ease;
+}
+
+.measuring-guide-btn:hover {
+    background-color: #555;
+}
+
+.measuring-guide-icon {
+    display: inline-flex;
+    align-items: center;
+}
+
+.measuring-guide-icon svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Measuring Guide Modal */
+.measuring-guide-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    align-items: center;
+    justify-content: center;
+}
+
+.measuring-guide-modal.measuring-guide-modal-open {
+    display: flex !important;
+}
+
+.measuring-guide-modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+}
+
+.measuring-guide-modal-content {
+    position: relative;
+    background: #fff;
+    border-radius: 8px;
+    max-width: 900px;
+    width: 90%;
+    max-height: 90vh;
+    overflow: hidden;
+    z-index: 2;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    margin: 20px;
+}
+
+.measuring-guide-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 30px;
+    border-bottom: 2px solid #e0e0e0;
+    flex-shrink: 0;
+    position: relative;
+}
+
+.measuring-guide-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+    text-transform: uppercase;
+}
+
+.measuring-guide-close {
+    background: transparent;
+    border: 2px solid #ccc;
+    border-radius: 50%;
+    font-size: 24px;
+    color: #666;
+    cursor: pointer;
+    padding: 0;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.measuring-guide-close:hover {
+    color: #333;
+    border-color: #333;
+    background-color: #f5f5f5;
+}
+
+.measuring-guide-close span {
+    display: block;
+    line-height: 1;
+    font-weight: 300;
+}
+
+.measuring-guide-modal-body {
+    padding: 30px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.measuring-guide-intro {
+    margin-bottom: 30px;
+}
+
+.measuring-guide-intro p {
+    margin-bottom: 15px;
+    line-height: 1.8;
+    color: #555;
+}
+
+.measuring-guide-intro p strong {
+    color: #333;
+    font-weight: 600;
+}
+
+.measuring-guide-section {
+    margin-bottom: 30px;
+}
+
+.measuring-guide-section-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.measuring-guide-section-content {
+    line-height: 1.8;
+    color: #555;
+}
+
+.measuring-guide-section-content p {
+    margin-bottom: 15px;
+}
+
+.measuring-guide-section-content ul,
+.measuring-guide-section-content ol {
+    margin: 15px 0;
+    padding-left: 30px;
+}
+
+.measuring-guide-section-content li {
+    margin-bottom: 10px;
+}
+
+.measuring-guide-video {
+    margin: 30px 0;
+}
+
+.video-wrapper {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    height: 0;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.video-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.measuring-guide-steps {
+    margin: 30px 0;
+}
+
+.measuring-step {
+    margin-bottom: 25px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-left: 4px solid #333;
+    border-radius: 4px;
+}
+
+.step-title {
+    margin: 0 0 10px 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.step-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    background-color: #333;
+    color: #fff;
+    border-radius: 50%;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.measuring-step p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #666;
+}
+
+.measuring-guide-footer {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+}
+
+.measuring-guide-footer p {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #555;
+}
+
+.measuring-guide-footer p:last-child {
+    margin-bottom: 0;
+}
+
+.measuring-guide-footer p strong {
+    color: #333;
+    font-weight: 600;
+}
+
+/* Category Page Styles */
+.measuring-guide-header {
+    margin-bottom: 25px;
+    border-bottom: 2px solid #333;
+    padding-bottom: 15px;
+}
+
+.measuring-guide-title {
+    font-size: 28px;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.measuring-guide-content {
+    margin-bottom: 30px;
+    line-height: 1.8;
+    color: #555;
+}
+
+.measuring-guide-content p {
+    margin-bottom: 15px;
+}
+
+.measuring-guide-content ul,
+.measuring-guide-content ol {
+    margin: 15px 0;
+    padding-left: 30px;
+}
+
+.measuring-guide-content li {
+    margin-bottom: 10px;
+}
+
+.measuring-guide-products {
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 2px solid #ddd;
+}
+
+.measuring-guide-products-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+
+.measuring-guide-products-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.measuring-guide-product-item {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.measuring-guide-product-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.measuring-guide-product-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+}
+
+.measuring-guide-product-image {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    background: #f5f5f5;
+}
+
+.measuring-guide-product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.measuring-guide-product-info {
+    padding: 15px;
+}
+
+.measuring-guide-product-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 8px 0;
+}
+
+.measuring-guide-product-sku {
+    font-size: 14px;
+    color: #666;
+    margin: 0;
+}
+
+/* Magento Modal Override */
+.measuring-guide-modal-wrapper._show {
+    display: block !important;
+}
+
+.measuring-guide-modal-wrapper .modal-inner-wrap {
+    background: transparent;
+    box-shadow: none;
+}
+
+/* Prevent body scroll when modal is open */
+body.measuring-guide-modal-open {
+    overflow: hidden;
+}
+
+@media (max-width: 768px) {
+    .measuring-guide-section {
+        padding: 20px;
+        margin: 20px 0;
+    }
+
+    .measuring-guide-title {
+        font-size: 24px;
+    }
+
+    .measuring-guide-products-list {
+        grid-template-columns: 1fr;
+    }
+
+    .measuring-guide-modal-content {
+        max-width: 95%;
+        width: 95%;
+        max-height: 96vh;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        -webkit-transform: translate(-50%, -50%);
+        -moz-transform: translate(-50%, -50%);
+        -ms-transform: translate(-50%, -50%);
+    }
+    
+    .measuring-guide-close {
+        width: 32px;
+        height: 32px;
+        font-size: 20px;
+    }
+
+    .measuring-guide-modal-header {
+        padding: 15px 20px;
+    }
+
+    .measuring-guide-title {
+        font-size: 20px;
+    }
+
+    .measuring-guide-modal-body {
+        padding: 20px;
+    }
+
+    .measuring-guide-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+

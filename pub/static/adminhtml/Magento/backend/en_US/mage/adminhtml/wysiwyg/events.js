@@ -1,0 +1,1 @@
+/var/www/html/magento2-store/lib/web/mage/adminhtml/wysiwyg/events.js

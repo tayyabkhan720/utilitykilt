@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <title>Review Order</title>
+    </head>
+    <update handle="checkout_onepage_review_item_renderers"/>
+    <body>
+        
+        
+        
+        
+        <referenceContainer name="page.wrapper">
+            <container name="review.header.container" as="review_header_container" label="Review Page Header Container" htmlTag="header" htmlClass="page-header" before="main.content">
+                <container name="review.header.wrapper" label="Review Page Header" as="review-header-wrapper" htmlTag="div" htmlClass="header content" before="-"/>
+            </container>
+        </referenceContainer>
+        <referenceContainer name="page.messages">
+            
+        </referenceContainer>
+        <referenceContainer name="content">
+            
+        </referenceContainer>
+        
+    </body>
+</page>

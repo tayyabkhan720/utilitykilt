@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Ops. All rights reserved.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!-- Admin plugins -->
+    <type name="Magento\Catalog\Api\CategoryRepositoryInterface">
+        <plugin name="ops_category_faq_save" type="Ops\CategoryFaq\Plugin\CategoryRepositoryPlugin" sortOrder="10"/>
+    </type>
+    <type name="Magento\Catalog\Controller\Adminhtml\Category\Save">
+        <plugin name="ops_category_faq_controller_save" type="Ops\CategoryFaq\Plugin\CategorySaveControllerPlugin" sortOrder="10"/>
+    </type>
+    
+    <!-- Use preference to add FAQ to Amasty's data array - outputs in same script tag loop -->
+    <preference for="Amasty\SeoRichData\Block\JsonLd" type="Ops\CategoryFaq\Block\JsonLd"/>
+</config>

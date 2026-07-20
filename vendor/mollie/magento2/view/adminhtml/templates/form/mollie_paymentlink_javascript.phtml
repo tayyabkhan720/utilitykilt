@@ -1,0 +1,76 @@
+<?php
+/*
+ * Copyright Magmodules.eu. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Helper\SecureHtmlRenderer;
+
+/** @var Escaper $escaper */
+/** @var SecureHtmlRenderer $secureRenderer */
+
+$scriptString = '
+    document.addEventListener(\'DOMContentLoaded\', function () {
+        const saveSelectedMethods = () => {
+            // Save the selected payment methods to local storage
+            var paymentMethods = document.getElementById(\'mollie_methods_paymentlink_methods\');
+            if (!paymentMethods) {
+                return;
+            }
+
+            paymentMethods.addEventListener(\'change\', function () {
+                var selected = [];
+                for (var i = 0; i < paymentMethods.options.length; i++) {
+                    if (paymentMethods.options[i].selected) {
+                        selected.push(paymentMethods.options[i].value);
+                    }
+                }
+                localStorage.setItem(\'mollie_paymentlink_methods\', JSON.stringify(selected));
+            });
+        };
+
+        const setSelectedMethods = () => {
+            var paymentMethods = document.getElementById(\'mollie_methods_paymentlink_methods\');
+            const selectedMethods = JSON.parse(localStorage.getItem(\'mollie_paymentlink_methods\'));
+            if (!selectedMethods || !paymentMethods) {
+                return;
+            }
+
+            for (var i = 0; i < paymentMethods.options.length; i++) {
+                if (selectedMethods.indexOf(paymentMethods.options[i].value) !== -1) {
+                    paymentMethods.options[i].selected = true;
+                }
+            }
+        };
+
+        saveSelectedMethods();
+        setSelectedMethods();
+
+        const targetNode = document.getElementById(\'order-billing_method\');
+
+        if (targetNode) {
+          const observer = new MutationObserver((mutationsList) => {
+            for (const mutation of mutationsList) {
+              if (mutation.type === \'childList\' || mutation.type === \'subtree\') {
+                saveSelectedMethods();
+                setSelectedMethods();
+              }
+            }
+          });
+
+          observer.observe(targetNode, {
+            childList: true,
+            subtree: true
+          });
+        }
+    });
+';
+
+// @phpstan-ignore-next-line
+if (isset($secureRenderer)) {
+    ?><?= /* @noEscape */ $secureRenderer->renderTag('script', [], $scriptString, false); // @phpcs:ignore?><?php
+    return;
+}
+?>
+<script><?= /* @noEscape */ $scriptString; ?></script>

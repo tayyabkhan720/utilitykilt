@@ -1,0 +1,1337 @@
+Array
+(
+    [arguments] => Array
+        (
+            [data] => Array
+                (
+                    [config] => Array
+                        (
+                            [label] => Magento\Framework\Phrase Object
+                                (
+                                    [text:Magento\Framework\Phrase:private] => Customizable Options
+                                    [arguments:Magento\Framework\Phrase:private] => Array
+                                        (
+                                        )
+
+                                )
+
+                            [componentType] => fieldset
+                            [dataScope] => data.product
+                            [collapsible] => 1
+                            [sortOrder] => 41
+                        )
+
+                )
+
+        )
+
+    [children] => Array
+        (
+            [container_header] => Array
+                (
+                    [arguments] => Array
+                        (
+                            [data] => Array
+                                (
+                                    [config] => Array
+                                        (
+                                            [label] => 
+                                            [formElement] => container
+                                            [componentType] => container
+                                            [template] => ui/form/components/complex
+                                            [sortOrder] => 10
+                                            [content] => Magento\Framework\Phrase Object
+                                                (
+                                                    [text:Magento\Framework\Phrase:private] => Custom options let customers choose the product variations they want.
+                                                    [arguments:Magento\Framework\Phrase:private] => Array
+                                                        (
+                                                        )
+
+                                                )
+
+                                        )
+
+                                )
+
+                        )
+
+                    [children] => Array
+                        (
+                            [button_import] => Array
+                                (
+                                    [arguments] => Array
+                                        (
+                                            [data] => Array
+                                                (
+                                                    [config] => Array
+                                                        (
+                                                            [title] => Magento\Framework\Phrase Object
+                                                                (
+                                                                    [text:Magento\Framework\Phrase:private] => Import Options
+                                                                    [arguments:Magento\Framework\Phrase:private] => Array
+                                                                        (
+                                                                        )
+
+                                                                )
+
+                                                            [formElement] => container
+                                                            [componentType] => container
+                                                            [component] => Magento_Ui/js/form/components/button
+                                                            [actions] => Array
+                                                                (
+                                                                    [0] => Array
+                                                                        (
+                                                                            [targetName] => ns=product_form, index=options
+                                                                            [actionName] => clearDataProvider
+                                                                        )
+
+                                                                    [1] => Array
+                                                                        (
+                                                                            [targetName] => ns=product_form, index=import_options_modal
+                                                                            [actionName] => openModal
+                                                                        )
+
+                                                                    [2] => Array
+                                                                        (
+                                                                            [targetName] => ns=product_custom_options_listing, index=product_custom_options_listing
+                                                                            [actionName] => render
+                                                                        )
+
+                                                                )
+
+                                                            [displayAsLink] => 1
+                                                            [sortOrder] => 10
+                                                        )
+
+                                                )
+
+                                        )
+
+                                )
+
+                            [button_add] => Array
+                                (
+                                    [arguments] => Array
+                                        (
+                                            [data] => Array
+                                                (
+                                                    [config] => Array
+                                                        (
+                                                            [title] => Magento\Framework\Phrase Object
+                                                                (
+                                                                    [text:Magento\Framework\Phrase:private] => Add Option
+                                                                    [arguments:Magento\Framework\Phrase:private] => Array
+                                                                        (
+                                                                        )
+
+                                                                )
+
+                                                            [formElement] => container
+                                                            [componentType] => container
+                                                            [component] => Magento_Ui/js/form/components/button
+                                                            [sortOrder] => 20
+                                                            [actions] => Array
+                                                                (
+                                                                    [0] => Array
+                                                                        (
+                                                                            [targetName] => ${ $.ns }.${ $.ns }.custom_options.options
+                                                                            [__disableTmpl] => Array
+                                                                                (
+                                                                                    [targetName] => 
+                                                                                )
+
+                                                                            [actionName] => processingAddChild
+                                                                        )
+
+                                                                )
+
+                                                        )
+
+                                                )
+
+                                        )
+
+                                )
+
+                        )
+
+                )
+
+            [affect_product_custom_options] => Array
+                (
+                    [arguments] => Array
+                        (
+                            [data] => Array
+                                (
+                                    [config] => Array
+                                        (
+                                            [formElement] => field
+                                            [componentType] => input
+                                            [dataScope] => affect_product_custom_options
+                                            [dataType] => number
+                                            [visible] => 
+                                            [sortOrder] => 20
+                                        )
+
+                                )
+
+                        )
+
+                )
+
+            [options] => Array
+                (
+                    [arguments] => Array
+                        (
+                            [data] => Array
+                                (
+                                    [config] => Array
+                                        (
+                                            [addButtonLabel] => Magento\Framework\Phrase Object
+                                                (
+                                                    [text:Magento\Framework\Phrase:private] => Add Option
+                                                    [arguments:Magento\Framework\Phrase:private] => Array
+                                                        (
+                                                        )
+
+                                                )
+
+                                            [componentType] => dynamicRows
+                                            [component] => Magento_Catalog/js/components/dynamic-rows-import-custom-options-per-page
+                                            [template] => Magento_Catalog/components/dynamic-rows-import-custom-options-per-page
+                                            [additionalClasses] => admin__field-wide
+                                            [deleteProperty] => is_delete
+                                            [deleteValue] => 1
+                                            [addButton] => 
+                                            [renderDefaultRecord] => 
+                                            [columnsHeader] => 
+                                            [collapsibleHeader] => 1
+                                            [sortOrder] => 30
+                                            [dataProvider] => product_custom_options_listing
+                                            [imports] => Array
+                                                (
+                                                    [insertData] => ${ $.provider }:${ $.dataProvider }
+                                                    [__disableTmpl] => Array
+                                                        (
+                                                            [insertData] => 
+                                                        )
+
+                                                )
+
+                                            [sizesConfig] => Array
+                                                (
+                                                    [enabled] => 1
+                                                )
+
+                                        )
+
+                                )
+
+                        )
+
+                    [children] => Array
+                        (
+                            [record] => Array
+                                (
+                                    [arguments] => Array
+                                        (
+                                            [data] => Array
+                                                (
+                                                    [config] => Array
+                                                        (
+                                                            [headerLabel] => Magento\Framework\Phrase Object
+                                                                (
+                                                                    [text:Magento\Framework\Phrase:private] => New Option
+                                                                    [arguments:Magento\Framework\Phrase:private] => Array
+                                                                        (
+                                                                        )
+
+                                                                )
+
+                                                            [componentType] => container
+                                                            [component] => Magento_Ui/js/dynamic-rows/record
+                                                            [positionProvider] => container_option.sort_order
+                                                            [isTemplate] => 1
+                                                            [is_collection] => 1
+                                                        )
+
+                                                )
+
+                                        )
+
+                                    [children] => Array
+                                        (
+                                            [container_option] => Array
+                                                (
+                                                    [arguments] => Array
+                                                        (
+                                                            [data] => Array
+                                                                (
+                                                                    [config] => Array
+                                                                        (
+                                                                            [componentType] => fieldset
+                                                                            [collapsible] => 1
+                                                                            [label] => 
+                                                                            [sortOrder] => 10
+                                                                            [opened] => 1
+                                                                        )
+
+                                                                )
+
+                                                        )
+
+                                                    [children] => Array
+                                                        (
+                                                            [sort_order] => Array
+                                                                (
+                                                                    [arguments] => Array
+                                                                        (
+                                                                            [data] => Array
+                                                                                (
+                                                                                    [config] => Array
+                                                                                        (
+                                                                                            [componentType] => field
+                                                                                            [formElement] => hidden
+                                                                                            [dataScope] => sort_order
+                                                                                            [dataType] => number
+                                                                                            [visible] => 
+                                                                                            [sortOrder] => 40
+                                                                                        )
+
+                                                                                )
+
+                                                                        )
+
+                                                                )
+
+                                                            [container_common] => Array
+                                                                (
+                                                                    [arguments] => Array
+                                                                        (
+                                                                            [data] => Array
+                                                                                (
+                                                                                    [config] => Array
+                                                                                        (
+                                                                                            [componentType] => container
+                                                                                            [formElement] => container
+                                                                                            [component] => Magento_Ui/js/form/components/group
+                                                                                            [breakLine] => 
+                                                                                            [showLabel] => 
+                                                                                            [additionalClasses] => admin__field-group-columns admin__control-group-equal
+                                                                                            [sortOrder] => 10
+                                                                                        )
+
+                                                                                )
+
+                                                                        )
+
+                                                                    [children] => Array
+                                                                        (
+                                                                            [option_id] => Array
+                                                                                (
+                                                                                    [arguments] => Array
+                                                                                        (
+                                                                                            [data] => Array
+                                                                                                (
+                                                                                                    [config] => Array
+                                                                                                        (
+                                                                                                            [formElement] => input
+                                                                                                            [componentType] => field
+                                                                                                            [dataScope] => option_id
+                                                                                                            [sortOrder] => 10
+                                                                                                            [visible] => 
+                                                                                                        )
+
+                                                                                                )
+
+                                                                                        )
+
+                                                                                )
+
+                                                                            [title] => Array
+                                                                                (
+                                                                                    [arguments] => Array
+                                                                                        (
+                                                                                            [data] => Array
+                                                                                                (
+                                                                                                    [config] => Array
+                                                                                                        (
+                                                                                                            [label] => Magento\Framework\Phrase Object
+                                                                                                                (
+                                                                                                                    [text:Magento\Framework\Phrase:private] => Option Title
+                                                                                                                    [arguments:Magento\Framework\Phrase:private] => Array
+                                                                                                                        (
+                                                                                                                        )
+
+                                                                                                                )
+
+                                                                                                            [componentType] => field
+                                                                                                            [formElement] => input
+                                                                                                            [dataScope] => title
+                                                                                                            [dataType] => text
+                                                                                                            [sortOrder] => 20
+                                                                                                            [validation] => Array
+                                                                                                                (
+                                                                                                                    [required-entry] => 1
+                                                                                                                )
+
+                                                                                                            [component] => Magento_Catalog/component/static-type-input
+                                                                                                            [valueUpdate] => input
+                                                                                                            [imports] => Array
+                                                                                                                (
+                                                                                                                    [optionId] => ${ $.provider }:${ $.parentScope }.option_id
+                                                                                                                    [isUseDefault] => ${ $.provider }:${ $.parentScope }.is_use_default
+                                                                                                                    [__disableTmpl] => Array
+                                                                                                                        (
+                                                                                                                            [optionId] => 
+                                                                                                                            [isUseDefault] => 
+                                                                                                                        )
+
+                                                                                                                )
+
+                                                                                                        )
+
+                                                                                                )
+
+                                                                                        )
+
+                                                                                )
+
+                                                                            [type] => Array
+                                                                                (
+                                                                                    [arguments] => Array
+                                                                                        (
+                                                                                            [data] => Array
+                                                                                                (
+                                                                                                    [config] => Array
+                                                                                                        (
+                                                                                                            [label] => Magento\Framework\Phrase Object
+                                                                                                                (
+                                                                                                                    [text:Magento\Framework\Phrase:private] => Option Type
+                                                                                                                    [arguments:Magento\Framework\Phrase:private] => Array
+                                                                                                                        (
+                                                                                                                        )
+
+                                                                                                                )
+
+                                                                                                            [componentType] => field
+                                                                                                            [formElement] => select
+                                                                                                            [component] => Magento_Catalog/js/custom-options-type
+                                                                                                            [elementTmpl] => ui/grid/filters/elements/ui-select
+                                                                                                            [selectType] => optgroup
+                                                                                                            [dataScope] => type
+                                                                                                            [dataType] => text
+                                                                                                            [sortOrder] => 30
+                                                                                                            [options] => Array
+                                                                                                                (
+                                                                                                                    [0] => Array
+                                                                                                                        (
+                                                                                                                            [value] => 0
+                                                                                                                            [label] => Text
+                                                                                                                            [optgroup] => Array
+                                                                                                                                (
+                                                                                                                                    [0] => Array
+                                                                                                                                        (
+                                                                                                                                            [label] => Field
+                                                                                                                                            [value] => field
+                                                                                                                                        )
+
+                                                                                                                                    [1] => Array
+                                                                                                                                        (
+                                                                                                                                            [label] => Area
+                                                                                                                                            [value] => area
+                                                                                                                                        )
+
+                                                                                                                                )
+
+                                                                                                                        )
+
+                                                                                                                    [1] => Array
+                                                                                                                        (
+                                                                                                                            [value] => 1
+                                                                                                                            [label] => File
+                                                                                                                            [optgroup] => Array
+                                                                                                                                (
+                                                                                                                                    [0] => Array
+                                                                                                                                        (
+                                                                                                                                            [label] => File
+                                                                                                                                            [value] => file
+                                                                                                                                        )
+
+                                                                                                                                )
+
+                                                                                                                        )
+
+                                                                                                                    [2] => Array
+                                                                                                                        (
+                                                                                                                            [value] => 2
+                                                                                                                            [label] => Select
+                                                                                                                            [optgroup] => Array
+                                                                                                                                (
+                                                                                                                                    [0] => Array
+                                                                                                                                        (
+                                                                                                                                            [label] => Drop-down
+                                                                                                                                            [value] => drop_down
+                                                                                                                                        )
+
+                                                                                                                                    [1] => Array
+                                                                                                                                        (
+                                                                                                                                            [label] => Radio Buttons
+                                                                                                                                            [value] => radio
+                                                                                                                                        )
+
+                                                                                                                                    [2] => Array
+                                                                                                                                        (
+                                                                                                                                            [label] => Checkbox
+                                                                                                                                            [value] => checkbox
+                                                                                                                                        )
+
+                                                                                                                                    [3] => Array
+                                                                                                                                        (
+                                                                                                                                            [label] => Multiple Select
+                                                                                                                                            [value] => multiple
+                                                                                                                                        )
+
+                                                                                                                                )
+
+                                                                                                                        )
+
+                                                                                                                    [3] => Array
+                                                                                                                        (
+                                                                                                                            [value] => 3
+                                                                                                                            [label] => Date
+                                                                                                                            [optgroup] => Array
+                                                                                                                                (
+                                                                                                                                    [0] => Array
+                                                                                                                                        (
+                                                                                                                                            [label] => Date
+                                                                                                                                            [value] => date
+                                                                                                                                        )
+
+                                                                                                                                    [1] => Array
+                                                                                                                                        (
+                                                                                                                                            [label] => Date & Time
+                                                                                                                                            [value] => date_time
+                                                                                                                                        )
+
+                                                                                                                                    [2] => Array
+                                                                                                                                        (
+                                                                                                                                            [label] => Time
+                                                                                                                                            [value] => time
+                                                                                                                                        )
+
+                                                                                                                                )
+
+                                                                                                                        )
+
+                                                                                                                )
+
+                                                                                                            [disableLabel] => 1
+                                                                                                            [multiple] => 
+                                                                                                            [selectedPlaceholders] => Array
+                                                                                                                (
+                                                                                                                    [defaultPlaceholder] => Magento\Framework\Phrase Object
+                                                                                                                        (
+                                                                                                                            [text:Magento\Framework\Phrase:private] => -- Please select --
+                                                                                                                            [arguments:Magento\Framework\Phrase:private] => Array
+                                                                                                                                (
+                                                                                                                                )
+
+                                                                                                                        )
+
+                                                                                                                )
+
+                                                                                                            [validation] => Array
+                                                                                                                (
+                                                                                                                    [required-entry] => 1
+                                                                                                                )
+
+                                                                                                            [groupsConfig] => Array
+                                                                                                                (
+                                                                                                                    [text] => Array
+                                                                                                                        (
+                                                                                                                            [values] => Array
+                                                                                                                                (
+                                                                                                                                    [0] => field
+                                                                                                                                    [1] => area
+                                                                                                                                )
+
+                                                                                                                            [indexes] => Array
+                                                                                                                                (
+                                                                                                                                    [0] => container_type_static
+                                                                                                                                    [1] => price
+                                                                                                                                    [2] => price_type
+                                                                                                                                    [3] => sku
+                                                                                                                                    [4] => max_characters
+                                                                                                                                )
+
+                                                                                                                        )
+
+                                                                                                                    [file] => Array
+                                                                                                                        (
+                                                                                                                            [values] => Array
+                                                                                                                                (
+                                                                                                                                    [0] => file
+                                                                                                                                )
+
+                                                                                                                            [indexes] => Array
+                                                                                                                                (
+                                                                                                                                    [0] => container_type_static
+                                                                                                                                    [1] => price
+                                                                                                                                    [2] => price_type
+                                                                                                                                    [3] => sku
+                                                                                                                                    [4] => file_extension
+                                                                                                                                    [5] => image_size_x
+                                                                                                                                    [6] => image_size_y
+                                                                                                                                )
+
+                                                                                                                        )
+
+                                                                                                                    [select] => Array
+                                                                                                                        (
+                                                                                                                            [values] => Array
+                                                                                                                                (
+                                                                                                                                    [0] => drop_down
+                                                                                                                                    [1] => radio
+                                                                                                                                    [2] => checkbox
+                                                                                                                                    [3] => multiple
+                                                                                                                                )
+
+                                                                                                                            [indexes] => Array
+                                                                                                                                (
+                                                                                                                                    [0] => values
+                                                                                                                                )
+
+                                                                                                                        )
+
+                                                                                                                    [data] => Array
+                                                                                                                        (
+                                                                                                                            [values] => Array
+                                                                                                                                (
+                                                                                                                                    [0] => date
+                                                                                                                                    [1] => date_time
+                                                                                                                                    [2] => time
+                                                                                                                                )
+
+                                                                                                                            [indexes] => Array
+                                                                                                                                (
+                                                                                                                                    [0] => container_type_static
+                                                                                                                                    [1] => price
+                                                                                                                                    [2] => price_type
+                                                                                                                                    [3] => sku
+                                                                                                                                )
+
+                                                                                                                        )
+
+                                                                                                                )
+
+                                                                                                        )
+
+                                                                                                )
+
+                                                                                        )
+
+                                                                                )
+
+                                                                            [is_require] => Array
+                                                                                (
+                                                                                    [arguments] => Array
+                                                                                        (
+                                                                                            [data] => Array
+                                                                                                (
+                                                                                                    [config] => Array
+                                                                                                        (
+                                                                                                            [label] => Magento\Framework\Phrase Object
+                                                                                                                (
+                                                                                                                    [text:Magento\Framework\Phrase:private] => Required
+                                                                                                                    [arguments:Magento\Framework\Phrase:private] => Array
+                                                                                                                        (
+                                                                                                                        )
+
+                                                                                                                )
+
+                                                                                                            [componentType] => field
+                                                                                                            [formElement] => checkbox
+                                                                                                            [dataScope] => is_require
+                                                                                                            [dataType] => text
+                                                                                                            [sortOrder] => 40
+                                                                                                            [value] => 1
+                                                                                                            [valueMap] => Array
+                                                                                                                (
+                                                                                                                    [true] => 1
+                                                                                                                    [false] => 0
+                                                                                                                )
+
+                                                                                                        )
+
+                                                                                                )
+
+                                                                                        )
+
+                                                                                )
+
+                                                                        )
+
+                                                                )
+
+                                                            [container_type_static] => Array
+                                                                (
+                                                                    [arguments] => Array
+                                                                        (
+                                                                            [data] => Array
+                                                                                (
+                                                                                    [config] => Array
+                                                                                        (
+                                                                                            [componentType] => container
+                                                                                            [formElement] => container
+                                                                                            [component] => Magento_Ui/js/form/components/group
+                                                                                            [breakLine] => 
+                                                                                            [showLabel] => 
+                                                                                            [additionalClasses] => admin__field-group-columns admin__control-group-equal
+                                                                                            [sortOrder] => 20
+                                                                                            [fieldTemplate] => Magento_Catalog/form/field
+                                                                                            [visible] => 
+                                                                                        )
+
+                                                                                )
+
+                                                                        )
+
+                                                                    [children] => Array
+                                                                        (
+                                                                            [price] => Array
+                                                                                (
+                                                                                    [arguments] => Array
+                                                                                        (
+                                                                                            [data] => Array
+                                                                                                (
+                                                                                                    [config] => Array
+                                                                                                        (
+                                                                                                            [label] => Magento\Framework\Phrase Object
+                                                                                                                (
+                                                                                                                    [text:Magento\Framework\Phrase:private] => Price
+                                                                                                                    [arguments:Magento\Framework\Phrase:private] => Array
+                                                                                                                        (
+                                                                                                                        )
+
+                                                                                                                )
+
+                                                                                                            [componentType] => field
+                                                                                                            [component] => Magento_Catalog/js/components/custom-options-component
+                                                                                                            [formElement] => input
+                                                                                                            [dataScope] => price
+                                                                                                            [dataType] => number
+                                                                                                            [addbefore] => €
+                                                                                                            [addbeforePool] => Array
+                                                                                                                (
+                                                                                                                    [0] => Array
+                                                                                                                        (
+                                                                                                                            [value] => fixed
+                                                                                                                            [label] => €
+                                                                                                                        )
+
+                                                                                                                    [1] => Array
+                                                                                                                        (
+                                                                                                                            [value] => percent
+                                                                                                                            [label] => %
+                                                                                                                        )
+
+                                                                                                                )
+
+                                                                                                            [sortOrder] => 10
+                                                                                                            [validation] => Array
+                                                                                                                (
+                                                                                                                    [validate-number] => 1
+                                                                                                                )
+
+                                                                                                        )
+
+                                                                                                )
+
+                                                                                        )
+
+                                                                                )
+
+                                                                            [price_type] => Array
+                                                                                (
+                                                                                    [arguments] => Array
+                                                                                        (
+                                                                                            [data] => Array
+                                                                                                (
+                                                                                                    [config] => Array
+                                                                                                        (
+                                                                                                            [label] => Magento\Framework\Phrase Object
+                                                                                                                (
+                                                                                                                    [text:Magento\Framework\Phrase:private] => Price Type
+                                                                                                                    [arguments:Magento\Framework\Phrase:private] => Array
+                                                                                                                        (
+                                                                                                                        )
+
+                                                                                                                )
+
+                                                                                                            [component] => Magento_Catalog/js/components/custom-options-price-type
+                                                                                                            [componentType] => field
+                                                                                                            [formElement] => select
+                                                                                                            [dataScope] => price_type
+                                                                                                            [dataType] => text
+                                                                                                            [sortOrder] => 20
+                                                                                                            [options] => Array
+                                                                                                                (
+                                                                                                                    [0] => Array
+                                                                                                                        (
+                                                                                                                            [value] => fixed
+                                                                                                                            [label] => Magento\Framework\Phrase Object
+                                                                                                                                (
+                                                                                                                                    [text:Magento\Framework\Phrase:private] => Fixed
+                                                                                                                                    [arguments:Magento\Framework\Phrase:private] => Array
+                                                                                                                                        (
+                                                                                                                                        )
+
+                                                                                                                                )
+
+                                                                                                                        )
+
+                                                                                                                    [1] => Array
+                                                                                                                        (
+                                                                                                                            [value] => percent
+                                                                                                                            [label] => Magento\Framework\Phrase Object
+                                                                                                                                (
+                                                                                                                                    [text:Magento\Framework\Phrase:private] => Percent
+                                                                                                                                    [arguments:Magento\Framework\Phrase:private] => Array
+                                                                                                                                        (
+                                                                                                                                        )
+
+                                                                                                                                )
+
+                                                                                                                        )
+
+                                                                                                                )
+
+                                                                                                            [imports] => Array
+                                                                                                                (
+                                                                                                                    [priceIndex] => price
+                                                                                                                )
+
+                                                                                                        )
+
+                                                                                                )
+
+                                                                                        )
+
+                                                                                )
+
+                                                                            [sku] => Array
+                                                                                (
+                                                                                    [arguments] => Array
+                                                                                        (
+                                                                                            [data] => Array
+                                                                                                (
+                                                                                                    [config] => Array
+                                                                                                        (
+                                                                                                            [label] => Magento\Framework\Phrase Object
+                                                                                                                (
+                                                                                                                    [text:Magento\Framework\Phrase:private] => SKU
+                                                                                                                    [arguments:Magento\Framework\Phrase:private] => Array
+                                                                                                                        (
+                                                                                                                        )
+
+                                                                                                                )
+
+                                                                                                            [componentType] => field
+                                                                                                            [formElement] => input
+                                                                                                            [dataScope] => sku
+                                                                                                            [dataType] => text
+                                                                                                            [sortOrder] => 30
+                                                                                                        )
+
+                                                                                                )
+
+                                                                                        )
+
+                                                                                )
+
+                                                                            [max_characters] => Array
+                                                                                (
+                                                                                    [arguments] => Array
+                                                                                        (
+                                                                                            [data] => Array
+                                                                                                (
+                                                                                                    [config] => Array
+                                                                                                        (
+                                                                                                            [label] => Magento\Framework\Phrase Object
+                                                                                                                (
+                                                                                                                    [text:Magento\Framework\Phrase:private] => Max Characters
+                                                                                                                    [arguments:Magento\Framework\Phrase:private] => Array
+                                                                                                                        (
+                                                                                                                        )
+
+                                                                                                                )
+
+                                                                                                            [componentType] => field
+                                                                                                            [formElement] => input
+                                                                                                            [dataScope] => max_characters
+                                                                                                            [dataType] => number
+                                                                                                            [sortOrder] => 40
+                                                                                                            [validation] => Array
+                                                                                                                (
+                                                                                                                    [validate-zero-or-greater] => 1
+                                                                                                                )
+
+                                                                                                        )
+
+                                                                                                )
+
+                                                                                        )
+
+                                                                                )
+
+                                                                            [file_extension] => Array
+                                                                                (
+                                                                                    [arguments] => Array
+                                                                                        (
+                                                                                            [data] => Array
+                                                                                                (
+                                                                                                    [config] => Array
+                                                                                                        (
+                                                                                                            [label] => Magento\Framework\Phrase Object
+                                                                                                                (
+                                                                                                                    [text:Magento\Framework\Phrase:private] => Compatible File Extensions
+                                                                                                                    [arguments:Magento\Framework\Phrase:private] => Array
+                                                                                                                        (
+                                                                                                                        )
+
+                                                                                                                )
+
+                                                                                                            [notice] => Magento\Framework\Phrase Object
+                                                                                                                (
+                                                                                                                    [text:Magento\Framework\Phrase:private] => Enter separated extensions, like: png, jpg, gif.
+                                                                                                                    [arguments:Magento\Framework\Phrase:private] => Array
+                                                                                                                        (
+                                                                                                                        )
+
+                                                                                                                )
+
+                                                                                                            [componentType] => field
+                                                                                                            [formElement] => input
+                                                                                                            [dataScope] => file_extension
+                                                                                                            [dataType] => text
+                                                                                                            [sortOrder] => 50
+                                                                                                            [validation] => Array
+                                                                                                                (
+                                                                                                                    [required-entry] => 1
+                                                                                                                )
+
+                                                                                                        )
+
+                                                                                                )
+
+                                                                                        )
+
+                                                                                )
+
+                                                                            [image_size_x] => Array
+                                                                                (
+                                                                                    [arguments] => Array
+                                                                                        (
+                                                                                            [data] => Array
+                                                                                                (
+                                                                                                    [config] => Array
+                                                                                                        (
+                                                                                                            [label] => Magento\Framework\Phrase Object
+                                                                                                                (
+                                                                                                                    [text:Magento\Framework\Phrase:private] => Maximum Image Size
+                                                                                                                    [arguments:Magento\Framework\Phrase:private] => Array
+                                                                                                                        (
+                                                                                                                        )
+
+                                                                                                                )
+
+                                                                                                            [notice] => Magento\Framework\Phrase Object
+                                                                                                                (
+                                                                                                                    [text:Magento\Framework\Phrase:private] => Please leave blank if it is not an image.
+                                                                                                                    [arguments:Magento\Framework\Phrase:private] => Array
+                                                                                                                        (
+                                                                                                                        )
+
+                                                                                                                )
+
+                                                                                                            [addafter] => Magento\Framework\Phrase Object
+                                                                                                                (
+                                                                                                                    [text:Magento\Framework\Phrase:private] => px.
+                                                                                                                    [arguments:Magento\Framework\Phrase:private] => Array
+                                                                                                                        (
+                                                                                                                        )
+
+                                                                                                                )
+
+                                                                                                            [component] => Magento_Catalog/js/components/custom-options-component
+                                                                                                            [componentType] => field
+                                                                                                            [formElement] => input
+                                                                                                            [dataScope] => image_size_x
+                                                                                                            [dataType] => number
+                                                                                                            [sortOrder] => 60
+                                                                                                            [validation] => Array
+                                                                                                                (
+                                                                                                                    [validate-zero-or-greater] => 1
+                                                                                                                )
+
+                                                                                                        )
+
+                                                                                                )
+
+                                                                                        )
+
+                                                                                )
+
+                                                                            [image_size_y] => Array
+                                                                                (
+                                                                                    [arguments] => Array
+                                                                                        (
+                                                                                            [data] => Array
+                                                                                                (
+                                                                                                    [config] => Array
+                                                                                                        (
+                                                                                                            [label] =>  
+                                                                                                            [addafter] => Magento\Framework\Phrase Object
+                                                                                                                (
+                                                                                                                    [text:Magento\Framework\Phrase:private] => px.
+                                                                                                                    [arguments:Magento\Framework\Phrase:private] => Array
+                                                                                                                        (
+                                                                                                                        )
+
+                                                                                                                )
+
+                                                                                                            [component] => Magento_Catalog/js/components/custom-options-component
+                                                                                                            [componentType] => field
+                                                                                                            [formElement] => input
+                                                                                                            [dataScope] => image_size_y
+                                                                                                            [dataType] => number
+                                                                                                            [sortOrder] => 70
+                                                                                                            [validation] => Array
+                                                                                                                (
+                                                                                                                    [validate-zero-or-greater] => 1
+                                                                                                                )
+
+                                                                                                        )
+
+                                                                                                )
+
+                                                                                        )
+
+                                                                                )
+
+                                                                        )
+
+                                                                )
+
+                                                            [values] => Array
+                                                                (
+                                                                    [arguments] => Array
+                                                                        (
+                                                                            [data] => Array
+                                                                                (
+                                                                                    [config] => Array
+                                                                                        (
+                                                                                            [addButtonLabel] => Magento\Framework\Phrase Object
+                                                                                                (
+                                                                                                    [text:Magento\Framework\Phrase:private] => Add Value
+                                                                                                    [arguments:Magento\Framework\Phrase:private] => Array
+                                                                                                        (
+                                                                                                        )
+
+                                                                                                )
+
+                                                                                            [componentType] => dynamicRows
+                                                                                            [component] => Magento_Catalog/js/components/dynamic-rows-per-page
+                                                                                            [template] => Magento_Catalog/components/dynamic-rows-per-page
+                                                                                            [additionalClasses] => admin__field-wide
+                                                                                            [deleteProperty] => is_delete
+                                                                                            [deleteValue] => 1
+                                                                                            [renderDefaultRecord] => 
+                                                                                            [sortOrder] => 30
+                                                                                            [sizesConfig] => Array
+                                                                                                (
+                                                                                                    [enabled] => 1
+                                                                                                )
+
+                                                                                        )
+
+                                                                                )
+
+                                                                        )
+
+                                                                    [children] => Array
+                                                                        (
+                                                                            [record] => Array
+                                                                                (
+                                                                                    [arguments] => Array
+                                                                                        (
+                                                                                            [data] => Array
+                                                                                                (
+                                                                                                    [config] => Array
+                                                                                                        (
+                                                                                                            [componentType] => container
+                                                                                                            [component] => Magento_Ui/js/dynamic-rows/record
+                                                                                                            [positionProvider] => sort_order
+                                                                                                            [isTemplate] => 1
+                                                                                                            [is_collection] => 1
+                                                                                                        )
+
+                                                                                                )
+
+                                                                                        )
+
+                                                                                    [children] => Array
+                                                                                        (
+                                                                                            [title] => Array
+                                                                                                (
+                                                                                                    [arguments] => Array
+                                                                                                        (
+                                                                                                            [data] => Array
+                                                                                                                (
+                                                                                                                    [config] => Array
+                                                                                                                        (
+                                                                                                                            [label] => Magento\Framework\Phrase Object
+                                                                                                                                (
+                                                                                                                                    [text:Magento\Framework\Phrase:private] => Title
+                                                                                                                                    [arguments:Magento\Framework\Phrase:private] => Array
+                                                                                                                                        (
+                                                                                                                                        )
+
+                                                                                                                                )
+
+                                                                                                                            [componentType] => field
+                                                                                                                            [formElement] => input
+                                                                                                                            [dataScope] => title
+                                                                                                                            [dataType] => text
+                                                                                                                            [sortOrder] => 10
+                                                                                                                            [validation] => Array
+                                                                                                                                (
+                                                                                                                                    [required-entry] => 1
+                                                                                                                                )
+
+                                                                                                                        )
+
+                                                                                                                )
+
+                                                                                                        )
+
+                                                                                                )
+
+                                                                                            [price] => Array
+                                                                                                (
+                                                                                                    [arguments] => Array
+                                                                                                        (
+                                                                                                            [data] => Array
+                                                                                                                (
+                                                                                                                    [config] => Array
+                                                                                                                        (
+                                                                                                                            [label] => Magento\Framework\Phrase Object
+                                                                                                                                (
+                                                                                                                                    [text:Magento\Framework\Phrase:private] => Price
+                                                                                                                                    [arguments:Magento\Framework\Phrase:private] => Array
+                                                                                                                                        (
+                                                                                                                                        )
+
+                                                                                                                                )
+
+                                                                                                                            [componentType] => field
+                                                                                                                            [component] => Magento_Catalog/js/components/custom-options-component
+                                                                                                                            [formElement] => input
+                                                                                                                            [dataScope] => price
+                                                                                                                            [dataType] => number
+                                                                                                                            [addbefore] => €
+                                                                                                                            [addbeforePool] => Array
+                                                                                                                                (
+                                                                                                                                    [0] => Array
+                                                                                                                                        (
+                                                                                                                                            [value] => fixed
+                                                                                                                                            [label] => €
+                                                                                                                                        )
+
+                                                                                                                                    [1] => Array
+                                                                                                                                        (
+                                                                                                                                            [value] => percent
+                                                                                                                                            [label] => %
+                                                                                                                                        )
+
+                                                                                                                                )
+
+                                                                                                                            [sortOrder] => 20
+                                                                                                                            [validation] => Array
+                                                                                                                                (
+                                                                                                                                    [validate-number] => 1
+                                                                                                                                )
+
+                                                                                                                            [template] => Magento_Catalog/form/field
+                                                                                                                        )
+
+                                                                                                                )
+
+                                                                                                        )
+
+                                                                                                )
+
+                                                                                            [price_type] => Array
+                                                                                                (
+                                                                                                    [arguments] => Array
+                                                                                                        (
+                                                                                                            [data] => Array
+                                                                                                                (
+                                                                                                                    [config] => Array
+                                                                                                                        (
+                                                                                                                            [label] => Magento\Framework\Phrase Object
+                                                                                                                                (
+                                                                                                                                    [text:Magento\Framework\Phrase:private] => Price Type
+                                                                                                                                    [arguments:Magento\Framework\Phrase:private] => Array
+                                                                                                                                        (
+                                                                                                                                        )
+
+                                                                                                                                )
+
+                                                                                                                            [component] => Magento_Catalog/js/components/custom-options-price-type
+                                                                                                                            [componentType] => field
+                                                                                                                            [formElement] => select
+                                                                                                                            [dataScope] => price_type
+                                                                                                                            [dataType] => text
+                                                                                                                            [sortOrder] => 30
+                                                                                                                            [options] => Array
+                                                                                                                                (
+                                                                                                                                    [0] => Array
+                                                                                                                                        (
+                                                                                                                                            [value] => fixed
+                                                                                                                                            [label] => Magento\Framework\Phrase Object
+                                                                                                                                                (
+                                                                                                                                                    [text:Magento\Framework\Phrase:private] => Fixed
+                                                                                                                                                    [arguments:Magento\Framework\Phrase:private] => Array
+                                                                                                                                                        (
+                                                                                                                                                        )
+
+                                                                                                                                                )
+
+                                                                                                                                        )
+
+                                                                                                                                    [1] => Array
+                                                                                                                                        (
+                                                                                                                                            [value] => percent
+                                                                                                                                            [label] => Magento\Framework\Phrase Object
+                                                                                                                                                (
+                                                                                                                                                    [text:Magento\Framework\Phrase:private] => Percent
+                                                                                                                                                    [arguments:Magento\Framework\Phrase:private] => Array
+                                                                                                                                                        (
+                                                                                                                                                        )
+
+                                                                                                                                                )
+
+                                                                                                                                        )
+
+                                                                                                                                )
+
+                                                                                                                            [imports] => Array
+                                                                                                                                (
+                                                                                                                                    [priceIndex] => price
+                                                                                                                                )
+
+                                                                                                                        )
+
+                                                                                                                )
+
+                                                                                                        )
+
+                                                                                                    [fit] => 1
+                                                                                                )
+
+                                                                                            [sku] => Array
+                                                                                                (
+                                                                                                    [arguments] => Array
+                                                                                                        (
+                                                                                                            [data] => Array
+                                                                                                                (
+                                                                                                                    [config] => Array
+                                                                                                                        (
+                                                                                                                            [label] => Magento\Framework\Phrase Object
+                                                                                                                                (
+                                                                                                                                    [text:Magento\Framework\Phrase:private] => SKU
+                                                                                                                                    [arguments:Magento\Framework\Phrase:private] => Array
+                                                                                                                                        (
+                                                                                                                                        )
+
+                                                                                                                                )
+
+                                                                                                                            [componentType] => field
+                                                                                                                            [formElement] => input
+                                                                                                                            [dataScope] => sku
+                                                                                                                            [dataType] => text
+                                                                                                                            [sortOrder] => 40
+                                                                                                                        )
+
+                                                                                                                )
+
+                                                                                                        )
+
+                                                                                                )
+
+                                                                                            [sort_order] => Array
+                                                                                                (
+                                                                                                    [arguments] => Array
+                                                                                                        (
+                                                                                                            [data] => Array
+                                                                                                                (
+                                                                                                                    [config] => Array
+                                                                                                                        (
+                                                                                                                            [componentType] => field
+                                                                                                                            [formElement] => hidden
+                                                                                                                            [dataScope] => sort_order
+                                                                                                                            [dataType] => number
+                                                                                                                            [visible] => 
+                                                                                                                            [sortOrder] => 50
+                                                                                                                        )
+
+                                                                                                                )
+
+                                                                                                        )
+
+                                                                                                )
+
+                                                                                            [is_delete] => Array
+                                                                                                (
+                                                                                                    [arguments] => Array
+                                                                                                        (
+                                                                                                            [data] => Array
+                                                                                                                (
+                                                                                                                    [config] => Array
+                                                                                                                        (
+                                                                                                                            [componentType] => actionDelete
+                                                                                                                            [fit] => 1
+                                                                                                                            [sortOrder] => 60
+                                                                                                                        )
+
+                                                                                                                )
+
+                                                                                                        )
+
+                                                                                                )
+
+                                                                                        )
+
+                                                                                )
+
+                                                                        )
+
+                                                                )
+
+                                                        )
+
+                                                )
+
+                                        )
+
+                                )
+
+                        )
+
+                )
+
+        )
+
+)
