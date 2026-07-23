@@ -1,0 +1,37 @@
+# Magento dependencies
+/vendor/
+
+# Magento generated files
+/generated/
+/var/
+
+# Static content cache
+/pub/static/_cache/
+/pub/static/_requirejs/
+
+# Media cache
+/pub/media/catalog/product/cache/
+/pub/media/tmp/
+
+# Magento environment configuration
+/app/etc/env.php
+
+# Composer authentication
+/auth.json
+
+# Logs
+*.log
+
+# IDE files
+.idea/
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Node modules (Hyvä frontend)
+node_modules/
+
+# Build files
+/dist/
