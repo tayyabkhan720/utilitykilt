@@ -99,13 +99,14 @@ $renderSubmenu = function ($items, $level = 1) use (&$renderSubmenu, $escaper, $
             <ul class="flex justify-start flex-wrap gap-x-7 py-4">
                 <?php foreach ($menuItems as $index => $menuItem): ?>
                     <li
-                        class="relative level-0 border-b-2 border-transparent hover:border-primary data-[active]:border-primary"
+                        class="menu-item relative level-0 border-b-2 border-transparent hover:border-primary data-[active]:border-primary"
                         x-data="initMenuDesktopItem"
                         x-bind="eventListeners"
                         @click.outside="close"
                         @keydown.escape="close"
                         @mouseenter="canHoverOpen"
                         @mouseleave="canHoverClose"
+                        
                     >
                         <span class="flex items-center text-md">
                             <a

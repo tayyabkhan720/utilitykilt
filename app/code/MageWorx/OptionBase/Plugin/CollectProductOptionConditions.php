@@ -13,7 +13,7 @@ use Magento\Store\Model\StoreManagerInterface as StoreManager;
 use MageWorx\OptionBase\Helper\System as SystemHelper;
 use Magento\Framework\Serialize\Serializer\Json as Serializer;
 use MageWorx\OptionBase\Model\ConditionValidator;
-
+#[\AllowDynamicProperties]
 class CollectProductOptionConditions
 {
     /**
