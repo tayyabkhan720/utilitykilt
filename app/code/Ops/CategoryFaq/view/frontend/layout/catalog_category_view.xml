@@ -8,7 +8,7 @@
 -->
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <head>
-        <css src="Ops_CategoryFaq::css/faq.css"/>
+        <!-- <css src="Ops_CategoryFaq::css/faq.css"/> -->
     </head>
     <body>
         <!-- FAQ accordion block for visual display -->

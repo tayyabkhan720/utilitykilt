@@ -80,10 +80,6 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "repositories": {
-        "packagento": {
-            "type": "composer",
-            "url": "https://packagento.com/"
-        },
         "private-packagist": {
             "type": "composer",
             "url": "https://hyva-themes.repo.packagist.com/local-hyva-com-ybz7b/"

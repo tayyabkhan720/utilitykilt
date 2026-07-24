@@ -1,6 +1,6 @@
 /**
  * Copyright © Ops. All rights reserved.
- * Category FAQ Section Styles - Matching Staging Server Design
+ * Category FAQ Section Styles - Hyvä / Alpine.js version
  */
 
 .category-faq-section {
@@ -33,8 +33,8 @@
 }
 
 .category-faq-item {
-    background: #f5f5f5 !important;
-    border: 1px solid #222 !important;
+    background: #f5f5f5;
+    border: 1px solid #222;
     border-radius: 0;
     transition: background-color 0.2s ease;
     overflow: hidden;
@@ -42,23 +42,13 @@
     position: relative;
 }
 
-/* Ensure answers are hidden when item is not active - double protection */
-.category-faq-item:not(.active) .category-faq-answer {
-    display: none !important;
-    visibility: hidden !important;
-    height: 0 !important;
-    overflow: hidden !important;
-    padding: 0 !important;
-    margin: 0 !important;
-}
-
-.category-faq-item:not(.active) .category-faq-answer-content {
-    display: none !important;
-    visibility: hidden !important;
-}
-
 .category-faq-item:last-child {
     margin-bottom: 0;
+}
+
+.category-faq-item.active {
+    background: #f5f5f5;
+    border-color: #222;
 }
 
 .category-faq-question {
@@ -66,7 +56,7 @@
     display: flex;
     align-items: center;
     padding: 15px 20px;
-    background: #f5f5f5 !important;
+    background: #f5f5f5;
     border: none;
     border-radius: 0;
     text-align: left;
@@ -82,87 +72,32 @@
     margin: 0;
     box-sizing: border-box;
     user-select: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-}
-
-.category-faq-item.active {
-    background: #f5f5f5 !important;
-    border-color: #222 !important;
 }
 
 .category-faq-item.active .category-faq-question {
-    background: #f5f5f5 !important;
+    background: #f5f5f5;
     color: #000;
     font-weight: bold;
     text-transform: uppercase;
 }
 
-.category-faq-question:hover {
-    color: #000 !important;
-    background: #e8e8e8 !important;
-    border: none !important;
-    outline: none !important;
-    box-shadow: none !important;
-    padding: 15px 20px !important;
-    margin: 0 !important;
-    transform: none !important;
-    font-size: 16px !important;
-    line-height: 1.5 !important;
-}
-
+.category-faq-question:hover,
 .category-faq-item.active .category-faq-question:hover {
-    color: #000 !important;
-    background: #e8e8e8 !important;
-    border: none !important;
-    outline: none !important;
-    box-shadow: none !important;
-    padding: 15px 20px !important;
-    margin: 0 !important;
-    transform: none !important;
-    font-size: 16px !important;
-    line-height: 1.5 !important;
-}
-
-.category-faq-question:focus {
-    outline: none;
     color: #000;
-    background: #f5f5f5 !important;
-    border: none;
-    box-shadow: none;
-    padding: 15px 20px;
-    margin: 0;
+    background: #e8e8e8;
 }
 
-.category-faq-question:active {
-    outline: none;
-    color: #000;
-    background: #e8e8e8 !important;
-    border: none;
-    box-shadow: none;
-    padding: 15px 20px;
-    margin: 0;
-}
-
+.category-faq-question:focus,
 .category-faq-item.active .category-faq-question:focus {
-    color: #000;
-    background: #f5f5f5 !important;
-    border: none;
     outline: none;
-    box-shadow: none;
-    padding: 15px 20px;
-    margin: 0;
+    color: #000;
+    background: #f5f5f5;
 }
 
+.category-faq-question:active,
 .category-faq-item.active .category-faq-question:active {
     color: #000;
-    background: #e8e8e8 !important;
-    border: none;
-    outline: none;
-    box-shadow: none;
-    padding: 15px 20px;
-    margin: 0;
+    background: #e8e8e8;
 }
 
 .category-faq-icon {
@@ -174,46 +109,19 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border-radius: 0;
     background: transparent;
     border: none;
     color: #000;
 }
 
-/* Default state - plus icon visible, minus hidden */
 .category-faq-icon-plus {
-    display: inline-flex !important;
-    color: #000;
     font-size: 28px;
     font-weight: bold;
-    visibility: visible !important;
 }
 
 .category-faq-icon-minus {
-    display: none !important;
-    color: #000;
     font-size: 32px;
     font-weight: bold;
-    visibility: hidden !important;
-}
-
-/* Active state - plus hidden, minus visible */
-.category-faq-item.active .category-faq-icon-plus {
-    display: none !important;
-    visibility: hidden !important;
-}
-
-.category-faq-item.active .category-faq-icon-minus {
-    display: inline-flex !important;
-    color: #000;
-    font-size: 32px;
-    font-weight: bold;
-    visibility: visible !important;
-}
-
-.category-faq-item.active .category-faq-icon {
-    background: transparent;
-    border: none;
 }
 
 .category-faq-question-text {
@@ -222,32 +130,11 @@
     text-align: left;
 }
 
-/* Hide answers by default - must be very explicit */
-.category-faq-answer {
-    display: none !important;
-    visibility: hidden !important;
-    height: 0 !important;
-    overflow: hidden !important;
-    background: #f5f5f5 !important;
-    padding: 0 !important;
-    margin: 0 !important;
-}
-
-/* Show answer only when item is active */
-.category-faq-item.active .category-faq-answer {
-    display: block !important;
-    visibility: visible !important;
-    height: auto !important;
-    overflow: visible !important;
-    background: #f5f5f5 !important;
-    padding: 0 !important;
-}
-
+/* Alpine's x-show/x-collapse controls display/height inline —
+   this just styles the answer panel's content, not its visibility */
 .category-faq-answer-content {
-    display: none !important;
-    visibility: hidden !important;
-    background: #f5f5f5 !important;
-    padding: 0;
+    background: #f5f5f5;
+    padding: 15px 20px 20px 55px;
     border: none;
     border-radius: 0;
     font-size: 15px;
@@ -255,14 +142,6 @@
     line-height: 1.6;
     color: #000;
     margin: 0;
-}
-
-.category-faq-item.active .category-faq-answer-content {
-    display: block !important;
-    visibility: visible !important;
-    background: #f5f5f5 !important;
-    color: #000;
-    padding: 15px 20px 20px 55px;
 }
 
 /* Responsive Design */
@@ -292,20 +171,7 @@
         height: 18px;
     }
 
-    .category-faq-answer {
-        padding: 0;
-    }
-
-    .category-faq-item.active .category-faq-answer {
-        padding: 0;
-    }
-
     .category-faq-answer-content {
-        padding: 0 15px 0 43px;
-        font-size: 14px;
-    }
-
-    .category-faq-item.active .category-faq-answer-content {
         padding: 12px 15px 15px 43px;
     }
 }
