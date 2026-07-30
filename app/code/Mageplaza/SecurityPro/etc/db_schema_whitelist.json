@@ -1,0 +1,32 @@
+{
+    "mageplaza_security_action_log": {
+        "column": {
+            "id": true,
+            "time": true,
+            "user_name": true,
+            "ip": true,
+            "action": true,
+            "module": true,
+            "status": true,
+            "full_action_name": true,
+            "description": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    },
+    "mageplaza_security_file_change": {
+        "column": {
+            "id": true,
+            "file_name": true,
+            "path": true,
+            "old_hash": true,
+            "new_hash": true,
+            "type": true,
+            "time": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    }
+}

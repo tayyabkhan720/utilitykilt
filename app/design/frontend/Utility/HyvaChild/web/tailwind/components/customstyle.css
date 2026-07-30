@@ -1,0 +1,13 @@
+.price-box.price-final_price {
+    @apply flex gap-6 items-center;
+}
+.price-box.price-final_price span.special-price
+{
+    @apply text-primary font-bold text-lg;
+}
+.price-box.price-final_price span.old-price{
+    @apply text-red-500 line-through;
+}
+.categories-main ul li{
+    @apply inline-block p-[5px] w-[15%] float-left;
+}

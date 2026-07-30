@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Amasty Team
- * @copyright Copyright (c) 2020 Amasty (https://www.amasty.com)
+ * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
  * @package Amasty_Geoip
  */
 
@@ -13,6 +13,9 @@ use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
 use Magento\Framework\DB\Ddl\Table;
 
+/**
+ * Class UpgradeSchema
+ */
 class UpgradeSchema implements UpgradeSchemaInterface
 {
     public function upgrade(SchemaSetupInterface $setup, ModuleContextInterface $context)
@@ -37,10 +40,6 @@ class UpgradeSchema implements UpgradeSchemaInterface
 
         if (version_compare($context->getVersion(), '1.4.0', '<')) {
             $this->addIpV6Table($setup);
-        }
-
-        if (version_compare($context->getVersion(), '1.5.1', '<')) {
-            $this->changeEngine($setup);
         }
 
         $setup->endSetup();
@@ -192,15 +191,5 @@ class UpgradeSchema implements UpgradeSchemaInterface
             ->setOption('type', 'MyISAM');
 
         $connection->createTable($table);
-    }
-
-    protected function changeEngine(SchemaSetupInterface $setup)
-    {
-        $ipV6Table = $setup->getTable('amasty_geoip_block_v6');
-        $geoIPBlockTable = $setup->getTable('amasty_geoip_block');
-        $geoIPLocationTable = $setup->getTable('amasty_geoip_location');
-        $setup->getConnection()->changeTableEngine($geoIPBlockTable, 'INNODB');
-        $setup->getConnection()->changeTableEngine($ipV6Table, 'INNODB');
-        $setup->getConnection()->changeTableEngine($geoIPLocationTable, 'INNODB');
     }
 }

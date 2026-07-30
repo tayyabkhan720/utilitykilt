@@ -1,7 +1,7 @@
 define([
     "jquery",
-    "mage/translate",
-    "Magento_Ui/js/modal/modal"
+    "jquery/ui",
+    "mage/translate"
 ], function ($) {
 
     $.widget('mage.amGeoip', {

@@ -17,7 +17,7 @@
 @import "tailwindcss" source(none);
 @source "../../**/*.phtml";
 @source "../../**/*.xml";
-
+@source inline("{dark:,}{group-hover:,}{sm:,md:,lg:,}{cmsp2-,}grid grid-cols-1 grid-cols-2 grid-cols-4 gap-6 gap-8 flex flex-col flex-col-reverse flex-row items-center items-end justify-between justify-center rounded-sm rounded-full border border-neutral-300 border-neutral-700 bg-neutral-50 bg-neutral-900 text-neutral-600 text-neutral-300 text-neutral-900 text-white text-amber-500 p-6 mt-2 mt-8 gap-2 gap-1 size-4 size-10 size-12 text-pretty text-sm text-xs font-bold leading-4 sr-only object-cover scale-105 transition duration-500 ease-out max-w-md max-w-7xl mx-auto");
 /* Custom styles */
 @import "./base";
 @import "./components";
@@ -26,7 +26,7 @@
 /* Import generated styles for Hyvä Compatible Modules and Design Tokens */
 @import "./generated/hyva-source.css";
 @import "./generated/hyva-tokens.css";
-
+@import "./components/customstyle.css";
 @theme {
     --color-bg: var(--color-slate-50);
     --color-fg: var(--color-slate-950);

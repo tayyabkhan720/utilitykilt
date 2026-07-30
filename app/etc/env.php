@@ -34,7 +34,7 @@ return [
         'connection' => [
             'default' => [
                 'host' => 'localhost',
-                'dbname' => 'utili_hyva',
+                'dbname' => 'theutilitykilt',
                 'username' => 'root',
                 'password' => 'password',
                 'model' => 'mysql4',
@@ -53,7 +53,7 @@ return [
         ]
     ],
     'x-frame-options' => 'SAMEORIGIN',
-    'MAGE_MODE' => 'default',
+    'MAGE_MODE' => 'developer',
     'session' => [
         'save' => 'files'
     ],

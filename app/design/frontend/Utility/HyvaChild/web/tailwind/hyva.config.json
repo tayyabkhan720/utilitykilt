@@ -12,29 +12,24 @@
     ],
     "exclude": []
   },
-  "tokens": {
-    "values": {
-      "color": {
-        "primary": {
-          "lighter": "oklch(52% 0.2 265)",
-          "DEFAULT": "oklch(46% 0.2 265)",
-          "darker": "oklch(28% 0.2 265)"
-        },
-        "secondary": {
-          "lighter": "oklch(72% 0.2 150)",
-          "DEFAULT": "oklch(53% 0.15 150)",
-          "darker": "oklch(39% 0.1 153)"
-        },
-        "on": {
-          "primary": "#fff",
-          "secondary": "#fff"
-        }
+"tokens": {
+  "values": {
+    "color": {
+      "primary": {
+        "lighter": "#1D81C1", 
+        "DEFAULT": "#1D81C1", 
+        "darker": "#145985"   
       },
-      "form": {
-        "radius": "var(--radius-lg)",
-        "stroke": "var(--color-slate-400)",
-        "active-color": "var(--color-primary)"
+      "secondary": {
+        "lighter": "#38BDF8", 
+        "DEFAULT": "#0EA5E9", 
+        "darker": "#0284C7"   
+      },
+      "on": {
+        "primary": "#ffffff",
+        "secondary": "#ffffff"
       }
     }
   }
+}
 }

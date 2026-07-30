@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+  <table name="mageplaza_security_action_log" resource="default" engine="innodb" comment="Mageplaza Security Action Log Table">
+    <column xsi:type="int" name="id" padding="10" unsigned="true" nullable="false" identity="true" comment="Action Log"/>
+    <column xsi:type="timestamp" name="time" on_update="false" nullable="true" comment="Log Time"/>
+    <column xsi:type="text" name="user_name" nullable="true" comment="User Name"/>
+    <column xsi:type="text" name="ip" nullable="true" comment="IP address"/>
+    <column xsi:type="text" name="action" nullable="true" comment="Action"/>
+    <column xsi:type="text" name="module" nullable="true" comment="Module"/>
+    <column xsi:type="boolean" name="status" nullable="true" comment="Status"/>
+    <column xsi:type="text" name="full_action_name" nullable="true" comment="Full Action Name"/>
+    <column xsi:type="text" name="description" nullable="true" comment="Description"/>
+    <constraint xsi:type="primary" referenceId="PRIMARY">
+      <column name="id"/>
+    </constraint>
+  </table>
+  <table name="mageplaza_security_file_change" resource="default" engine="innodb" comment="Mageplaza Security File Change Table">
+    <column xsi:type="int" name="id" padding="10" unsigned="true" nullable="false" identity="true" comment="Action Log Backup"/>
+    <column xsi:type="text" name="file_name" nullable="true" comment="File Name"/>
+    <column xsi:type="text" name="path" nullable="true" comment="File Path"/>
+    <column xsi:type="text" name="old_hash" nullable="true" comment="Old Hash"/>
+    <column xsi:type="text" name="new_hash" nullable="true" comment="New Hash"/>
+    <column xsi:type="text" name="type" nullable="true" comment="New Hash"/>
+    <column xsi:type="timestamp" name="time" on_update="false" nullable="true" comment="Time"/>
+    <constraint xsi:type="primary" referenceId="PRIMARY">
+      <column name="id"/>
+    </constraint>
+  </table>
+</schema>
