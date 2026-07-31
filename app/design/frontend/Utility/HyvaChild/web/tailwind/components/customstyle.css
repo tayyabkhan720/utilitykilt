@@ -9,5 +9,17 @@
     @apply text-red-500 line-through;
 }
 .categories-main ul li{
-    @apply inline-block p-[5px] w-[15%] float-left;
+    @apply inline-block p-[5px] float-left;
+}
+
+.categories-details figure img {
+    @apply w-full h-auto max-w-[150px] min-w-[150px];
+}
+.categories-details label.subcat-label{
+    @apply text-center uppercase cursor-pointer block my-6;
+}
+@media (max-width: 768px) {
+    .categories-main ul li{
+        @apply w-full;
+    }
 }
