@@ -8,43 +8,18 @@
 -->
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
-
-    <referenceContainer name="header.container"> <!-- apne actual container/block ka naam use karein -->
-    <block class="Magento\Store\Block\Switcher"
-           name="store_view_switcher"
-           as="store_view_switcher"
-           template="Magento_Store::switch/dropdown.phtml"
-           after="minicart">
+    <referenceBlock name="header-content">
         <arguments>
-            <argument name="view_model" xsi:type="object">Magento\Store\ViewModel\SwitcherUrlProvider</argument>
+            <argument name="show_wishlist" xsi:type="boolean">true</argument>
         </arguments>
-    </block>
-</referenceContainer>
-
-        <referenceBlock name="header-content">
-            <arguments>
-                <argument name="show_wishlist" xsi:type="boolean">true</argument>
-            </arguments>
-            <block class="Magento\Wishlist\Block\Link" name="header-wishlist" as="wishlist" template="Magento_Wishlist::link.phtml"/>
-        </referenceBlock>
+        <block class="Magento\Wishlist\Block\Link" name="header-wishlist" as="wishlist" template="Magento_Wishlist::link.phtml"/>
+    </referenceBlock>
         <!-- 1. Footer Container Adjustments -->
-        <referenceContainer name="footer-container">
-            <block class="Magento\Newsletter\Block\Subscribe"
-                   name="footer.newsletter.subscribe"
-                   template="Magento_Newsletter::subscribe.phtml"
-                   before="-" />
-        </referenceContainer>
-
-        <!-- 2. Header Container Adjustments (Injecting Topbar with View Model) -->
-        <!-- <referenceContainer name="header-wrapper">
-            <block class="Magento\Framework\View\Element\Template"
-                   name="header.topbar"
-                   template="Magento_Theme::html/topbar.phtml"
-                   before="-">
-                <arguments>
-                    <argument name="view_model" xsi:type="object">Hyva\Theme\ViewModel\Navigation</argument>
-                </arguments>
-            </block>
-        </referenceContainer> -->
+    <referenceContainer name="footer-container">
+        <block class="Magento\Newsletter\Block\Subscribe"
+                name="footer.newsletter.subscribe"
+                template="Magento_Newsletter::subscribe.phtml"
+                before="-" />
+    </referenceContainer>
     </body>
 </page>

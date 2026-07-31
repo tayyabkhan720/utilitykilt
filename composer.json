@@ -18,6 +18,9 @@
     },
     "version": "2.4.8-p4",
     "require": {
+        "hyva-themes/magento2-cms-tailwind-compiler": "^1.0",
+        "hyva-themes/magento2-cms-tailwind-jit-bridge": "^1.0",
+        "hyva-themes/magento2-cms-tailwind-recompile": "^1.0",
         "hyva-themes/magento2-default-theme": "*",
         "hyva-themes/magento2-luma-checkout": "^1.1",
         "hyva-themes/magento2-page-builder": "^1.0",
