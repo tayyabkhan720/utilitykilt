@@ -133,7 +133,7 @@ $viewModels->require(BlockJsDependencies::class)->setBlockTemplateDependency($bl
         </div>
 
         <?php if (!$hideRatingSummary): ?>
-        <div class="hidden py-1 mx-auto <?= $viewIsGrid ? '' : 'md:mx-0 md:w-auto' ?>">
+        <div class="py-1 mx-auto <?= $viewIsGrid ? '' : 'md:mx-0 md:w-auto' ?>">
             <?= $block->getReviewsSummaryHtml($product, 'short') ?>
         </div>
         <?php endif; ?>
@@ -162,7 +162,7 @@ $viewModels->require(BlockJsDependencies::class)->setBlockTemplateDependency($bl
             <?= /* @noEscape */ $productListItemViewModel->getProductPriceHtml($product) ?>
         </div>
 
-        <div class="hidden mt-auto pt-3 flex flex-wrap items-center gap-y-4 gap-x-2
+        <div class="pr-act mt-auto pt-3 flex flex-wrap items-center gap-y-4 gap-x-2
             <?= $viewIsGrid ? '' : 'md:justify-center' ?>">
             <?php if ($product->isSaleable()): ?>
                 <?php if ($isProductGroupedOrBundle): ?>

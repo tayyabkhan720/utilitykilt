@@ -367,7 +367,13 @@ return [
         'Amasty_ImageOptimizer' => 1,
         'Amasty_PageSpeedTools' => 1,
         'Amasty_SeoRichData' => 1,
+        'CommerceExtensions_ProductImportExport' => 1,
+        'Hyva_AdminDashboardApi' => 1,
         'Hyva_Theme' => 1,
+        'Hyva_CmsTailwindCompiler' => 1,
+        'Hyva_CmsTailwindJit' => 1,
+        'Hyva_CmsTailwindJitBridge' => 1,
+        'Hyva_CmsTailwindRecompile' => 1,
         'Hyva_CompatModuleFallback' => 1,
         'Hyva_Email' => 1,
         'Hyva_GraphqlTokens' => 1,
@@ -394,9 +400,10 @@ return [
         'MageWorx_OptionVisibility' => 1,
         'MageWorx_SearchSuiteAutocomplete' => 1,
         'Mageplaza_Core' => 1,
+        'Mageplaza_DeleteOrders' => 1,
         'Mageplaza_GoogleTagManager' => 1,
-        'Mageplaza_Security' => 0,
-        'Mageplaza_SecurityPro' => 0,
+        'Mageplaza_Security' => 1,
+        'Mageplaza_SecurityPro' => 1,
         'Mageplaza_Smtp' => 1,
         'Magewirephp_Magewire' => 1,
         'Mollie_Payment' => 0,
@@ -415,6 +422,7 @@ return [
         'StripeIntegration_Tax' => 1,
         'StripeIntegration_Payments' => 1,
         'TJV_HyvaMageworxSwatches' => 1,
-        'Tawk_Widget' => 1
+        'Tawk_Widget' => 1,
+        'Vendor_AdvancedShipping' => 0
     ]
 ];
