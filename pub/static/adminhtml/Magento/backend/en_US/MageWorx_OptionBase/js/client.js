@@ -1,1 +1,0 @@
-/var/www/html/magento2-store/app/code/MageWorx/OptionBase/view/adminhtml/web/js/client.js

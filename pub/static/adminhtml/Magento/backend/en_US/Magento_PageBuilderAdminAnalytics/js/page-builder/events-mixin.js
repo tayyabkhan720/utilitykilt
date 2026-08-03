@@ -1,1 +1,0 @@
-/var/www/html/magento2-store/vendor/magento/module-page-builder-admin-analytics/view/adminhtml/web/js/page-builder/events-mixin.js

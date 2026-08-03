@@ -1,1 +1,0 @@
-/var/www/html/magento2-store/lib/web/jquery/jquery-ui.js
