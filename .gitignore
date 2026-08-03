@@ -32,10 +32,9 @@ atlassian*
 /package.json
 /.php_cs
 /.php_cs.cache
-/.php-cs-fixer.php
-/.php-cs-fixer.cache
 /grunt-config.json
 /pub/media/*.*
+!/pub/.htaccess
 !/pub/media/.htaccess
 /pub/media/attribute/*
 !/pub/media/attribute/.htaccess
@@ -64,6 +63,21 @@ atlassian*
 !/pub/media/sitemap/.htaccess
 /pub/static/*
 !/pub/static/.htaccess
+/pub/media/blog/*
+/pub/media/custom_options/*
+/pub/media/customer/*
+/pub/media/customer_address/*
+/pub/media/downloadable/*
+/pub/media/import/*
+/pub/media/magefan_blog/*
+/pub/media/theme_customization/*
+/pub/media/vsourz/*
+/pub/datasheets/*
+/auth.json
+/composer.lock
+*.sql
+*.zip
+*.gz
 
 /var/*
 !/var/.htaccess
