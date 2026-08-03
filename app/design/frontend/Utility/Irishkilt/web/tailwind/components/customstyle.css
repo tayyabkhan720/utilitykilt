@@ -1,0 +1,32 @@
+.catalog-category-view .price-box.price-final_price {
+    @apply flex gap-6 items-center justify-center;
+}
+
+.catalog-category-view .price-box.price-final_price span.special-price
+{
+    @apply text-primary font-bold text-lg;
+}
+.catalog-category-view .price-box.price-final_price span.old-price{
+    @apply text-red-500 line-through;
+}
+.catalog-category-view .categories-main ul li{
+    @apply inline-block p-[5px] float-left;
+}
+
+.categories-details figure img {
+    @apply w-full h-auto max-w-[150px] min-w-[150px];
+}
+.categories-details label.subcat-label{
+    @apply text-center uppercase cursor-pointer block my-6;
+}
+.catalog-category-view .pr-act{
+    @apply hidden;
+}
+@media (max-width: 768px) {
+    .categories-main ul li{
+        @apply w-full;
+    }
+    .homeslider .pagebuilder-slide-wrapper {
+     @apply !bg-contain;
+}
+}
