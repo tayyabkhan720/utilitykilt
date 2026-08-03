@@ -23,8 +23,31 @@ HTML;
     http_response_code(500);
     exit(1);
 }
-
-$bootstrap = Bootstrap::create(BP, $_SERVER);
+$params = $_SERVER;
+switch( $_SERVER['SERVER_NAME']) {
+    case 'local.utilitykitco.uk':
+    $mageRunCode = 'uk_base';
+    $mageRunType = 'website';
+    break;
+    case 'local.scotishkiltHyva.com':
+    $mageRunCode = 'scottishkiltco';
+    $mageRunType = 'website';
+    break;
+    case 'local.irishkilthyva.com':
+    $mageRunCode = 'irishkiltshop';
+    $mageRunType = 'website';
+    break;
+    case 'local.scotishkiltstorehyva.co.uk':
+    $mageRunCode = 'scottishkiltstore';
+    $mageRunType = 'website';
+    break;
+    default:
+    $mageRunType = 'website';
+    $mageRunCode = 'base';
+ }
+$params[\Magento\Store\Model\StoreManager::PARAM_RUN_CODE] = $mageRunCode;
+$params[\Magento\Store\Model\StoreManager::PARAM_RUN_TYPE] = $mageRunType;
+$bootstrap = Bootstrap::create(BP, $params);
 /** @var \Magento\Framework\App\Http $app */
 $app = $bootstrap->createApplication(\Magento\Framework\App\Http::class);
 $bootstrap->run($app);
