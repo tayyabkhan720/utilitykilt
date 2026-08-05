@@ -111,7 +111,7 @@ $viewModels->require(BlockJsDependencies::class)->setBlockTemplateDependency($bl
     <?php if ($blockImage = $block->getImage($product, $imageDisplayArea)): ?>
         <a href="<?= $escaper->escapeUrl($product->getProductUrl()) ?>"
             title="<?= $escaper->escapeHtmlAttr($product->getName()) ?>"
-            class="product photo product-item-photo block mx-auto mb-3 <?= $viewIsGrid ? '' : 'md:w-2/6 md:mb-0 md:shrink-0' ?>"
+            class="product group photo overflow-hidden product-item-photo block mx-auto mb-3 <?= $viewIsGrid ? '' : 'md:w-2/6 md:mb-0 md:shrink-0' ?>"
             tabindex="-1"
         >
             <?= $blockImage

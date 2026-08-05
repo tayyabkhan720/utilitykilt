@@ -25,8 +25,9 @@
                 <height>96</height>
             </image>
             <image id="category_page_grid" type="small_image">
-                <width>360</width>
+                <width>600</width>
                 <height>360</height>
+                <frame>false</frame>
             </image>
             <image id="category_page_list" type="small_image">
                 <width>360</width>
