@@ -22,6 +22,9 @@
 .catalog-category-view .pr-act{
     @apply hidden;
 }
+.snap-track {
+    @apply pt-0;
+}
 @media (max-width: 768px) {
     .categories-main ul li{
         @apply w-full;

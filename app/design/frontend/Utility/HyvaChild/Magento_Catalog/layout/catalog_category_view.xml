@@ -9,6 +9,6 @@
     <body>
         <referenceBlock name="catalog.leftnav" remove="true"/>
         <move element="category.description" destination="content.bottom" />
-
+        <referenceBlock name="category.image" remove="true"/>
     </body>
 </page>
