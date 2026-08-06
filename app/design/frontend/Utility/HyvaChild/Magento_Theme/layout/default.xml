@@ -8,12 +8,12 @@
 -->
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
-    <referenceBlock name="header-content">
+    <!-- <referenceBlock name="header-content">
         <arguments>
             <argument name="show_wishlist" xsi:type="boolean">true</argument>
         </arguments>
         <block class="Magento\Wishlist\Block\Link" name="header-wishlist" as="wishlist" template="Magento_Wishlist::link.phtml"/>
-    </referenceBlock>
+    </referenceBlock> -->
         <!-- 1. Footer Container Adjustments -->
     <referenceContainer name="footer-container">
         <block class="Magento\Newsletter\Block\Subscribe"

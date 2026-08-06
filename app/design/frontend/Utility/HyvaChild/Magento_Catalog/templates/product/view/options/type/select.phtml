@@ -61,12 +61,13 @@ if ($isSwatch) {
      <?php endif; ?>
 >
     <label
-        class="mb-1 text-base font-normal"
+        class="mb-1 text-base font-semibold
+"
         for="options_<?= $escaper->escapeHtmlAttr($option->getId()) ?>"
     >
-        <span><?= $escaper->escapeHtml($option->getTitle()) ?></span>
+        <span class="text-black-900"><?= $escaper->escapeHtml($option->getTitle()) ?></span>
         <?php if ($option->getIsRequire()): ?>
-            <span class="sup text-sm">*</span>
+            <span class="sup text-sm text-red-500">*</span>
         <?php endif; ?>
         <?php if ($isSwatch): ?>
             <span class="ml-1 font-normal italic text-gray-600"

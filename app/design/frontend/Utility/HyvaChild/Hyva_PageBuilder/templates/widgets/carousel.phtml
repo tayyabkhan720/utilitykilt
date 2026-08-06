@@ -81,10 +81,16 @@ $gliderUrl = $block->getViewFileUrl('Hyva_PageBuilder::js/glider.min.js');
             };
 
             const initSliderCarousel = (slider) => {
-            const slideElements = Array.from(slider.querySelectorAll('[data-content-type=\"slide\"]'));
-            const slidesHtml = slideElements.map(el => el.outerHTML).join('');            
-                slider.innerHTML = `<div data-role=\"glider-content\">${slidesHtml}</div>`;"
-            )
+            const slideElements = Array.from(
+                slider.querySelectorAll('[data-content-type="slide"]')
+            );
+               const slidesHtml = slideElements.map(el => el.outerHTML).join('');
+            
+                 slider.innerHTML = `
+                    <div data-role="glider-content">
+                        ${slidesHtml}
+                    </div>
+                `;
                 slider.classList.add('glider-contain');
 
                 slider.insertAdjacentHTML(
