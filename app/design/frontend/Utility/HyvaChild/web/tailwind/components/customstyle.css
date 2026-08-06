@@ -25,6 +25,9 @@
 .snap-track {
     @apply pt-0;
 }
+label{
+    @apply !text-black text-base font-semibold;
+}
 @media (max-width: 768px) {
     .categories-main ul li{
         @apply w-full;

@@ -52,7 +52,10 @@ if ($option):
         class="<?= $isSwatch
             ? 'sr-only'
             : ($optionType === Option::OPTION_TYPE_MULTIPLE ? 'form-multiselect' : 'form-select')
-              . ' product-custom-option w-full' ?>"
+              . ' product-custom-option w-full' ?>
+              
+             border border-[#ececec] rounded-lg
+              "
         <?php if ($optionType === Option::OPTION_TYPE_MULTIPLE): ?>
             multiple="multiple"
         <?php endif; ?>
@@ -114,7 +117,7 @@ if ($option):
             $valuePrice = $productPriceViewModel->getCustomOptionPrice($value, CustomOptionPrice::PRICE_CODE, $product);
             ?>
             <button type="button"
-                    class="swatch-tile cursor-pointer inline-flex flex-col items-center gap-1 rounded mr-4 border-2 border-gray-200 p-1"
+                    class="swatch-tile cursor-pointer inline-flex flex-col items-center gap-1 rounded-full mr-4 p-1"
                     :class="selectedValues.includes('<?= $escaper->escapeJs($valId) ?>') ? 'swatch-selected' : ''"
                     x-on:click="toggle('<?= $escaper->escapeJs($valId) ?>')"
             >
@@ -124,7 +127,7 @@ if ($option):
                         <?= $escaper->escapeHtml($value->getTitle()) ?>
                     </span>
                 <?php else: ?>
-                    <span class="block rounded"
+                    <span class="block rounded-[30px]"
                           style="
                             width: <?= (int) $swatchViewModel->getSwatchWidth() ?: 32 ?>px;
                             height: <?= (int) $swatchViewModel->getSwatchHeight() ?: 32 ?>px;
