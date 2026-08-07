@@ -7,6 +7,9 @@
             "src": "vendor/hyva-themes/magento2-cms-tailwind-jit/src"
         },
         {
+            "src": "vendor/hyva-themes/magento2-react-checkout/src"
+        },
+        {
             "src": "vendor/magewirephp/magewire/src"
         }
     ]
