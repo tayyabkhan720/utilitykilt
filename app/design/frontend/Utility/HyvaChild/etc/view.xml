@@ -219,10 +219,10 @@
 
         <var name="gallery">
             <var name="loop">1</var>            <!-- Enable infinite loop -->
-            <var name="caption">1</var>         <!-- Show image caption -->
+            <var name="caption">0</var>         <!-- Show image caption -->
             <var name="pager">thumbs</var>      <!-- Pager style: thumbs or dots -->
             <var name="pagerdir">horizontal</var> <!-- Pager direction: vertical or horizontal -->
-            <var name="nav">end</var>           <!-- Nav arrow position: end, start or center -->
+            <var name="nav">center</var>           <!-- Nav arrow position: end, start or center -->
             <var name="maxthumbs">0</var>       <!-- Max thumbnails shown, 0 falls back to auto calculation -->
         </var>
     </vars>
