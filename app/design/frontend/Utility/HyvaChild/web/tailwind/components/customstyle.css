@@ -28,6 +28,9 @@
 label{
     @apply !text-black text-base font-semibold;
 }
+.psac-submit{
+    @apply !bg-primary;
+}
 @media (max-width: 768px) {
     .categories-main ul li{
         @apply w-full;
