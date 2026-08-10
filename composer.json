@@ -24,6 +24,7 @@
         "hyva-themes/magento2-default-theme": "*",
         "hyva-themes/magento2-luma-checkout": "^1.1",
         "hyva-themes/magento2-page-builder": "^1.0",
+        "hyva-themes/magento2-react-checkout": "^1.1",
         "laminas/laminas-mail": "^2.25",
         "laminas/laminas-serializer": "^2.18",
         "mage2kishan/module-search-autocomplete": "^1.0",
@@ -83,6 +84,10 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "repositories": {
+        "hyva-themes/magento2-react-checkout": {
+            "type": "git",
+            "url": "git@github.com:friends-of-hyva/magento2-react-checkout.git"
+        },
         "private-packagist": {
             "type": "composer",
             "url": "https://hyva-themes.repo.packagist.com/local-hyva-com-ybz7b/"
