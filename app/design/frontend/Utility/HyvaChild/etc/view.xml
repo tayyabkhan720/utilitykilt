@@ -81,6 +81,8 @@
             <image id="product_page_image_medium" type="image">
                 <width>700</width>
                 <height>700</height>
+                   <frame>false</frame>
+                 <transparency>true</transparency>
             </image>
             <image id="product_page_image_small" type="thumbnail">
                 <width>80</width>
