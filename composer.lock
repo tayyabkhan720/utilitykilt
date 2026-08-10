@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "88b6efcd90d63b179c947bc4ca0ec39a",
+    "content-hash": "cc9b06dbe38d269f13d66d11f45f1483",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -3245,6 +3245,45 @@
                 "issues": "https://gitlab.hyva.io/hyva-themes/magento2-page-builder/-/issues"
             },
             "time": "2025-04-24T13:51:05+00:00"
+        },
+        {
+            "name": "hyva-themes/magento2-react-checkout",
+            "version": "1.1.4",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:friends-of-hyva/magento2-react-checkout.git",
+                "reference": "fff0ec0ae454ceaeba4322b1d2a776b64b8be07d"
+            },
+            "require": {
+                "hyva-themes/magento2-graphql-tokens": "^1.0",
+                "magento/framework": "*",
+                "magento/module-catalog": ">=103.0.0",
+                "magento/module-checkout": ">=100.3.0",
+                "magento/module-customer": ">=102.0.0"
+            },
+            "suggest": {
+                "hyva-themes/magento2-graphql-tokens": "*"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "src/registration.php"
+                ],
+                "psr-4": {
+                    "FriendsOfHyva\\ReactCheckout\\": "src/"
+                }
+            },
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Hyvä Themes BV",
+                    "email": "info@hyva.io"
+                }
+            ],
+            "description": "Highly customizable Magento 2 Checkout, built with React",
+            "time": "2026-03-09T11:46:38+00:00"
         },
         {
             "name": "hyva-themes/magento2-theme-fallback",
