@@ -81,7 +81,7 @@ $btnIconSize = 28;
 
 $trackCssClasses = implode(' ', array_filter([
     'flex overflow-x-auto overflow-y-clip overscroll-contain snap-both snap-mandatory',
-    'aspect-(--gallery-ratio) bg-white text-fg',
+    'aspect-(--gallery-ratio) bg-transparent text-fg',
     'motion-safe:scroll-smooth scrollbar-none'
 ]));
 
@@ -133,7 +133,6 @@ $captionCssClasses = 'absolute bottom-2 text-sm py-1 px-2 rounded bg-gray-200/60
     ><?= $escaper->escapeHtml(__('Press to skip carousel')) ?></a>
 
     <div class="relative">
-        <?= $block->getChildHtml('gallery.additional') ?>
 
         <?php if ($navStyle !== 'none'): ?>
             <div class="<?= $escaper->escapeHtmlAttr($navCssClasses) ?>">
@@ -196,7 +195,7 @@ $captionCssClasses = 'absolute bottom-2 text-sm py-1 px-2 rounded bg-gray-200/60
                                 fetchpriority="high"
                                 itemprop="image"
                             <?php endif; ?>
-                            class="aspect-(--gallery-ratio) object-scale-down"
+                            class="aspect-(--gallery-ratio) object-cover"
                         >
                         <?php if ($img->getData('video_url')): ?>
                             <span class="flex justify-center items-center pointer-events-none transition-transform group-hover:scale-125 text-white">
