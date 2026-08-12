@@ -361,13 +361,14 @@ return [
         'Magento_WishlistGraphQl' => 1,
         'Amasty_Acart' => 1,
         'Amasty_Base' => 1,
+        'Amasty_Geoip' => 1,
         'Amasty_CronScheduleList' => 1,
         'Amasty_Feed' => 1,
-        'Amasty_Geoip' => 1,
+        'PayPal_Braintree' => 1,
         'Amasty_ImageOptimizer' => 1,
         'Amasty_PageSpeedTools' => 1,
         'Amasty_SeoRichData' => 1,
-        'CommerceExtensions_ProductImportExport' => 1,
+        'Hyva_GraphqlTokens' => 1,
         'Hyva_AdminDashboardApi' => 1,
         'Hyva_Theme' => 1,
         'Hyva_CmsTailwindCompiler' => 1,
@@ -376,7 +377,7 @@ return [
         'Hyva_CmsTailwindRecompile' => 1,
         'Hyva_CompatModuleFallback' => 1,
         'Hyva_Email' => 1,
-        'Hyva_GraphqlTokens' => 1,
+        'FriendsOfHyva_ReactCheckout' => 1,
         'Hyva_GraphqlViewModel' => 1,
         'Hyva_ThemeFallback' => 1,
         'Hyva_MollieThemeBundle' => 0,
@@ -412,7 +413,7 @@ return [
         'Ops_MeasuringGuide' => 0,
         'Panth_Core' => 1,
         'Panth_SearchAutocomplete' => 1,
-        'PayPal_Braintree' => 1,
+        'Amasty_CheckoutCore' => 1,
         'PayPal_BraintreeCustomerBalance' => 1,
         'PayPal_BraintreeGiftCard' => 1,
         'PayPal_BraintreeGiftCardAccount' => 1,
@@ -423,6 +424,6 @@ return [
         'StripeIntegration_Payments' => 1,
         'TJV_HyvaMageworxSwatches' => 1,
         'Tawk_Widget' => 1,
-        'Vendor_AdvancedShipping' => 0
+        'Utility_ReactCheckout' => 1
     ]
 ];

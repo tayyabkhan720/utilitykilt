@@ -85,4 +85,4 @@ atlassian*
 !/vendor/.htaccess
 /generated/*
 !/generated/.htaccess
-.DS_Store
+.DS_Storeauth.json

@@ -7,6 +7,7 @@
  */
 
 @source "../../../../../../../../vendor/hyva-themes/magento2-theme-module/src";
+@source "../../../../../../../../vendor/hyva-themes/magento2-react-checkout/src";
 @source "../../../../../../../../vendor/magewirephp/magewire/src";
 @source "../../../../../../../../vendor/hyva-themes/magento2-default-theme";
 

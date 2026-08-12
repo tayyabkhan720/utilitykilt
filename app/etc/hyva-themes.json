@@ -11,6 +11,9 @@
         },
         {
             "src": "vendor/magewirephp/magewire/src"
+        },
+        {
+            "src": "app/code/Utility/ReactCheckout"
         }
     ]
 }
