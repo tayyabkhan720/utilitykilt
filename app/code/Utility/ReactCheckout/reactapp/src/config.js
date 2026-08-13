@@ -1,6 +1,6 @@
-import env from '@hyva/react-checkout/utils/env';
-import RootElement from '@hyva/react-checkout/utils/rootElement';
-import { getConfigFromLocalStorage } from '@hyva/react-checkout/utils/localStorageConfig';
+import env from './utils/env';
+import RootElement from './utils/rootElement';
+import { getConfigFromLocalStorage } from './utils/localStorageConfig';
 
 const hyvaCheckoutStorageKey = 'hyva-checkout-storage';
 
