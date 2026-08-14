@@ -21,7 +21,7 @@ class RegisterModuleForHyvaConfig implements ObserverInterface
 
     public function execute(Observer $event)
     {
-        $config = $event->getData('config');
+        $config = $event->getData('transport');
         $extensions = $config->hasData('extensions') ? $config->getData('extensions') : [];
 
         $moduleName = implode('_', array_slice(explode('\\', __CLASS__), 0, 2));
