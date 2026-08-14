@@ -1,0 +1,55 @@
+<?php declare(strict_types=1);
+
+use Magento\Theme\Block\Html\Header\Logo;
+use Magento\Theme\ViewModel\Block\Html\Header\LogoSizeResolverInterface;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Store\Model\ScopeInterface;
+use Magento\Store\Model\StoreManagerInterface;
+use Magento\Framework\UrlInterface;
+use Magento\Framework\App\ObjectManager;
+
+/**
+ * @var Logo $block
+ * @var LogoSizeResolverInterface|null $logoSizeResolver
+ */
+
+$storeName = $block->getThemeName() ? $block->getThemeName() : $block->getLogoAlt();
+$logoSizeResolver = $block->getLogoSizeResolver();
+$logoWidth = $logoSizeResolver !== null && $logoSizeResolver->getWidth()
+    ? $logoSizeResolver->getWidth()
+    : $block->getLogoWidth();
+$logoHeight = $logoSizeResolver !== null && $logoSizeResolver->getHeight()
+    ? $logoSizeResolver->getHeight()
+    : $block->getLogoHeight();
+
+// Resolve the logo directly from scope config, bypassing Store::getConfig()'s
+// internal cache which can go stale on checkout/AJAX-driven store resolution.
+$om = ObjectManager::getInstance();
+$scopeConfig = $om->get(ScopeConfigInterface::class);
+$storeManager = $om->get(StoreManagerInterface::class);
+$currentStore = $storeManager->getStore();
+
+$logoConfigValue = $scopeConfig->getValue(
+    'design/header/logo_src',
+    ScopeInterface::SCOPE_STORE,
+    $currentStore
+);
+
+if ($logoConfigValue) {
+    $mediaBaseUrl = $currentStore->getBaseUrl(UrlInterface::URL_TYPE_MEDIA);
+    $logoSrc = $mediaBaseUrl . 'logo/' . $logoConfigValue;
+} else {
+    $logoSrc = $block->getLogoSrc();
+}
+?>
+<div class="flex justify-center mt-6">
+    <div class="container">
+            <img src="<?= $block->escapeUrl($logoSrc) ?>"
+                 title="<?= $block->escapeHtmlAttr($block->getLogoAlt()) ?>"
+                 alt="<?= $block->escapeHtmlAttr($block->getLogoAlt()) ?>"
+                <?= $logoWidth ? 'width="' . $block->escapeHtmlAttr($logoWidth) . '"' : '' ?>
+                <?= $logoHeight ? 'height="' . $block->escapeHtmlAttr($logoHeight) . '"' : '' ?>
+            />
+        </a>
+    </div>
+</div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 import Login from '../login';
 import Totals from '../totals';
@@ -15,54 +15,17 @@ import ShippingMethodsForm from '../shippingMethod';
 import StickyRightSidebar from '../StickyRightSidebar';
 import CheckoutAgreements from '../checkoutAgreements';
 import { config } from '../../config';
-import { aggregatedQueryRequest } from '../../api';
-import LocalStorage from '../../utils/localStorage';
-import useCheckoutFormContext from '../../hook/useCheckoutFormContext';
 import useCheckoutFormAppContext from './hooks/useCheckoutFormAppContext';
 import useCheckoutFormCartContext from './hooks/useCheckoutFormCartContext';
 
 function CheckoutForm() {
-  const [isRequestSent, setIsRequestSent] = useState(false);
-  const { storeAggregatedFormStates } = useCheckoutFormContext();
-  const { orderId, isVirtualCart, storeAggregatedCartStates } =
-    useCheckoutFormCartContext();
-  const { pageLoader, appDispatch, setPageLoader, storeAggregatedAppStates } =
-    useCheckoutFormAppContext();
+  const { orderId, isVirtualCart } = useCheckoutFormCartContext();
+  const { pageLoader } = useCheckoutFormAppContext();
 
-  /**
-   * Collect App, Cart data when the page loads.
-   */
-  useEffect(() => {
-    if (isRequestSent) {
-      return;
-    }
-
-    if (!LocalStorage.getCartId()) {
-      LocalStorage.saveCartId(config.cartId);
-    }
-
-    (async () => {
-      try {
-        setPageLoader(true);
-        setIsRequestSent(true);
-        const data = await aggregatedQueryRequest(appDispatch);
-        storeAggregatedCartStates(data);
-        storeAggregatedAppStates(data);
-        storeAggregatedFormStates(data);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setPageLoader(false);
-      }
-    })();
-  }, [
-    appDispatch,
-    isRequestSent,
-    setPageLoader,
-    storeAggregatedAppStates,
-    storeAggregatedCartStates,
-    storeAggregatedFormStates,
-  ]);
+  // Read the layout configuration injected from Magento (defaults to 'three-column')
+  const layoutVariant =
+    window.hyvaCheckoutConfig?.layoutVariant || 'three-column';
+  const isTwoColumn = layoutVariant === 'two-column';
 
   if (orderId && config.isDevelopmentMode) {
     return (
@@ -82,20 +45,36 @@ function CheckoutForm() {
       <div className="flex justify-center">
         <div className="container">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 my-6">
-            <div className="w-full space-y-2">
+            <div
+              className={`w-full space-y-2 ${
+                isTwoColumn ? 'lg:col-span-2' : ''
+              }`}
+            >
               <Login />
               <AddressWrapper>
                 {!isVirtualCart && <ShippingAddress />}
                 <BillingAddress />
               </AddressWrapper>
+
+              {isTwoColumn && (
+                <>
+                  {!isVirtualCart && <ShippingMethodsForm />}
+                  <PaymentMethod />
+                  <CouponCode />
+                </>
+              )}
             </div>
-            <div className="w-full space-y-2">
-              <AddressWrapper>
-                {!isVirtualCart && <ShippingMethodsForm />}
-              </AddressWrapper>
-              <PaymentMethod />
-              <CouponCode />
-            </div>
+
+            {!isTwoColumn && (
+              <div className="w-full space-y-2">
+                <AddressWrapper>
+                  {!isVirtualCart && <ShippingMethodsForm />}
+                </AddressWrapper>
+                <PaymentMethod />
+                <CouponCode />
+              </div>
+            )}
+
             <StickyRightSidebar>
               <CartItemsForm />
               <Totals />

@@ -1,7 +1,18 @@
 <?xml version="1.0"?>
-<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:noNamespaceSchemaLocation="urn:magento:module:View/Layout:etc/page_configuration.xsd">
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
-        <referenceBlock name="checkout.scripts" template="Utility_ReactCheckout::react-script.phtml" />
+        <!-- Remove the original vendor's script block to prevent duplicate declarations -->
+        <referenceBlock name="react.checkout.script" remove="true" />
+        <referenceBlock name="page.main.title" remove="true" />
+        <referenceBlock name="copyright" remove="true" />
+        <referenceBlock name="logo" template="Utility_ReactCheckout::html/header/logo.phtml" />
+        <!-- Add your custom script block -->
+        <referenceBlock name="head.additional">
+            <block class="Magento\Framework\View\Element\Template" name="react.checkout.script.custom" template="Utility_ReactCheckout::react-script.phtml">
+                <arguments>
+                    <argument name="csp_nonce_provider" xsi:type="object">FriendsOfHyva\ReactCheckout\ViewModel\CspNonceProvider</argument>
+                </arguments>
+            </block>
+        </referenceBlock>
     </body>
 </page>
