@@ -44,6 +44,11 @@ if ($logoConfigValue) {
 ?>
 <div class="mt-6">
     <div class="container flex justify-center">
+            <a
+            class="logo"
+            href="<?= $block->escapeUrl($block->getUrl('')) ?>"
+            title="<?= $block->escapeHtmlAttr($storeName) ?>"
+            aria-label="store logo">
             <img src="<?= $block->escapeUrl($logoSrc) ?>"
                  title="<?= $block->escapeHtmlAttr($block->getLogoAlt()) ?>"
                  alt="<?= $block->escapeHtmlAttr($block->getLogoAlt()) ?>"
