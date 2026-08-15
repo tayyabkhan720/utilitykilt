@@ -35,15 +35,15 @@ function PlaceOrder() {
   const { executeBeforePlaceOrderActions } = useCheckoutFormContext();
   const { setMessage, setErrorMessage, setPageLoader } =
     usePlaceOrderAppContext();
-  const { values, errors, dirty, setFieldTouched } = formikData;
+  const { values, errors, setFieldTouched } = formikData;
   const focusActions = { setFieldTouched };
 
   const handlePerformPlaceOrder = async () => {
     setMessage(false);
 
-    if (!dirty) {
-      return;
-    }
+    // if (!dirty) {
+    //   return;
+    // }
 
     if (hasLoginErrors(errors)) {
       const customerWantsToSignIn = _get(values, customerWantsToSignInField);
@@ -100,10 +100,10 @@ function PlaceOrder() {
   };
 
   return (
-    <div className="flex items-center justify-center py-4">
+    <div className="flex items-center py-4">
       <Button
         size="lg"
-        disable={!dirty}
+        // disable={!dirty}
         variant="primary"
         click={handlePerformPlaceOrder}
       >
