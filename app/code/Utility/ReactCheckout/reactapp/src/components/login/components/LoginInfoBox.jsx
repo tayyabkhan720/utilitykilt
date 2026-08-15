@@ -16,7 +16,7 @@ function LoginInfoBox() {
   if (customerWantsToSignIn) {
     return (
       <div className="my-4">
-        <div className="px-4 py-1 border rounded-md bg-container-darker lg:w-2/3">
+        <div className="px-4 py-1 border rounded-md bg-container-darker">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-semibold text-gray-500">
               {__('Do you want to continue as guest user?')}
@@ -38,10 +38,10 @@ function LoginInfoBox() {
 
   return (
     <div className="my-4">
-      <div className="px-4 py-1 border rounded-md bg-container-darker lg:w-2/3">
+      <div className="px-4 py-1 border rounded-md bg-container-darker">
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-semibold text-gray-500">
-            {__('Do you already have an account?')}
+            {__('Do you already have an account? test123')}
           </h3>
           <button
             type="button"
