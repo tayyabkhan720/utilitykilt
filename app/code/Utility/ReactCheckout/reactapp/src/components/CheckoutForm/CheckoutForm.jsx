@@ -44,7 +44,7 @@ function CheckoutForm() {
       <Message />
       <div className="flex justify-center">
         <div className="container">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 my-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 my-6 appcode">
             <div
               className={`w-full space-y-2 ${
                 isTwoColumn ? 'lg:col-span-2' : ''
@@ -54,11 +54,11 @@ function CheckoutForm() {
               <AddressWrapper>
                 {!isVirtualCart && <ShippingAddress />}
                 <BillingAddress />
+                {isTwoColumn && !isVirtualCart && <ShippingMethodsForm />}
               </AddressWrapper>
 
               {isTwoColumn && (
                 <>
-                  {!isVirtualCart && <ShippingMethodsForm />}
                   <PaymentMethod />
                   <CouponCode />
                 </>

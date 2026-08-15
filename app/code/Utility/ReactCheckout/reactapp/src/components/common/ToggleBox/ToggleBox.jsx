@@ -11,10 +11,18 @@ function ToggleBox({ children, title, show, small, hrLine }) {
   const [open, setOpen] = useState(show);
 
   const arrowContent = (
-    <div className="flex items-center justify-center">
-      {open && <ArrowSmallUpIcon className={small ? 'w-5 h-5' : 'w-6 h-6'} />}
+    <div className="flex items-center justify-center text-primary">
+      {open && (
+        <ArrowSmallUpIcon
+          className={small ? 'w-5 h-5' : 'w-6 h-6'}
+          strokeWidth={2.5}
+        />
+      )}
       {!open && (
-        <ArrowSmallDownIcon className={small ? 'w-5 h-5' : 'w-6 h-6'} />
+        <ArrowSmallDownIcon
+          className={small ? 'w-5 h-5' : 'w-6 h-6'}
+          strokeWidth={2.5}
+        />
       )}
     </div>
   );

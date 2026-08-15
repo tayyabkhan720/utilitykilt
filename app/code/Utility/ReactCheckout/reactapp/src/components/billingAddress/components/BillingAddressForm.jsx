@@ -172,7 +172,7 @@ function BillingAddressForm() {
         <SaveInBookCheckbox fields={fields} formikData={formikData} />
       </div>
 
-      <div className="flex items-center justify-around mt-2">
+      <div className="flex items-center mt-2">
         <CancelButton />
         <SaveButton
           isFormValid={isBillingAddressTouched}

@@ -1,5 +1,4 @@
 import React from 'react';
-import { get as _get } from 'lodash-es';
 
 import Button from '../../common/Button';
 import TextInput from '../../common/Form/TextInput';
@@ -17,13 +16,10 @@ function LoginForm() {
     handleKeyDown,
     loginFormValues,
     validationSchema,
-    formSectionTouched,
   } = useLoginFormContext();
-  const isEmailTouched = _get(formSectionTouched, 'email') || false;
+
   const customerWantsToSignIn = loginFormValues?.customerWantsToSignIn;
-  const disableButton = customerWantsToSignIn
-    ? !formSectionTouched
-    : !isEmailTouched;
+
   const handleButtonClick = useFormValidateThenSubmit({
     formId,
     formikData,
@@ -63,12 +59,9 @@ function LoginForm() {
           </div>
         )}
       </div>
-      <div className="flex items-center justify-center">
-        <Button
-          variant="primary"
-          disable={disableButton}
-          click={handleButtonClick}
-        >
+
+      <div className="flex items-center">
+        <Button variant="primary" click={handleButtonClick}>
           {customerWantsToSignIn ? __('Sign In') : __('Update')}
         </Button>
       </div>
