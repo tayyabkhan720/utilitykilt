@@ -42,8 +42,8 @@ if ($logoConfigValue) {
     $logoSrc = $block->getLogoSrc();
 }
 ?>
-<div class="flex justify-center mt-6">
-    <div class="container">
+<div class="mt-6">
+    <div class="container flex justify-center">
             <img src="<?= $block->escapeUrl($logoSrc) ?>"
                  title="<?= $block->escapeHtmlAttr($block->getLogoAlt()) ?>"
                  alt="<?= $block->escapeHtmlAttr($block->getLogoAlt()) ?>"
