@@ -31,6 +31,13 @@ label{
 .psac-submit{
     @apply !bg-primary;
 }
+:is([type=checkbox], .form-checkbox):focus{
+    @apply ring-1 ring-primary;
+}
+:is([type=checkbox], .form-checkbox):checked, 
+:is([type=checkbox], .form-checkbox):indeterminate {
+    @apply bg-primary border-primary;
+}
 @media (max-width: 768px) {
     .categories-main ul li{
         @apply w-full;
