@@ -119,8 +119,22 @@ if ($option):
             <button type="button"
                     class="swatch-tile cursor-pointer inline-flex flex-col items-center gap-1 rounded-full mr-4 p-1"
                     :class="selectedValues.includes('<?= $escaper->escapeJs($valId) ?>') ? 'swatch-selected' : ''"
-                    x-on:click="toggle('<?= $escaper->escapeJs($valId) ?>')"
-            >
+                    x-on:click="
+                        toggle('<?= $escaper->escapeJs($valId) ?>');
+                        $nextTick(() => {
+                            const select = $refs['option-<?= $escaper->escapeJs($optionId) ?>'];
+                            <?php if ($arraySign): ?>
+                            Array.from(select.options).forEach(o => {
+                                o.selected = selectedValues.includes(o.value);
+                            });
+                            <?php else: ?>
+                            select.value = selectedValues[selectedValues.length - 1] ?? '';
+                            <?php endif; ?>
+                            select.dispatchEvent(new Event('input', { bubbles: true }));
+                            select.dispatchEvent(new Event('change', { bubbles: true }));
+                        })
+                    "
+                >
                 <?php if ($swatchType === 'text'): ?>
                     <span class="px-3 py-1 text-sm"
                           style="max-width: <?= (int) $swatchViewModel->getTextSwatchMaxWidth() ?>px;">
