@@ -19,11 +19,14 @@ function UserInfoBox() {
   return (
     <>
       <div className="py-2">
-        <span className="flex flex-wrap items-center justify-center">
+        <span className="flex flex-wrap items-center">
           {isLoggedIn && (
             <>
               <span>{_get(customer, 'fullName')}</span>
-              {customerEmail && <span>{`(${customerEmail})`}</span>}
+              <br />
+              {customerEmail && (
+                <span className="font-bold">{`(${customerEmail})`}</span>
+              )}
             </>
           )}
           {!isLoggedIn && _get(loginFormValues, 'email')}

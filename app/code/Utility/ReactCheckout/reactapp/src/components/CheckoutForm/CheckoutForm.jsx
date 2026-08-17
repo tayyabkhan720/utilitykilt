@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import Login from '../login';
 import Totals from '../totals';
@@ -15,17 +15,66 @@ import ShippingMethodsForm from '../shippingMethod';
 import StickyRightSidebar from '../StickyRightSidebar';
 import CheckoutAgreements from '../checkoutAgreements';
 import { config } from '../../config';
+import { aggregatedQueryRequest, createEmptyCartRequest } from '../../api';
+import LocalStorage from '../../utils/localStorage';
+import useCheckoutFormContext from '../../hook/useCheckoutFormContext';
 import useCheckoutFormAppContext from './hooks/useCheckoutFormAppContext';
 import useCheckoutFormCartContext from './hooks/useCheckoutFormCartContext';
 
 function CheckoutForm() {
-  const { orderId, isVirtualCart } = useCheckoutFormCartContext();
-  const { pageLoader } = useCheckoutFormAppContext();
+  const [isRequestSent, setIsRequestSent] = useState(false);
+  const { storeAggregatedFormStates } = useCheckoutFormContext();
+  const { orderId, isVirtualCart, storeAggregatedCartStates } =
+    useCheckoutFormCartContext();
+  const { pageLoader, appDispatch, setPageLoader, storeAggregatedAppStates } =
+    useCheckoutFormAppContext();
 
   // Read the layout configuration injected from Magento (defaults to 'three-column')
   const layoutVariant =
     window.hyvaCheckoutConfig?.layoutVariant || 'three-column';
   const isTwoColumn = layoutVariant === 'two-column';
+
+  /**
+   * Load the aggregate checkout state once the React checkout is mounted.
+   * This must remain independent from the selected presentation layout.
+   */
+  useEffect(() => {
+    if (isRequestSent) {
+      return;
+    }
+
+    (async () => {
+      try {
+        let cartId = LocalStorage.getCartId() || config.cartId;
+
+        if (!cartId) {
+          cartId = await createEmptyCartRequest(appDispatch);
+        }
+
+        if (cartId) {
+          LocalStorage.saveCartId(cartId);
+        }
+
+        setPageLoader(true);
+        setIsRequestSent(true);
+        const data = await aggregatedQueryRequest(appDispatch);
+        storeAggregatedCartStates(data);
+        storeAggregatedAppStates(data);
+        storeAggregatedFormStates(data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setPageLoader(false);
+      }
+    })();
+  }, [
+    appDispatch,
+    isRequestSent,
+    setPageLoader,
+    storeAggregatedAppStates,
+    storeAggregatedCartStates,
+    storeAggregatedFormStates,
+  ]);
 
   if (orderId && config.isDevelopmentMode) {
     return (
