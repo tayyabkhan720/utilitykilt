@@ -41,7 +41,7 @@ function LoginInfoBox() {
       <div className="px-4 py-1 border rounded-md bg-container-darker">
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-semibold text-gray-500">
-            {__('Do you already have an account? test123')}
+            {__('Do you already have an account?')}
           </h3>
           <button
             type="button"

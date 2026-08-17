@@ -1,6 +1,7 @@
 import { get as _get, set as _set } from 'lodash-es';
 
 import { config } from '../config';
+import RootElement from './rootElement';
 import { _cleanObjByKeys, _keys } from './index';
 
 const hyvaStorageKey = _get(config, 'hyvaStorageSource.storageKey');
@@ -37,8 +38,12 @@ const LocalStorage = {
 
   getCartId() {
     const source = _get(config, 'storageSource.cartId', {});
+    const storedCartId = _get(
+      LocalStorage.getMagentoLocalStorage(),
+      source.value
+    );
 
-    return _get(LocalStorage.getMagentoLocalStorage(), source.value);
+    return storedCartId || config.cartId || RootElement.getCartMaskedId();
   },
 
   getCustomerToken() {

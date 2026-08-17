@@ -36,7 +36,7 @@ function TextInput({
   const hasError = hasFieldError && hasFieldTouched;
 
   return (
-    <div className={`mt-2 form-control ${isHidden ? 'hidden' : ''}`}>
+    <div className={`mt-2 form-control w-1/2 ${isHidden ? 'hidden' : ''}`}>
       <div className="flex items-center justify-between">
         {label && (
           <label htmlFor={inputId} className="md:text-sm">
@@ -67,7 +67,7 @@ function TextInput({
         }}
         className={`form-input max-w-md  border border-[#ececec] rounded-lg ${
           hasError ? 'border border-red-500' : ''
-        } ${className} ${width || 'w-full'}`}
+        } ${className} ${width || 'w-full max-w-full'}`}
         {...rest}
       />
       <div className="text-xs">{helpText}</div>

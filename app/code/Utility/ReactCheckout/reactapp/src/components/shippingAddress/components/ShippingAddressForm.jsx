@@ -117,7 +117,7 @@ function ShippingAddressForm() {
             placeholder={__('Last name')}
           />
         </div>
-        <div className="flex">
+        <div className="flex space-between">
           <TextInput
             required
             label={__('Phone')}
