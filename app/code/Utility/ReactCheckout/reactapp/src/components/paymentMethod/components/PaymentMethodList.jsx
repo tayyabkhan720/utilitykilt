@@ -61,6 +61,7 @@ function PaymentMethodList({ methodRenderers }) {
                   label={method.title}
                   name="paymentMethod"
                   onChange={handlePaymentMethodSelection}
+                  className="accent-primary"
                   checked={method.code === paymentValues?.code}
                 />
               )}

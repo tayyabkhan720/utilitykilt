@@ -20,7 +20,7 @@ function AddressCard({
     <Card bg="dark" classes="card-interactive">
       <div className="flex justify-between">
         <h3 className="text-sm font-bold text-black">{title}</h3>
-        <ShieldCheckIcon className="w-6 h-6 -m-2 text-green-700" />
+        <ShieldCheckIcon className="w-6 h-6 -m-2 text-primary" />
       </div>
       <hr />
       <ul className="pt-3">

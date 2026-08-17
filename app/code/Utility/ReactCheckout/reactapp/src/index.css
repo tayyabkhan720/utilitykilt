@@ -8,5 +8,6 @@
 @import url(tailwindcss/components/button.css);
 @import url(tailwindcss/components/modal.css);
 @import url(tailwindcss/components/theming.css);
+@import url(tailwindcss/components/checkout.css);
 
 @import "tailwindcss/utilities";
