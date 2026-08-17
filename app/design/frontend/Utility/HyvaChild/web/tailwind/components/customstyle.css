@@ -35,6 +35,7 @@ label{
     @apply ring-1 ring-primary;
 }
 :is([type=checkbox], .form-checkbox):checked, 
+:is([type=radio],.form-radio):checked,
 :is([type=checkbox], .form-checkbox):indeterminate {
     @apply bg-primary border-primary;
 }

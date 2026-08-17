@@ -55,7 +55,7 @@ function ShippingAddressView() {
           {isCartShippingAddressValid && (
             <div
               className={
-                !isLoggedIn || hideOtherAddrSection ? 'md:w-1/2' : 'w-full'
+                !isLoggedIn || hideOtherAddrSection ? 'w-full' : 'w-full'
               }
             >
               <ShippingAddressSelected />

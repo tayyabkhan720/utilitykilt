@@ -1,0 +1,3 @@
+/* :is([type=checkbox],[type=radio],.form-checkbox,.form-radio):focus, :is([type=checkbox],[type=radio],.form-checkbox,.form-radio):checked{
+    @apply backround-primary;
+} */

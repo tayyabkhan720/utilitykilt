@@ -26,7 +26,10 @@ function RadioInput({
           {...rest}
         />
         {label && !React.isValidElement(label) ? (
-          <label htmlFor={inputId} className="inline-block pl-2 cursor-pointer">
+          <label
+            htmlFor={inputId}
+            className="inline-block mb-0 pl-2 cursor-pointer"
+          >
             {label}
           </label>
         ) : (
