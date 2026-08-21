@@ -1,6 +1,6 @@
 /* purgecss start ignore */
-@import "tailwindcss/base";
-@import "tailwindcss/components";
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
 /* purgecss end ignore */
 
 @import url(tailwindcss/components/forms.css);
@@ -10,4 +10,4 @@
 @import url(tailwindcss/components/theming.css);
 @import url(tailwindcss/components/checkout.css);
 
-@import "tailwindcss/utilities";
+@import 'tailwindcss/utilities';

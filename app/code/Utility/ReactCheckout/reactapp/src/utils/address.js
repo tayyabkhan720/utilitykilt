@@ -7,6 +7,7 @@ import RootElement from './rootElement';
 import LocalStorage from './localStorage';
 import { prepareFullName } from './customer';
 import { BILLING_ADDR_FORM, config } from '../config';
+import { ESTIMATE_PLACEHOLDER_FIRSTNAME } from './estimateAddressConstants';
 import { _cleanObjByKeys, _isNumber, _toString } from './index';
 
 export const initialCountry =
@@ -19,9 +20,13 @@ export const CART_SHIPPING_ADDRESS = 'cart_shipping_address';
 export const billingSameAsShippingField = `${BILLING_ADDR_FORM}.isSameAsShipping`;
 
 export function isCartAddressValid(address) {
-  return !!(address && address.firstname && address.country);
+  return !!(
+    address &&
+    address.firstname &&
+    address.country &&
+    address.firstname !== ESTIMATE_PLACEHOLDER_FIRSTNAME
+  );
 }
-
 export function isValidCustomerAddressId(addressId) {
   // Number.isNaN should not use here. both functions works differently.
   // eslint-disable-next-line no-restricted-globals

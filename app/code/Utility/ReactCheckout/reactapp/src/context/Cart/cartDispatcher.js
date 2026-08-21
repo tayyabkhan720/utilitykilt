@@ -19,13 +19,16 @@ import {
   getCartInfoAfterMergeAction,
 } from './cart/actions';
 import {
+  setShippingMethodAction,
+  estimateShippingMethodsAction,
+} from './shippingMethod/actions';
+import {
   addCartShippingAddressAction,
   setSelectedShippingAddressAction,
   setCustomerAddrAsShippingAddrAction,
 } from './shippingAddress/actions';
 import { updateCartItemAction } from './cartItems/actions';
 import { setEmailOnGuestCartAction } from './email/actions';
-import { setShippingMethodAction } from './shippingMethod/actions';
 import { placeOrderAction, setOrderInfoAction } from './order/actions';
 import { storeAggregatedCartStatesAction } from './aggregated/actions';
 
@@ -41,6 +44,7 @@ const dispatchMapper = {
   setPaymentMethod: setPaymentMethodAction,
   removeCouponCode: removeCouponCodeAction,
   setShippingMethod: setShippingMethodAction,
+  estimateShippingMethods: estimateShippingMethodsAction,
   getCustomerCartId: getCustomerCartIdAction,
   getCustomerCartInfo: getGuestCartInfoAction,
   setEmailOnGuestCart: setEmailOnGuestCartAction,
