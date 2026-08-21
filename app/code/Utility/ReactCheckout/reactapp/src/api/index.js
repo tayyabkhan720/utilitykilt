@@ -10,6 +10,7 @@ import setPaymentMethod from './cart/setPaymentMethod';
 import setBillingAddress from './cart/setBillingAddress';
 import setShippingMethod from './cart/setShippingMethod';
 import setShippingAddress from './cart/setShippingAddress';
+import estimateShippingMethods from './cart/estimateShippingMethods/estimateShippingMethods';
 import fetchCountryList from './countries/fetchCountryList';
 import fetchCustomerCart from './customer/fetchCustomerCart';
 import fetchCustomerInfo from './customer/fetchCustomerInfo';
@@ -25,6 +26,8 @@ import setCustomerAddressOnCartBilling from './cart/setCustomerAddressOnBilling'
 import setCustomerAddrOnShippingAddr from './cart/setCustomerAddrOnShippingAddr';
 
 export const generateCustomerToken = generateToken;
+
+export const estimateShippingMethodsRequest = estimateShippingMethods;
 
 export const ajaxLoginRequest = ajaxLogin;
 

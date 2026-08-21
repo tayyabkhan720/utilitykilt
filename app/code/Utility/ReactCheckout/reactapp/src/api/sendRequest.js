@@ -38,6 +38,9 @@ export default function sendRequest(
   additionalHeaders = {},
   requestType = false
 ) {
+  // eslint-disable-next-line no-console
+  console.log('🔥 sendRequest CALLED with:', queryParams);
+
   const headers = {
     'Content-Type': 'application/json',
     Store: storeCode,
@@ -71,6 +74,9 @@ export default function sendRequest(
       return response.json();
     })
     .then((response) => {
+      // eslint-disable-next-line no-console
+      console.log('🔥 sendRequest RESPONSE:', response);
+
       if (!responseContainErrors(response) || !responseDataEmpty(response)) {
         return response;
       }

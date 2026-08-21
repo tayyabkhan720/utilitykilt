@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useRef, useCallback, useEffect } from 'react';
 
-import { SaveButton } from '../../address';
 import TextInput from '../../common/Form/TextInput';
 import SelectInput from '../../common/Form/SelectInput';
 import CancelButton from './shippingAddressForm/CancelButton';
@@ -9,12 +8,17 @@ import SaveInBookCheckbox from '../../address/components/SaveInBookCheckbox';
 import { __ } from '../../../i18n';
 import { _keys } from '../../../utils';
 import LocalStorage from '../../../utils/localStorage';
-import { isValidCustomerAddressId } from '../../../utils/address';
+import {
+  isValidCustomerAddressId,
+  isCartAddressValid,
+} from '../../../utils/address';
 import useCountryState from '../../address/hooks/useCountryState';
 import useAddressWrapper from '../../address/hooks/useAddressWrapper';
 import useFormValidateThenSubmit from '../../../hook/useFormValidateThenSubmit';
 import useShippingAddressAppContext from '../hooks/useShippingAddressAppContext';
 import useShippingAddressFormikContext from '../hooks/useShippingAddressFormikContext';
+import useShippingAddressCartContext from '../hooks/useShippingAddressCartContext';
+import { isAddressSame } from '../../placeOrder/utility';
 
 function ShippingAddressForm() {
   const {
@@ -33,7 +37,6 @@ function ShippingAddressForm() {
     setFieldTouched,
     validationSchema,
     setSelectedAddress,
-    isBillingFormTouched,
   } = useShippingAddressFormikContext();
   const { isLoggedIn } = useShippingAddressAppContext();
   const { reCalculateMostRecentAddressOptions } = useAddressWrapper();
@@ -41,6 +44,8 @@ function ShippingAddressForm() {
     fields,
     formikData,
   });
+  const { cartShippingAddress, estimateShippingMethods } =
+    useShippingAddressCartContext();
   const formSubmitHandler = useFormValidateThenSubmit({
     formId,
     formikData,
@@ -48,7 +53,8 @@ function ShippingAddressForm() {
     validationSchema,
   });
 
-  const saveAddressAction = async () => {
+  // Save action (moved before effect and wrapped with useCallback to satisfy eslint)
+  const saveAddressAction = useCallback(async () => {
     let newAddressId = selectedAddress;
 
     // Updating mostRecentAddressList in prior to form submit; Because values
@@ -82,7 +88,50 @@ function ShippingAddressForm() {
     setSelectedAddress(newAddressId);
     LocalStorage.saveCustomerAddressInfo(newAddressId, isBillingSame);
     reCalculateMostRecentAddressOptions();
-  };
+  }, [
+    selectedAddress,
+    isLoggedIn,
+    shippingValues,
+    formSubmitHandler,
+    setIsNewAddress,
+    setSelectedAddress,
+    isBillingSame,
+    reCalculateMostRecentAddressOptions,
+  ]);
+
+  // Save on field blur (like default checkout) and avoid repeated saves of identical data
+  const lastSavedValuesRef = useRef(null);
+
+  const handleFieldBlur = useCallback(
+    async (/* event */) => {
+      try {
+        if (!isCartAddressValid(shippingValues)) {
+          return;
+        }
+
+        // If the cart already contains the same address (server-normalized), avoid re-saving
+        if (
+          cartShippingAddress &&
+          isAddressSame(cartShippingAddress, shippingValues)
+        ) {
+          // keep lastSavedValuesRef in sync so subsequent blurs don't re-trigger
+          lastSavedValuesRef.current = JSON.stringify(shippingValues || {});
+          return;
+        }
+
+        const current = JSON.stringify(shippingValues || {});
+        if (lastSavedValuesRef.current === current) {
+          return;
+        }
+
+        await saveAddressAction();
+        lastSavedValuesRef.current = current;
+      } catch (err) {
+        // swallow - saveAddressAction handles errors and messages
+      }
+    },
+    [shippingValues, saveAddressAction, cartShippingAddress]
+  );
 
   const handleCountryChange = (event) => {
     const newValue = event.target.value;
@@ -90,7 +139,22 @@ function ShippingAddressForm() {
     setFieldValue(fields.country, newValue);
     // when country is changed, then always reset region field.
     setFieldValue(fields.region, '');
+
+    // Fire estimate call as soon as country is picked so shipping methods
+    // appear before the rest of the address is filled — mirrors default
+    // Magento Luma checkout behaviour.
+    if (newValue) {
+      estimateShippingMethods(newValue);
+    }
   };
+  const hasEstimatedOnMount = useRef(false);
+  useEffect(() => {
+    if (selectedCountry && !hasEstimatedOnMount.current) {
+      hasEstimatedOnMount.current = true;
+      estimateShippingMethods(selectedCountry);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCountry]);
 
   if (viewMode) {
     return null;
@@ -106,6 +170,7 @@ function ShippingAddressForm() {
             formikData={formikData}
             label={__('First name')}
             onKeyDown={handleKeyDown}
+            onBlur={handleFieldBlur}
             placeholder={__('First name')}
           />
           <TextInput
@@ -114,6 +179,7 @@ function ShippingAddressForm() {
             label={__('Last name')}
             formikData={formikData}
             onKeyDown={handleKeyDown}
+            onBlur={handleFieldBlur}
             placeholder={__('Last name')}
           />
         </div>
@@ -124,6 +190,7 @@ function ShippingAddressForm() {
             name={fields.phone}
             formikData={formikData}
             onKeyDown={handleKeyDown}
+            onBlur={handleFieldBlur}
             placeholder={__('+32 000 000 000')}
           />
 
@@ -133,6 +200,7 @@ function ShippingAddressForm() {
             name={fields.company}
             formikData={formikData}
             onKeyDown={handleKeyDown}
+            onBlur={handleFieldBlur}
             placeholder={__('Company')}
           />
         </div>
@@ -141,6 +209,7 @@ function ShippingAddressForm() {
           label={__('Street')}
           formikData={formikData}
           onKeyDown={handleKeyDown}
+          onBlur={handleFieldBlur}
           placeholder={__('Street')}
           name={`${fields.street}[0]`}
         />
@@ -152,6 +221,7 @@ function ShippingAddressForm() {
             formikData={formikData}
             options={countryOptions}
             onChange={handleCountryChange}
+            onBlur={handleFieldBlur}
           />
 
           <SelectInput
@@ -161,6 +231,7 @@ function ShippingAddressForm() {
             options={stateOptions}
             formikData={formikData}
             isHidden={!selectedCountry || !hasStateOptions}
+            onBlur={handleFieldBlur}
           />
         </div>
         <div className="flex">
@@ -171,6 +242,7 @@ function ShippingAddressForm() {
             formikData={formikData}
             label={__('Postal Code')}
             onKeyDown={handleKeyDown}
+            onBlur={handleFieldBlur}
           />
           <TextInput
             required
@@ -179,6 +251,7 @@ function ShippingAddressForm() {
             formikData={formikData}
             placeholder={__('City')}
             onKeyDown={handleKeyDown}
+            onBlur={handleFieldBlur}
           />
         </div>
 
@@ -188,12 +261,8 @@ function ShippingAddressForm() {
         </div>
       </div>
 
-      <div className="flex items-center justify-around mt-2">
+      <div className="flex items-center justify-start mt-2">
         <CancelButton />
-        <SaveButton
-          isFormValid={isBillingFormTouched}
-          actions={{ saveAddress: saveAddressAction }}
-        />
       </div>
     </>
   );

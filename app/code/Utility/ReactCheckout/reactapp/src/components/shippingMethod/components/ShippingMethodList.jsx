@@ -16,7 +16,7 @@ function ShippingMethodList({ methodRenderers }) {
     selectedMethod,
     setFieldTouched,
   } = useShippingMethodFormContext();
-  const { methodsAvailable, methodList } = useShippingMethodCartContext();
+  const { methodList } = useShippingMethodCartContext();
   const { carrierCode: methodCarrierCode, methodCode: methodMethodCode } =
     selectedMethod || {};
   const selectedMethodId = `${methodCarrierCode}__${methodMethodCode}`;
@@ -34,11 +34,6 @@ function ShippingMethodList({ methodRenderers }) {
     setFieldTouched(fields.methodCode, true);
     await submitHandler({ carrierCode, methodCode });
   };
-
-  if (!methodsAvailable) {
-    return null;
-  }
-
   return (
     <div className="py-4">
       <ul>

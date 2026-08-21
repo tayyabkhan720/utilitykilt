@@ -1,11 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="utf-8" />
     <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1, shrink-to-fit=no"
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
     <meta name="theme-color" content="#000000" />
 
@@ -19,36 +18,36 @@
   Learn how to configure a non-root public URL by running `npm run build`.
 -->
     <title>React App</title>
-</head>
-<body data-container="body" class="checkout-index-index page-layout-checkout bg-container">
-<noscript>
-    You need to enable JavaScript to run this app.
-</noscript>
+  </head>
+  <body
+    data-container="body"
+    class="checkout-index-index page-layout-checkout bg-container"
+  >
+    <noscript> You need to enable JavaScript to run this app. </noscript>
 
-<script>
-    // if we don't have localStorage data, prompt for a manual input
-    var mageCacheStorage = window.localStorage.getItem(
-        'mage-cache-storage'
-    );
-    if (!mageCacheStorage) {
+    <script>
+      // if we don't have localStorage data, prompt for a manual input
+      var mageCacheStorage = window.localStorage.getItem('mage-cache-storage');
+      if (!mageCacheStorage) {
         const input = prompt(
-            'No quoteId or Token found. Enter quoteId:Token or only quoteId for guest quote'
+          'No quoteId or Token found. Enter quoteId:Token or only quoteId for guest quote'
         );
         const [cartId, signin_token] = input.split(':');
         window.localStorage.setItem(
-            'mage-cache-storage',
-            JSON.stringify({ cart: { cartId }, customer: { signin_token}})
+          'mage-cache-storage',
+          JSON.stringify({ cart: { cartId }, customer: { signin_token } })
         );
-    }
-</script>
-<div class="page-wrapper">
-    <main id="maincontent" class="page-main"><a id="contentarea" tabindex="-1"></a>
+      }
+    </script>
+    <div class="page-wrapper">
+      <main id="maincontent" class="page-main">
+        <a id="contentarea" tabindex="-1"></a>
         <div class="columns">
-            <div class="column main">
-                <div
-                    id="react-checkout"
-                    class="checkout-container"
-                    data-checkout_config='{
+          <div class="column main">
+            <div
+              id="react-checkout"
+              class="checkout-container"
+              data-checkout_config='{
                         "storeCode": "default",
                         "language":"en_US",
                         "currency": {
@@ -56,12 +55,12 @@
                             "symbol": "$"
                         }
                     }'
-                />
-            </div>
+            />
+          </div>
         </div>
-    </main>
-</div>
-<!--
+      </main>
+    </div>
+    <!--
 This HTML file is a template.
 If you open it directly in the browser, you will see an empty page.
 
@@ -71,5 +70,5 @@ The build step will place the bundled scripts into the <body> tag.
 To begin the development, run `npm start` or `yarn start`.
 To create a production bundle, use `npm run build` or `yarn build`.
 -->
-</body>
+  </body>
 </html>

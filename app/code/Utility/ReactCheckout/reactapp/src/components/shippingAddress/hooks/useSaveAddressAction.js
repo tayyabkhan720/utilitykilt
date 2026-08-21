@@ -1,4 +1,5 @@
 import { get as _get } from 'lodash-es';
+import { useRef } from 'react';
 
 import {
   prepareAddressForSaving,
@@ -42,6 +43,9 @@ export default function useSaveAddressAction(shippingAddressFormContext) {
   const { setBillingSelected, setIsBillingCustomerAddress } =
     useAddressWrapper();
 
+  // prevent concurrent save operations
+  const isSavingRef = useRef(false);
+
   const submitHandler = async (customerAddressId) => {
     const mostRecentAddresses = LocalStorage.getMostRecentlyUsedAddressList();
     const recentAddressInUse = mostRecentAddresses[customerAddressId];
@@ -54,8 +58,7 @@ export default function useSaveAddressAction(shippingAddressFormContext) {
       !recentAddressInUse &&
       isLoggedIn;
 
-    setPageLoader(true);
-
+    // NOTE: page loader is managed by the outer wrapper to avoid nested toggles
     let updateBillingAddress = _emptyFunc();
     let updateShippingAddress = _makePromise(
       addCartShippingAddress,
@@ -104,12 +107,15 @@ export default function useSaveAddressAction(shippingAddressFormContext) {
         isSameAsShipping: true,
       });
     }
-
-    setPageLoader(false);
   };
 
   return async (addressId) => {
     setMessage(false);
+
+    // prevent concurrent saves
+    if (isSavingRef.current) {
+      return;
+    }
 
     const addressIdContext = addressId || selectedAddress;
     const updateCartAddressPromise = _makePromise(
@@ -118,6 +124,7 @@ export default function useSaveAddressAction(shippingAddressFormContext) {
     );
 
     try {
+      isSavingRef.current = true;
       setPageLoader(true);
 
       await updateCartAddressPromise();
@@ -133,11 +140,12 @@ export default function useSaveAddressAction(shippingAddressFormContext) {
 
       LocalStorage.saveCustomerAddressInfo(addressIdContext, isBillingSame);
       setSuccessMessage(__('Shipping address updated successfully.'));
-      setPageLoader(false);
     } catch (error) {
       console.error(error);
       setErrorMessage(__('Shipping address update failed. Please try again'));
+    } finally {
       setPageLoader(false);
+      isSavingRef.current = false;
     }
   };
 }
