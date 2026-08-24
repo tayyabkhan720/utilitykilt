@@ -1,0 +1,16 @@
+type Mutation {
+    setCustomerNoteOnCart(input: SetCustomerNoteOnCartInput!): SetCustomerNoteOnCartOutput @resolver(class: "Utility\\CheckoutComments\\Model\\Resolver\\SetCustomerNoteOnCart")
+}
+
+input SetCustomerNoteOnCartInput {
+    cart_id: String!
+    note: String!
+}
+
+type SetCustomerNoteOnCartOutput {
+    cart: Cart!
+}
+
+type Cart {
+    customer_note: String @resolver(class: "Utility\\CheckoutComments\\Model\\Resolver\\CustomerNote")
+}

@@ -12,6 +12,7 @@ import PaymentMethod from '../paymentMethod';
 import BillingAddress from '../billingAddress';
 import ShippingAddress from '../shippingAddress';
 import ShippingMethodsForm from '../shippingMethod';
+import CustomerNote from '../customerNote/CustomerNote';
 import StickyRightSidebar from '../StickyRightSidebar';
 import CheckoutAgreements from '../checkoutAgreements';
 import { config } from '../../config';
@@ -109,6 +110,7 @@ function CheckoutForm() {
               {isTwoColumn && (
                 <>
                   <PaymentMethod />
+                  <CustomerNote />
                   <CouponCode />
                 </>
               )}
@@ -120,6 +122,7 @@ function CheckoutForm() {
                   {!isVirtualCart && <ShippingMethodsForm />}
                 </AddressWrapper>
                 <PaymentMethod />
+                <CustomerNote />
                 <CouponCode />
               </div>
             )}
