@@ -7,6 +7,7 @@ import createEmptyCart from './cart/createEmptyCart';
 import generateToken from './customer/generateToken';
 import updateCartItems from './cart/updateCartItems';
 import setPaymentMethod from './cart/setPaymentMethod';
+import setCustomerNote from './cart/setCustomerNote/setCustomerNote';
 import setBillingAddress from './cart/setBillingAddress';
 import setShippingMethod from './cart/setShippingMethod';
 import setShippingAddress from './cart/setShippingAddress';
@@ -42,6 +43,8 @@ export const setEmailOnGuestCartRequest = setEmailOnGuestCart;
 export const setShippingAddressRequest = setShippingAddress;
 
 export const setBillingAddressRequest = setBillingAddress;
+
+export const setCustomerNoteRequest = setCustomerNote;
 
 export const setCustomerAddrAsCartBillingAddrRequest =
   setCustomerAddressOnCartBilling;

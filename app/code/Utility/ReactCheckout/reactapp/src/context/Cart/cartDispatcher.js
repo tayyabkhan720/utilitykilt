@@ -31,6 +31,7 @@ import { updateCartItemAction } from './cartItems/actions';
 import { setEmailOnGuestCartAction } from './email/actions';
 import { placeOrderAction, setOrderInfoAction } from './order/actions';
 import { storeAggregatedCartStatesAction } from './aggregated/actions';
+import { setCustomerNoteAction } from './customerNote/actions';
 
 const dispatchMapper = {
   placeOrder: placeOrderAction,
@@ -56,6 +57,7 @@ const dispatchMapper = {
   setCartSelectedShippingAddress: setSelectedShippingAddressAction,
   setCustomerAddressAsBillingAddress: setCustomerAddrAsBillingAddrAction,
   setCustomerAddressAsShippingAddress: setCustomerAddrAsShippingAddrAction,
+  setCustomerNote: setCustomerNoteAction,
 };
 
 function cartDispatchers(dispatch, appDispatch) {
