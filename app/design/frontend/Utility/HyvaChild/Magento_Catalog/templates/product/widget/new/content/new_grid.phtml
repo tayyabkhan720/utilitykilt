@@ -57,9 +57,6 @@ if ($exist = ($block->getProductCollection() && $block->getProductCollection()->
 
 <?php if ($exist) :?>
     <div class="block widget block-new-products<?= /* @noEscape */ $mode ?>">
-        <div class="block-title">
-            <strong role="heading" aria-level="2"><?= $block->escapeHtml($title) ?></strong>
-        </div>
         <div class="block-content">
             <?= /* @noEscape */ '<!-- ' . $image . '-->' ?>
             <div class="products-<?= /* @noEscape */ $mode ?> <?= /* @noEscape */ $mode ?>">
