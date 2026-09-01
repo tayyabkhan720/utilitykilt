@@ -1,3 +1,27 @@
+@layer utilities {
+  @keyframes marquee {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* 1. Define custom animation properties natively instead of using @apply group-hover */
+  .animate-marquee {
+    animation: marquee 22s linear infinite;
+    display: inline-block;
+  }
+
+  /* 2. Map the pause behavior to the parent .group element cleanly using a CSS selector */
+  .group:hover .animate-marquee {
+    animation-play-state: paused;
+  }
+
+  /* 3. Handle structure layouts without breaking Tailwind compilation */
+  .marquee-wrap {
+    overflow: hidden;
+    white-space: nowrap;
+  }
+}
+
 .catalog-category-view .price-box.price-final_price {
     @apply flex gap-6 items-center justify-center;
 }
