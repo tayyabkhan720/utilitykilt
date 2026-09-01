@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cc9b06dbe38d269f13d66d11f45f1483",
+    "content-hash": "7f26f0918360ad13617826fc2c65a1ef",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -5971,6 +5971,111 @@
                 "source": "https://kishansavaliya.com"
             },
             "time": "2026-07-07T04:24:12+00:00"
+        },
+        {
+            "name": "magefan/module-admin-user-guide",
+            "version": "2.0.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magefan/module-admin-user-guide.git",
+                "reference": "43b6a8f17f0e0dd723fe3d3099ff71263a2e94dd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magefan/module-admin-user-guide/zipball/43b6a8f17f0e0dd723fe3d3099ff71263a2e94dd",
+                "reference": "43b6a8f17f0e0dd723fe3d3099ff71263a2e94dd",
+                "shasum": ""
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "Magefan\\AdminUserGuide\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "description": "Admin panel user guides.",
+            "support": {
+                "issues": "https://github.com/magefan/module-admin-user-guide/issues",
+                "source": "https://github.com/magefan/module-admin-user-guide/tree/2.0.7"
+            },
+            "time": "2025-11-14T16:00:56+00:00"
+        },
+        {
+            "name": "magefan/module-community",
+            "version": "2.4.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magefan/module-community.git",
+                "reference": "feb9635a6246e99fd836149ffaaec4dfc9ddb415"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magefan/module-community/zipball/feb9635a6246e99fd836149ffaaec4dfc9ddb415",
+                "reference": "feb9635a6246e99fd836149ffaaec4dfc9ddb415",
+                "shasum": ""
+            },
+            "require": {
+                "magefan/module-admin-user-guide": ">=2.0.7"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "Magefan\\Community\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "description": "Magefan core module, required for other Magefan extensions",
+            "support": {
+                "issues": "https://github.com/magefan/module-community/issues",
+                "source": "https://github.com/magefan/module-community/tree/2.4.6"
+            },
+            "time": "2026-08-18T09:20:46+00:00"
+        },
+        {
+            "name": "magefan/module-product-label",
+            "version": "2.3.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magefan/module-product-label.git",
+                "reference": "d35569a777a8016d39f2dcac4a717bf6a46f0386"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magefan/module-product-label/zipball/d35569a777a8016d39f2dcac4a717bf6a46f0386",
+                "reference": "d35569a777a8016d39f2dcac4a717bf6a46f0386",
+                "shasum": ""
+            },
+            "require": {
+                "magefan/module-community": ">=2.3.5"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "Magefan\\ProductLabel\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "Magefan",
+                    "email": "support@magefan.com"
+                }
+            ],
+            "description": "Product Label extension for Magento 2",
+            "support": {
+                "issues": "https://github.com/magefan/module-product-label/issues",
+                "source": "https://github.com/magefan/module-product-label/tree/2.3.5"
+            },
+            "time": "2026-07-13T08:25:34+00:00"
         },
         {
             "name": "magento/adobe-stock-integration",
