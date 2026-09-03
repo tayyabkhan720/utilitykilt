@@ -22,8 +22,21 @@
   }
 }
 
+.price-box.price-final_price{
+    @apply flex gap-6 items-center;
+}
+span.special-price{
+    @apply text-[13.5px] font-semibold text-primary;
+}
+span.old-price{
+    @apply text-[#7C89A0] text-[11.5px]!important font-normal;
+}
+
+.summary-it{
+    @apply text-[10.5px] text-[#9FB0C7];
+}
 .catalog-category-view .price-box.price-final_price {
-    @apply flex gap-6 items-center justify-center;
+    @apply flex gap-6 items-center my-2;
 }
 
 .catalog-category-view .price-box.price-final_price span.special-price
