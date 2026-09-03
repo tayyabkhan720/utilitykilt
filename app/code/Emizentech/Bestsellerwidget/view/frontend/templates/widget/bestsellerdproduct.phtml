@@ -1,0 +1,103 @@
+<?php
+if ($exist = ($this->getBestsellerProduct() && $this->getBestsellerProduct()->getPageSize())) {
+    $fet_prodcollection = $this->getBestsellerProduct();
+    $productIds = [ 483, 962, 437, 1600];
+    // $productcount = $this->getProductLimit();
+    // $imagewidth = $this->getProductimagewidth();
+    // $imageheight = $this->getProductimageheight();
+    $mode = 'grid';
+    $type = 'widget-bestseller-grid';
+    $image = 'bestseller_products_content_widget_grid';
+}
+?>
+<?php
+$myBlock = \Magento\Framework\App\ObjectManager::getInstance()->get('Emizentech\Bestsellerwidget\Block\Currentcat');
+// print current category data
+$current = 2;
+if ($myBlock) {
+    $currentCategory = $myBlock->getCurrentCategory();
+    if ($currentCategory) {
+        $current = $currentCategory->getLevel();
+    }
+}
+?>
+<div class="block widget block-bestseller-products setting123">
+    <div class="block-content">
+        <div class="products-grid grid">
+            <div class="product-items widget-bestseller-grid">
+                <li class="product-item">
+                    <div class="product-item-info">
+                        <a href=""></a>
+                    </div>
+                </li>
+            </div>
+        </div> 
+    </div>
+</div>
+<?php if ($exist && $current == 2): ?>
+<div class="block widget block-bestseller-products <?php /* @escapeNotVerified */ echo $mode; ?>">
+    <?php if (count($productIds) < 0 ): ?>
+        <div class="message info empty"><div><?php echo __('We can\'t find products matching the selection.') ?></div></div>
+    <?php else: ?>
+        <div class="block-content">
+            <?php /* @escapeNotVerified */ echo '<!-- ' . $image . '-->' ?>
+            <div class="products-<?php /* @escapeNotVerified */ echo $mode; ?> <?php /* @escapeNotVerified */ echo $mode; ?>">
+                <ol class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 product-items widget-new-grid product-items <?php /* @escapeNotVerified */ echo $type; ?>">
+                    <?php $iterator = 1; ?>
+                    <?php foreach ($productIds as $productId):
+                        $_product = $this->getLoadProduct($productId);
+                        if (!$_product || !$_product->isSaleable() || $_product->getVisibility() == \Magento\Catalog\Model\Product\Visibility::VISIBILITY_NOT_VISIBLE) {
+                            continue; // Skip if product is not loaded, not salable, or not visible individually
+                        }
+                    ?>
+                    <?php /* @escapeNotVerified */ echo($iterator++ == 1) ? '<li class="product-item bg-[#21366a]  border border-white/8
+">' : '</li><li class="product-item bg-[#21366a] border border-white/8">' ?>
+                    <div class="product-item-info">
+                        <?php
+                            $image_url = $block->imageHelperObj()->init($_product, 'product_page_image_small')
+                            ->setImageFile($_product->getFile())
+                            ->getUrl();
+                        ?>
+                        <a href="<?php /* @escapeNotVerified */ echo $_product->getProductUrl() ?>" class="product-item-photo">
+                            <img src="<?php echo  $image_url;?>" alt="<?php echo $this->escapeHtml($_product->getName()) ?>" height="300" width="240" />
+                        </a>
+                        <div class="product-item-details p-4">
+                            <?php
+                                $reviewSummaryHtml = $this->getReviewsSummaryHtml($_product, 'short');
+                                $reviewCount = (int) $_product->getReviewsCount();
+                                $ratingSummary = (int) $_product->getRatingSummary();
+                            ?>
+                            <?php if ($reviewSummaryHtml && $reviewCount > 0): ?>
+                                <div class="mb-1 flex items-center gap-2">
+                                    <span class="[&_.rating-summary]:gap-0 [&_.rating-summary_svg]:h-2 [&_.rating-summary_svg]:w-2 [&_.rating-summary_svg]:fill">
+                                        <?= /* @noEscape */ $reviewSummaryHtml ?>
+                                    </span>
+                                    <span class="summary-it">
+                                        <?= $block->escapeHtml(__('%1% · %2 reviews', $ratingSummary, $reviewCount)) ?>
+                                    </span>
+                                </div>
+                            <?php endif; ?>
+                            <strong class="product-item-name product-item-name text-[13.5px] font-semibold normal-case tracking-normal mt-[5px] mb-[7px] text-white
+">
+                                <a title="<?php echo $block->escapeHtml($_product->getName()) ?>" href="<?php /* @escapeNotVerified */ echo $_product->getProductUrl() ?>" class="product-item-link">
+                                    <?php echo $block->escapeHtml($_product->getName()) ?>
+                                </a>
+                            </strong>
+                            <?php
+                                echo $this->getProductPriceHtml($_product, $type);
+                            ?>
+                            <div class="product-item-actions hidden">
+                                <div class="actions-primary">
+                                    <a class="action tocart primary" href="<?= /* @escapeNotVerified */ $_product->getProductUrl() ?>" ><?= /* @escapeNotVerified */  __('Product Details') ?></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <?php echo($iterator == count($productIds)+1) ? '</li>' : '' ?>
+                    <?php endforeach ?>
+                </ol>
+            </div>
+        </div>
+    <?php endif; ?>
+</div>
+<?php endif; ?>
