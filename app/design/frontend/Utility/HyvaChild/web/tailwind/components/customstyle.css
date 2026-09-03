@@ -29,9 +29,14 @@ span.special-price{
     @apply text-[13.5px] font-semibold text-primary;
 }
 span.old-price{
-    @apply text-[#7C89A0] text-[11.5px]!important font-normal;
+    @apply text-[#7C89A0] font-normal;
 }
-
+.product-item-photo img{
+    @apply w-full;
+}
+.product-item{
+    @apply bg-[#21366a] border border-white/8;
+}
 .summary-it{
     @apply text-[10.5px] text-[#9FB0C7];
 }
