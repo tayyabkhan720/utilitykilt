@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Magefan (support@magefan.com). All rights reserved.
+ * Please visit Magefan.com for license details (https://magefan.com/end-user-license-agreement).
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="mfproductlabel" translate="label" sortOrder="10133090490" showInDefault="1" showInWebsite="1" showInStore="1">
+            <class>separator-top</class>
+            <label>Product Labels</label>
+            <tab>magefan</tab>
+            <resource>Magefan_ProductLabel::mfproductlabel</resource>
+            <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>General Configuration</label>
+                <attribute type="expanded">1</attribute>
+                <field id="version" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <frontend_model>Magefan\ProductLabel\Block\Adminhtml\System\Config\Form\Info</frontend_model>
+                </field>
+                <field id="enabled" translate="label" type="select" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Extension</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="key" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Product Key</label>
+                    <frontend_model>Magefan\Community\Block\Adminhtml\System\Config\Form\ProductKeyField</frontend_model>
+                </field>
+
+                <field id="pp_selector" translate="css class parent label container" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Product Page Label Container</label>
+                    <comment><![CDATA[
+                        Selector for Container <span class="hyva">[For Hyva Theme use: "relative self-center w-full"]</span>
+                       ]]>
+                    </comment>
+                </field>
+
+                <field id="pl_selector" translate="css class parent label container" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Product List Label Container</label>
+                    <comment><![CDATA[
+                        Only one class that located above the product image! <span class="hyva">[For Hyva Theme use: "product-image-photo"]</span>
+                        ]]>
+                    </comment>
+                </field>
+                <field id="exclude_page_types" translate="label" type="multiselect" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Don't Use On Pages</label>
+                    <source_model>Magefan\ProductLabel\Model\Config\Source\PageType</source_model>
+                    <can_be_empty>1</can_be_empty>
+                </field>
+
+                <field id="custom_positions" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="70" translate="label" type="textarea" canRestore="1">
+                    <label>Custom Positions (Plus)</label>
+                    <frontend_model>Magefan\ProductLabel\Block\Adminhtml\System\Config\Form\DynamicRow</frontend_model>
+                    <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
+                    <comment><![CDATA[
+                        These positions will be available in the rule, when you choose position "Custom". There you can select the position from this list.
+                        ]]></comment>
+                </field>
+
+                <field id="rule_validation_scope" translate="label" type="select" sortOrder="80" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Rule Validation Scope</label>
+                    <source_model>Magefan\ProductLabel\Model\Config\Source\RuleValidationScope</source_model>
+
+                    <comment>
+                        <![CDATA[
+        <p>This setting determines how product conditions are validated for product labels.</p>
+        <ul>
+            <li><b>Global (Default):</b> Conditions are validated against the product's global attributes.</li>
+            <li><b>Default Store View(s) per Website:</b> Conditions are validated using product data from the default store view of each website. This is useful for displaying different labels based on website-specific pricing or stock.</li>
+            <li><b>Selected Store View(s) per Rule:</b> This allows you to define a specific store view for condition validation, offering the most granular control. <b>Warning: This option can be resource-intensive and may impact performance.</b></li>
+        </ul>
+        ]]>
+                    </comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>
