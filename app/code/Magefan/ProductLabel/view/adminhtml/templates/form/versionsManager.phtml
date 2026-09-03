@@ -1,0 +1,109 @@
+<?php
+/**
+ * Copyright © Magefan (support@magefan.com). All rights reserved.
+ * Please visit Magefan.com for license details (https://magefan.com/end-user-license-agreement).
+ */
+
+/**
+ * @var $mfSecureRenderer \Magefan\Community\Api\SecureHtmlRendererInterface
+ */
+?>
+
+<?php
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$getModuleVersion = $objectManager->get(\Magefan\Community\Api\GetModuleVersionInterface::class);
+
+$currentPlan = 'Basic';
+
+if ($getModuleVersion->execute('Magefan_ProductLabelExtra')) {
+   return;
+} elseif ($getModuleVersion->execute('Magefan_ProductLabelPlus')) {
+    $currentPlan = 'Plus';
+}
+?>
+
+
+<?php $script = "
+   var versionsManager = {
+        _currentPlan: '" . $currentPlan . "',
+        _selector: {
+            'Extra': [
+                '[name=\"customer_group_ids\"]',
+                '[name=discard_subsequent_rules]',
+                '[data-index=\"product_list\"] [data-mf-type=\"1\"]',
+                '[data-index=\"product_page\"] [data-mf-type=\"1\"]',
+                '[data-index=\"active_from\"]',
+                '[data-index=\"active_to\"]',
+                '[data-index=\"active_from\"] button',
+                '[data-index=\"active_to\"] button',
+                '[name=\"apply_by\"]'
+            ],";
+
+            if ($currentPlan != 'Plus') {
+                $script .= "
+                'Plus': [
+                    '.show-attr-list',
+                    '[data-index=\"product_list\"] [data-mf-type=\"2\"]',
+                    '[data-index=\"product_page\"] [data-mf-type=\"2\"]',
+                    '[name=\"use_the_same_label_for_product_page\"]',
+                    '[data-index=\"preview_button\"]',
+                    '[data-index=\"hide_preview_button\"]',
+                    '[data-index=\"position\"]',
+                    '[data-index=\"pp_position\"]'
+                ]";
+            }
+
+        $script .= "
+        },
+
+        initListener: function () {
+            const observer = new MutationObserver(mutations => {
+                mutations.forEach(mutation => {
+                    for (let plan in versionsManager._selector) {
+                        let planFeatures = versionsManager._selector[plan];
+
+                        planFeatures.forEach(selector => {
+                            if (document.querySelector(selector)) {
+                                const element = document.querySelector(selector);
+                                element.addEventListener('click', function (event) {
+                                    if (versionsManager._currentPlan != plan) {
+                                        versionsManager.showAlert(plan)
+                                    }
+
+                                    event.preventDefault();
+                                    event.stopPropagation();
+                                });
+
+                                // Remove the selector from _selector
+                                versionsManager._selector[plan] = versionsManager._selector[plan].filter(item => item !== selector);
+                            }
+                        });
+                    }
+                });
+            });
+
+            // Start observing the document
+            observer.observe(document.body, { childList: true, subtree: true });
+        },
+
+        showAlert: function (extensionPlan) {
+            require(['jquery', 'Magento_Ui/js/modal/alert'], function($, alert) {
+                alert({
+                    title: 'Upgrade to use this option.',
+                    content: 'This feature is available in <strong>' + extensionPlan + '</strong> plan only.',
+                    buttons: [{
+                        text: 'Upgrade Plan Now',
+                        class: 'action primary accept',
+                        click: function () {
+                            window.open('https://magefan.com/magento-2-product-labels/pricing?utm_source=admin&utm_medium=config&utm_campaign=upgrade-popup');
+                        }
+                    }]
+                });
+            });
+        }
+    };
+
+    versionsManager.initListener();
+   "; ?>
+
+<?= /* @noEscape */ $mfSecureRenderer->renderTag('script', [], $script, false) ?>

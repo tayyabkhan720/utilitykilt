@@ -1,0 +1,41 @@
+<?php
+/**
+ * Copyright © Magefan (support@magefan.com). All rights reserved.
+ * Please visit Magefan.com for license details (https://magefan.com/end-user-license-agreement).
+ */
+?>
+<?php
+/**
+ * @var $block \Magefan\ProductLabel\Block\LabelCss
+ * @var $mfSecureRenderer \Magefan\Community\Api\SecureHtmlRendererInterface
+ * @var $mfHyvaThemeDetection \Magefan\Community\Api\HyvaThemeDetectionInterface
+ * @var $escaper \Magento\Framework\Escaper
+ */
+?>
+
+<?php if (!$mfHyvaThemeDetection->execute()) { ?>
+    <style>
+        .fotorama .mf-label-position-custom {display: none;}
+        .product.media > .mf-label-container {display: none;}
+    </style>
+
+    <?php $script = "
+    require(['jquery'], function ($) {
+        $('[data-gallery-role=gallery-placeholder]').on('gallery:loaded', function () {
+
+            let mfLabelContainer = $(this).parent().find('.mf-label-container');
+
+            if (!mfLabelContainer.length) {
+                mfLabelContainer = $('.product.media .mf-label-container');
+            }
+
+            if (mfLabelContainer.length) {
+                mfLabelContainer.prependTo('" . $escaper->escapeHtml($block->getConfig()->getProductPageContainerSelector()) . "')
+            }
+        });
+    });
+   "; ?>
+
+    <?= /* @noEscape */ $mfSecureRenderer->renderTag('script', [], $script, false) ?>
+
+<?php } ?>

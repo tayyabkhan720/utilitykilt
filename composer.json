@@ -28,7 +28,6 @@
         "laminas/laminas-mail": "^2.25",
         "laminas/laminas-serializer": "^2.18",
         "mage2kishan/module-search-autocomplete": "^1.0",
-        "magefan/module-product-label": "^2.3",
         "magento/composer-dependency-version-audit-plugin": "~0.1",
         "magento/composer-root-update-plugin": "^2.0.4",
         "magento/product-community-edition": "2.4.8-p4",
