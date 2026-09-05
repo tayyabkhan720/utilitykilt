@@ -34,7 +34,7 @@ span.old-price{
 .product-item-photo img{
     @apply w-full;
 }
-.product-item{
+.block-bestseller .product-item{
     @apply bg-[#21366a] border border-white/8;
 }
 .summary-it{
