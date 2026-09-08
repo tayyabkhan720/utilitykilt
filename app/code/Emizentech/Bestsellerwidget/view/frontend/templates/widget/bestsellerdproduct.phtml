@@ -42,7 +42,7 @@ if ($myBlock) {
         <div class="block-content">
             <?php /* @escapeNotVerified */ echo '<!-- ' . $image . '-->' ?>
             <div class="products-<?php /* @escapeNotVerified */ echo $mode; ?> <?php /* @escapeNotVerified */ echo $mode; ?>">
-                <ol class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 product-items widget-new-grid product-items <?php /* @escapeNotVerified */ echo $type; ?>">
+                <ol class="grid grid-cols-2 gap-4 sm:grid-cols-2 md:grid-cols-4 product-items widget-new-grid product-items <?php /* @escapeNotVerified */ echo $type; ?>">
                     <?php $iterator = 1; ?>
                     <?php foreach ($productIds as $productId):
                         $_product = $this->getLoadProduct($productId);
@@ -50,7 +50,7 @@ if ($myBlock) {
                             continue; // Skip if product is not loaded, not salable, or not visible individually
                         }
                     ?>
-                    <?php /* @escapeNotVerified */ echo($iterator++ == 1) ? '<li class="product-item bg-[#21366a]  border border-white/8
+                    <?php /* @escapeNotVerified */ echo($iterator++ == 1) ? '<li class="product-item bg-[#21366a] border border-white/8
 ">' : '</li><li class="product-item bg-[#21366a] border border-white/8">' ?>
                     <div class="product-item-info">
                         <?php
@@ -79,8 +79,7 @@ if ($myBlock) {
                                     </span>
                                 </div>
                             <?php endif; ?>
-                            <strong class="product-item-name product-item-name text-[13.5px] font-semibold normal-case tracking-normal mt-[5px] mb-[7px] text-white
-">
+                            <strong class="product-item-name text-[13.5px] font-semibold normal-case tracking-normal mt-[5px] mb-[7px] text-white block truncate">
                                 <a title="<?php echo $block->escapeHtml($_product->getName()) ?>" href="<?php /* @escapeNotVerified */ echo $_product->getProductUrl() ?>" class="product-item-link">
                                     <?php echo $block->escapeHtml($_product->getName()) ?>
                                 </a>
