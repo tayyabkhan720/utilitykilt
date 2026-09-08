@@ -85,8 +85,8 @@
                  <transparency>true</transparency>
             </image>
             <image id="product_page_image_small" type="thumbnail">
-                <width>80</width>
-                <height>80</height>
+                <width>240</width>
+                <height>300</height>
             </image>
             <image id="product_swatch_image_large" type="image" />
             <image id="product_swatch_image_medium" type="image">

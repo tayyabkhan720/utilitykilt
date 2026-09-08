@@ -14,6 +14,14 @@
         </arguments>
         <block class="Magento\Wishlist\Block\Link" name="header-wishlist" as="wishlist" template="Magento_Wishlist::link.phtml"/>
     </referenceBlock> -->
+
+            <referenceContainer name="header.container">
+            <block class="Magento\Framework\View\Element\Template"
+                   name="homepage.content"
+                   template="Magento_Theme::html/topbar.phtml"
+                   before="-"
+                    />
+        </referenceContainer>
         <!-- 1. Footer Container Adjustments -->
     <referenceContainer name="footer-container">
         <block class="Magento\Newsletter\Block\Subscribe"

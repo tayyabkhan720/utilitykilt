@@ -59,7 +59,9 @@ if ($myBlock) {
                             ->getUrl();
                         ?>
                         <a href="<?php /* @escapeNotVerified */ echo $_product->getProductUrl() ?>" class="product-item-photo">
-                            <img src="<?php echo  $image_url;?>" alt="<?php echo $this->escapeHtml($_product->getName()) ?>" height="300" width="240" />
+                            <img src="<?php echo  $image_url;?>" alt="<?php echo $this->escapeHtml($_product->getName()) ?>" 
+                            class="product-image-photo w-full h-[200px] object-cover product-image-photo object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                            />
                         </a>
                         <div class="product-item-details p-4">
                             <?php
