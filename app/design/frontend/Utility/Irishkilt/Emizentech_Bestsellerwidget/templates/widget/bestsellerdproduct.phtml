@@ -4,6 +4,7 @@
  * - Single product load pass (no duplicate getLoadProduct calls)
  * - Batch category name resolution (1 query total, not N+1)
  * - Deepest-level category picked per product (most specific, not root)
+ * - Per-product discount percentage badge
  */
 
 if ($exist = ($this->getBestsellerProduct() && $this->getBestsellerProduct()->getPageSize())) {
@@ -45,8 +46,6 @@ if ($myBlock) {
         <?php
             // ---------------------------------------------------------------
             // Step 1: Load products ONCE, filter unsaleable/invisible up front.
-            // Avoids calling getLoadProduct() twice (once for filtering, once
-            // for rendering) which was happening in the original template.
             // ---------------------------------------------------------------
             $loadedProducts = [];
             foreach ($productIds as $productId) {
@@ -62,12 +61,6 @@ if ($myBlock) {
 
             // ---------------------------------------------------------------
             // Step 2: Collect every category id assigned to every product.
-            // getCategoryIds() is a per-product call (Magento doesn't expose
-            // a bulk "category ids for these product ids" API on the product
-            // model), but for a bestseller widget with a handful of hardcoded
-            // IDs this is negligible. The expensive part — resolving id -> name
-            // + level — is batched in Step 3 into a single query regardless
-            // of how many products/categories are involved.
             // ---------------------------------------------------------------
             $categoryIdsByProductId = [];
             $allCategoryIds = [];
@@ -82,9 +75,7 @@ if ($myBlock) {
 
             // ---------------------------------------------------------------
             // Step 3: ONE query to fetch name + level for every category
-            // referenced across all products. addAttributeToSelect limited
-            // to just the two columns actually needed (avoids loading full
-            // EAV attribute set per category row).
+            // referenced across all products.
             // ---------------------------------------------------------------
             $categoryDataById = [];
             if (!empty($allCategoryIds)) {
@@ -104,8 +95,7 @@ if ($myBlock) {
 
             // ---------------------------------------------------------------
             // Step 4: Per product, pick the DEEPEST (most specific) assigned
-            // category — e.g. "Tartan Kilts" (level 3) over "Men" (level 2)
-            // or the root "IrishKiltShop Category" (level 1).
+            // category.
             // ---------------------------------------------------------------
             $categoryNameByProductId = [];
             foreach ($categoryIdsByProductId as $productId => $catIds) {
@@ -134,6 +124,14 @@ if ($myBlock) {
                                 ->getUrl();
 
                             $categoryName = $categoryNameByProductId[$_product->getId()] ?? '';
+
+                            // --- Per-product discount percentage ---
+                            $regularPrice = (float) $_product->getPriceInfo()->getPrice('regular_price')->getAmount()->getValue();
+                            $finalPrice = (float) $_product->getPriceInfo()->getPrice('final_price')->getAmount()->getValue();
+                            $hasDiscount = $finalPrice < $regularPrice && $regularPrice > 0;
+                            $discountPercent = $hasDiscount
+                                ? (int) round((($regularPrice - $finalPrice) / $regularPrice) * 100)
+                                : 0;
                         ?>
                         <a href="<?php /* @escapeNotVerified */ echo $_product->getProductUrl() ?>" class="product-item-photo">
                             <img src="<?php echo $image_url; ?>" alt="<?php echo $this->escapeHtml($_product->getName()) ?>"
@@ -167,7 +165,16 @@ if ($myBlock) {
                                     <?php echo $block->escapeHtml($_product->getName()) ?>
                                 </a>
                             </strong>
-                            <?php echo $this->getProductPriceHtml($_product, $type); ?>
+
+                            <div class="flex items-center justify-center gap-2">
+                                <?php echo $this->getProductPriceHtml($_product, $type); ?>
+                                <?php if ($hasDiscount): ?>
+                                    <span class="text-xs font-bold text-white bg-[#a4342a] px-2 py-0.5 rounded-full">
+                                        -<?= $discountPercent ?>%
+                                    </span>
+                                <?php endif; ?>
+                            </div>
+
                             <div class="product-item-actions hidden">
                                 <div class="actions-primary">
                                     <a class="action tocart primary" href="<?= /* @escapeNotVerified */ $_product->getProductUrl() ?>"><?= /* @escapeNotVerified */ __('Product Details') ?></a>
