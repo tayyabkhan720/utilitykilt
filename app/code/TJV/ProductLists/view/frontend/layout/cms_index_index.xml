@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="content">
+            <block class="TJV\ProductLists\Block\ProductList"
+                   name="tjv.popular.products"
+                   template="TJV_ProductLists::popular_product.phtml"
+                   after="-"/>
+
+            <block class="TJV\ProductLists\Block\ProductList"
+                   name="tjv.most.sale.products"
+                   template="TJV_ProductLists::most_sale.phtml"
+                   after="tjv.popular.products"/>
+        </referenceContainer>
+    </body>
+</page>

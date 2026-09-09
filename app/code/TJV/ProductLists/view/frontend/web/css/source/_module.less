@@ -1,0 +1,67 @@
+//
+// Optional styling for the product cards.
+// If you are using Hyvä/Tailwind, you can replace this file with Tailwind classes.
+//
+
+.tjv-product-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 24px;
+}
+
+.tjv-product-card {
+    text-align: center;
+}
+
+.tjv-product-category {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.tjv-product-name {
+    margin: 0 0 8px;
+    font-size: 18px;
+}
+
+.tjv-product-name a {
+    text-decoration: none;
+}
+
+.tjv-product-rating {
+    margin-bottom: 8px;
+}
+
+.tjv-stars {
+    letter-spacing: 1px;
+}
+
+.tjv-review-count {
+    margin-left: 6px;
+    font-size: 13px;
+}
+
+.tjv-product-price {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.tjv-old-price {
+    text-decoration: line-through;
+    opacity: .6;
+}
+
+.tjv-final-price {
+    font-weight: 700;
+}
+
+.tjv-discount {
+    padding: 3px 7px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 700;
+}
