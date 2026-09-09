@@ -1,0 +1,85 @@
+<?php
+/** @var \TJV\ProductLists\Block\ProductList $block */
+$products = $block->getProducts('popular');
+?>
+
+<?php if ($products): ?>
+<section class="tjv-product-section tjv-popular-products mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8"
+         aria-labelledby="tjv-popular-products-title">
+    <div class="mb-6">
+        <p class="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-neutral-500">
+            <?= $escaper->escapeHtml(__('Featured collection')) ?>
+        </p>
+        <h2 id="tjv-popular-products-title" class="text-2xl font-bold tracking-tight text-neutral-900 sm:text-3xl">
+            <?= $escaper->escapeHtml(__('Popular Products')) ?>
+        </h2>
+    </div>
+
+    <div class="tjv-product-grid grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <?php foreach ($products as $product): ?>
+            <?php
+            $finalPrice = (float) $product->getFinalPrice();
+            $regularPrice = (float) $product->getPrice();
+            $discount = $block->getDiscountPercent($product);
+            $rating = (float) $product->getRatingSummary();
+            $reviews = (int) $product->getReviewsCount();
+            $categoryName = $block->getParentCategoryName($product);
+            ?>
+            <article class="tjv-product-card group flex flex-col overflow-hidden rounded-lg border border-neutral-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+                <a href="<?= $escaper->escapeUrl($block->getProductUrl($product)) ?>"
+                   class="relative block aspect-square overflow-hidden bg-neutral-100">
+                    <img src="<?= $escaper->escapeUrl($block->getProductImageUrl($product)) ?>"
+                         alt="<?= $escaper->escapeHtmlAttr($product->getName()) ?>"
+                         class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                         loading="lazy">
+                    <?php if ($discount > 0): ?>
+                        <span class="absolute left-3 top-3 rounded-full bg-neutral-900 px-3 py-1 text-xs font-bold text-white">
+                            -<?= $escaper->escapeHtml((string) $discount) ?>%
+                        </span>
+                    <?php endif; ?>
+                </a>
+
+                <div class="flex flex-1 flex-col p-4">
+                    <?php if ($categoryName): ?>
+                        <a href="<?= $escaper->escapeUrl($block->getProductUrl($product)) ?>"
+                           class="mb-2 text-xs font-semibold uppercase tracking-wider text-neutral-500 hover:text-neutral-900">
+                            <?= $escaper->escapeHtml($categoryName) ?>
+                        </a>
+                    <?php endif; ?>
+
+                    <h3 class="tjv-product-name mb-3 truncate text-base font-semibold text-neutral-900">
+                        <a href="<?= $escaper->escapeUrl($block->getProductUrl($product)) ?>" class="hover:text-neutral-600">
+                            <?= $escaper->escapeHtml($product->getName()) ?>
+                        </a>
+                    </h3>
+
+                    <div class="tjv-product-rating mb-3 flex items-center gap-2 text-sm"
+                         aria-label="<?= $escaper->escapeHtmlAttr((string) $rating) ?>%">
+                        <span class="tjv-stars text-amber-500" aria-hidden="true">★★★★★</span>
+                        <?php if ($reviews > 0): ?>
+                            <span class="tjv-review-count text-neutral-500">
+                                (<?= $escaper->escapeHtml((string) $reviews) ?>)
+                            </span>
+                        <?php endif; ?>
+                    </div>
+
+                    <div class="tjv-product-price mt-auto flex items-center gap-2">
+                        <?php if ($regularPrice > $finalPrice): ?>
+                            <span class="tjv-old-price text-sm text-neutral-400 line-through">
+                                <?= $escaper->escapeHtml($block->getFormattedPrice($regularPrice)) ?>
+                            </span>
+                        <?php endif; ?>
+                        <span class="tjv-final-price text-lg font-bold text-neutral-900">
+                            <?= $escaper->escapeHtml($block->getFormattedPrice($finalPrice)) ?>
+                        </span>
+
+                        <span class="text-xs font-bold text-white bg-[#a4342a] px-2 py-0.5 rounded-full">
+                            -<?= $escaper->escapeHtml((string) $discount) ?>%
+                          </span>
+                    </div>
+                </div>
+            </article>
+        <?php endforeach; ?>
+    </div>
+</section>
+<?php endif; ?>
