@@ -16,6 +16,55 @@ $products = $block->getProducts('most_sale');
     </div>
 
     <div class="tjv-product-grid grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+
+    <div class="relative flex min-h-[480px] flex-col justify-end overflow-hidden rounded-[14px] bg-[#123524] p-[26px]
+                    before:absolute before:left-0 before:top-0 before:z-0 before:h-[120px] before:w-[120px]
+                    before:bg-[#c9a227] before:content-[''] before:[clip-path:polygon(0_0,100%_0,0_100%)]"
+            >
+                <!-- Photos -->
+                <div
+                    class="absolute right-[18px] top-[18px] z-[1] h-[62%] w-[78%]"
+                >
+                    <!-- Image A -->
+                    <img
+                        class="absolute left-0 top-0 z-[2] h-[88%] w-[62%] rotate-[-8deg] rounded-[8px] object-cover shadow-[0_14px_30px_rgba(0,0,0,0.3)]"
+                        src="https://picsum.photos/seed/iks-tartan-kilt/900/1100"
+                        alt="Tartan kilt"
+                    >
+
+                    <!-- Image B -->
+                    <img
+                        class="absolute bottom-0 right-0 z-[1] h-[70%] w-[52%] rotate-[6deg] rounded-[8px] object-cover shadow-[0_14px_30px_rgba(0,0,0,0.3)]"
+                        src="https://picsum.photos/seed/iks-leather-kilt/900/1100"
+                        alt="Leather kilt"
+                    >
+                </div>
+
+                <!-- Content -->
+                <div
+                    class="relative z-[2] font-[Arial,Helvetica,sans-serif]"
+                >
+                    <h3
+                        class="m-0 mb-[12px] font-[Arial,Helvetica,sans-serif] text-[26px] font-extrabold leading-[1.28] text-white"
+                    >
+                        Your Trusted<br>
+                        Kilt Partner
+                    </h3>
+
+                    <p
+                        class="m-0 mb-[22px] text-[13.5px] text-[#cfd8d1]"
+                    >
+                        From tartan to leather, handcrafted and delivered fast
+                    </p>
+
+                    <a
+                        class="inline-flex w-fit items-center gap-[6px] rounded-[30px] bg-white px-[24px] py-[12px] text-[13px] font-bold text-[#123524]"
+                        href="#"
+                    >
+                        Shop Now &#8599;
+                    </a>
+                </div>
+            </div>
         <?php foreach ($products as $product): ?>
             <?php
             $finalPrice = (float) $product->getFinalPrice();
@@ -32,11 +81,7 @@ $products = $block->getProducts('most_sale');
                          alt="<?= $escaper->escapeHtmlAttr($product->getName()) ?>"
                          class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                          loading="lazy">
-                    <?php if ($discount > 0): ?>
-                        <span class="absolute left-3 top-3 rounded-full bg-neutral-900 px-3 py-1 text-xs font-bold text-white">
-                            -<?= $escaper->escapeHtml((string) $discount) ?>%
-                        </span>
-                    <?php endif; ?>
+
                 </a>
 
                 <div class="flex flex-1 flex-col p-4">

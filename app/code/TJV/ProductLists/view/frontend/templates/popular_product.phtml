@@ -4,7 +4,7 @@ $products = $block->getProducts('popular');
 ?>
 
 <?php if ($products): ?>
-<section class="tjv-product-section tjv-popular-products mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8"
+<section class="tjv-product-section tjv-popular-products px-4 py-10 sm:px-6 lg:px-8"
          aria-labelledby="tjv-popular-products-title">
     <div class="mb-6">
         <p class="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-neutral-500">
@@ -16,6 +16,33 @@ $products = $block->getProducts('popular');
     </div>
 
     <div class="tjv-product-grid grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="relative flex flex-col items-center overflow-hidden rounded-[10px] bg-[#f1ece2] px-5 pt-9 text-center">
+            <span class="tag">
+                SALE UPTO 40%
+            </span>
+            <h3>
+                GRAB YOUR KILT NOW
+            </h3>
+            <a
+                href="#"
+                class="mb-6 rounded-[30px] bg-[#123524] px-[30px] py-3 font-[Arial,Helvetica,sans-serif] text-[12.5px] font-bold tracking-[0.4px] text-white"
+            >
+                SHOP NOW
+            </a>
+            <div class="relative min-h-[170px] w-full flex-1">
+                <img
+                    class="absolute bottom-[-14px] left-[2%] z-[2] h-[170px] w-[56%] rotate-[-6deg] rounded-[6px] object-cover shadow-[0_12px_22px_rgba(0,0,0,0.18)]"
+                    src="https://picsum.photos/seed/iks-kilt-outfit/900/1100"
+                    alt="Kilt outfit"
+                >
+                <img
+                    class="absolute bottom-[-14px] right-[2%] z-[1] h-[150px] w-[52%] rotate-[7deg] rounded-[6px] object-cover shadow-[0_12px_22px_rgba(0,0,0,0.18)]"
+                    src="https://picsum.photos/seed/iks-tartan-kilt/900/1100"
+                    alt="Tartan kilt"
+                >
+            </div>
+        </div>
+
         <?php foreach ($products as $product): ?>
             <?php
             $finalPrice = (float) $product->getFinalPrice();
@@ -32,11 +59,6 @@ $products = $block->getProducts('popular');
                          alt="<?= $escaper->escapeHtmlAttr($product->getName()) ?>"
                          class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                          loading="lazy">
-                    <?php if ($discount > 0): ?>
-                        <span class="absolute left-3 top-3 rounded-full bg-neutral-900 px-3 py-1 text-xs font-bold text-white">
-                            -<?= $escaper->escapeHtml((string) $discount) ?>%
-                        </span>
-                    <?php endif; ?>
                 </a>
 
                 <div class="flex flex-1 flex-col p-4">
