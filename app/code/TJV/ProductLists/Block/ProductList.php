@@ -18,7 +18,7 @@ class ProductList extends Template
      * Popular Product IDs.
      */
     private const POPULAR_PRODUCT_IDS = [
-        390, 379, 381, 386,
+        390, 379, 381
     ];
 
     /**
@@ -28,7 +28,6 @@ class ProductList extends Template
         201,
         202,
         203,
-        204,
     ];
 
     /**
