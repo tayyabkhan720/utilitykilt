@@ -2,6 +2,15 @@
     @apply flex gap-6 items-center justify-center;
 }
 
+.price-box.price-final_price {
+    @apply flex gap-6 items-center justify-center;
+}
+.price-box.price-final_price  span.special-price{
+    @apply order-2;
+}
+.price-box.price-final_price .old-price{
+    @apply text-[#aba597] text-[13px]
+}
 .catalog-category-view .price-box.price-final_price span.special-price
 {
     @apply text-primary font-bold text-lg;
