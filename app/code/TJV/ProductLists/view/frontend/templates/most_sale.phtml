@@ -76,7 +76,7 @@ $products = $block->getProducts('most_sale');
             ?>
             <article class="tjv-product-card group flex flex-col overflow-hidden rounded-lg border border-neutral-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
                 <a href="<?= $escaper->escapeUrl($block->getProductUrl($product)) ?>"
-                   class="relative block aspect-square overflow-hidden bg-neutral-100">
+                   class="relative block overflow-hidden bg-neutral-100">
                     <img src="<?= $escaper->escapeUrl($block->getProductImageUrl($product)) ?>"
                          alt="<?= $escaper->escapeHtmlAttr($product->getName()) ?>"
                          class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
