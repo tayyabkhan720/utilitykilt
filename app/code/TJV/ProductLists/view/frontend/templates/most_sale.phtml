@@ -117,9 +117,11 @@ $products = $block->getProducts('most_sale');
                         <span class="tjv-final-price text-lg font-bold text-neutral-900">
                             <?= $escaper->escapeHtml($block->getFormattedPrice($finalPrice)) ?>
                         </span>
-                         <span class="text-xs font-bold text-white bg-[#a4342a] px-2 py-0.5 rounded-full">
-                            -<?= $escaper->escapeHtml((string) $discount) ?>%
-                          </span>
+                        <?php if ($discount > 0): ?>
+                            <span class="text-xs font-bold text-white bg-[#a4342a] px-2 py-0.5 rounded-full">
+                                -<?= $escaper->escapeHtml((string) $discount) ?>%
+                            </span>
+                        <?php endif; ?>
                     </div>
                 </div>
             </article>
