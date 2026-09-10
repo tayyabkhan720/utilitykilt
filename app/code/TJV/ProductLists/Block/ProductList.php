@@ -4,13 +4,16 @@ declare(strict_types=1);
 namespace TJV\ProductLists\Block;
 
 use Magento\Catalog\Model\CategoryFactory;
+use Magento\Catalog\Helper\Product\Compare as CompareHelper;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Helper\ImageFactory;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
+use Magento\Framework\Data\Helper\PostHelper;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Framework\View\Element\Template;
 use Magento\Store\Model\StoreManagerInterface;
+use Magento\Wishlist\Helper\Data as WishlistHelper;
 
 class ProductList extends Template
 {
@@ -30,6 +33,12 @@ class ProductList extends Template
         203,
     ];
 
+    private const BUNDLE_PRODUCT_IDS = [
+    301,
+    302,
+    303,
+];
+
     /**
      * Magento Review entity type.
      *
@@ -42,6 +51,9 @@ class ProductList extends Template
         private readonly CollectionFactory $productCollectionFactory,
         private readonly CategoryFactory $categoryFactory,
         private readonly ImageFactory $imageFactory,
+        private readonly WishlistHelper $wishlistHelper,
+        private readonly CompareHelper $compareHelper,
+        private readonly PostHelper $postHelper,
         private readonly StoreManagerInterface $storeManager,
         private readonly PriceCurrencyInterface $priceCurrency,
         private readonly ResourceConnection $resourceConnection,
@@ -59,8 +71,10 @@ class ProductList extends Template
     public function getProducts(string $type): array
     {
         $ids = $type === 'most_sale'
-            ? self::MOST_SALE_PRODUCT_IDS
-            : self::POPULAR_PRODUCT_IDS;
+                ? self::MOST_SALE_PRODUCT_IDS
+                : ($type === 'bundle'
+                    ? self::BUNDLE_PRODUCT_IDS
+                    : self::POPULAR_PRODUCT_IDS);
 
         if (empty($ids)) {
             return [];
@@ -238,6 +252,37 @@ class ProductList extends Template
     public function getProductUrl(Product $product): string
     {
         return (string) $product->getProductUrl();
+    }
+
+    /**
+     * Get the add-to-cart URL and post payload used by Magento's product actions.
+     */
+    public function getAddToCartUrl(Product $product): string
+    {
+        return (string) $this->compareHelper->getAddToCartUrl($product);
+    }
+
+    public function getAddToCartPostData(Product $product): string
+    {
+        return $this->postHelper->getPostData(
+            $this->getAddToCartUrl($product),
+            ['product' => (int) $product->getId()]
+        );
+    }
+
+    public function getAddToWishlistParams(Product $product): string
+    {
+        return $this->compareHelper->getAddToWishlistParams($product);
+    }
+
+    public function getAddToCompareParams(Product $product): string
+    {
+        return $this->compareHelper->getPostDataParams($product);
+    }
+
+    public function isWishlistAllowed(): bool
+    {
+        return $this->wishlistHelper->isAllow();
     }
 
     /**

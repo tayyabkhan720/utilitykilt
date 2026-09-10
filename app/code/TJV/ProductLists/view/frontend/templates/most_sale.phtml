@@ -1,5 +1,27 @@
 <?php
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\ProductPage;
+use Hyva\Theme\ViewModel\ProductCompare;
+use Hyva\Theme\ViewModel\Wishlist;
+use Hyva\Theme\ViewModel\LucideIcons;
+use Hyva\Theme\ViewModel\BlockJsDependencies;
+
 /** @var \TJV\ProductLists\Block\ProductList $block */
+/** @var ViewModelRegistry $viewModels */
+
+$productViewModel = $viewModels->require(ProductPage::class);
+$compareViewModel = $viewModels->require(ProductCompare::class);
+$wishlistViewModel = $viewModels->require(Wishlist::class);
+$lucideIcons = $viewModels->require(LucideIcons::class);
+
+$showAddToCompare = $compareViewModel->showInProductList();
+$showAddToWishlist = $wishlistViewModel->isEnabled();
+
+$viewModels->require(BlockJsDependencies::class)
+    ->setBlockTemplateDependency($block, 'Magento_Catalog::product/list/js/compare.phtml');
+$viewModels->require(BlockJsDependencies::class)
+    ->setBlockTemplateDependency($block, 'Magento_Catalog::product/list/js/wishlist.phtml');
+
 $products = $block->getProducts('most_sale');
 ?>
 
@@ -17,54 +39,28 @@ $products = $block->getProducts('most_sale');
 
     <div class="tjv-product-grid grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
 
-    <div class="relative flex min-h-[480px] flex-col justify-end overflow-hidden rounded-[14px] bg-[#123524] p-[26px]
-                    before:absolute before:left-0 before:top-0 before:z-0 before:h-[120px] before:w-[120px]
-                    before:bg-[#c9a227] before:content-[''] before:[clip-path:polygon(0_0,100%_0,0_100%)]"
-            >
-                <!-- Photos -->
-                <div
-                    class="absolute right-[18px] top-[18px] z-[1] h-[62%] w-[78%]"
-                >
-                    <!-- Image A -->
-                    <img
-                        class="absolute left-0 top-0 z-[2] h-[88%] w-[62%] rotate-[-8deg] rounded-[8px] object-cover shadow-[0_14px_30px_rgba(0,0,0,0.3)]"
-                        src="https://picsum.photos/seed/iks-tartan-kilt/900/1100"
-                        alt="Tartan kilt"
-                    >
-
-                    <!-- Image B -->
-                    <img
-                        class="absolute bottom-0 right-0 z-[1] h-[70%] w-[52%] rotate-[6deg] rounded-[8px] object-cover shadow-[0_14px_30px_rgba(0,0,0,0.3)]"
-                        src="https://picsum.photos/seed/iks-leather-kilt/900/1100"
-                        alt="Leather kilt"
-                    >
-                </div>
-
-                <!-- Content -->
-                <div
-                    class="relative z-[2] font-[Arial,Helvetica,sans-serif]"
-                >
-                    <h3
-                        class="m-0 mb-[12px] font-[Arial,Helvetica,sans-serif] text-[26px] font-extrabold leading-[1.28] text-white"
-                    >
-                        Your Trusted<br>
-                        Kilt Partner
-                    </h3>
-
-                    <p
-                        class="m-0 mb-[22px] text-[13.5px] text-[#cfd8d1]"
-                    >
-                        From tartan to leather, handcrafted and delivered fast
-                    </p>
-
-                    <a
-                        class="inline-flex w-fit items-center gap-[6px] rounded-[30px] bg-white px-[24px] py-[12px] text-[13px] font-bold text-[#123524]"
-                        href="#"
-                    >
-                        Shop Now &#8599;
-                    </a>
-                </div>
+        <div class="relative flex min-h-[480px] flex-col justify-end overflow-hidden rounded-[14px] bg-[#123524] p-[26px]
+                        before:absolute before:left-0 before:top-0 before:z-0 before:h-[120px] before:w-[120px]
+                        before:bg-[#c9a227] before:content-[''] before:[clip-path:polygon(0_0,100%_0,0_100%)]">
+            <div class="absolute right-[18px] top-[18px] z-[1] h-[62%] w-[78%]">
+                <img class="absolute left-0 top-0 z-[2] h-[88%] w-[62%] rotate-[-8deg] rounded-[8px] object-cover shadow-[0_14px_30px_rgba(0,0,0,0.3)]"
+                     src="https://picsum.photos/seed/iks-tartan-kilt/900/1100" alt="Tartan kilt">
+                <img class="absolute bottom-0 right-0 z-[1] h-[70%] w-[52%] rotate-[6deg] rounded-[8px] object-cover shadow-[0_14px_30px_rgba(0,0,0,0.3)]"
+                     src="https://picsum.photos/seed/iks-leather-kilt/900/1100" alt="Leather kilt">
             </div>
+            <div class="relative z-[2] font-[Arial,Helvetica,sans-serif]">
+                <h3 class="m-0 mb-[12px] font-[Arial,Helvetica,sans-serif] text-[26px] font-extrabold leading-[1.28] text-white">
+                    Your Trusted<br>Kilt Partner
+                </h3>
+                <p class="m-0 mb-[22px] text-[13.5px] text-[#cfd8d1]">
+                    From tartan to leather, handcrafted and delivered fast
+                </p>
+                <a class="inline-flex w-fit items-center gap-[6px] rounded-[30px] bg-white px-[24px] py-[12px] text-[13px] font-bold text-[#123524]" href="#">
+                    Shop Now &#8599;
+                </a>
+            </div>
+        </div>
+
         <?php foreach ($products as $product): ?>
             <?php
             $finalPrice = (float) $product->getFinalPrice();
@@ -73,16 +69,62 @@ $products = $block->getProducts('most_sale');
             $rating = (float) $product->getRatingSummary();
             $reviews = (int) $product->getReviewsCount();
             $categoryName = $block->getParentCategoryName($product);
+            $productId = (int) $product->getId();
+            $productName = $product->getName();
+            $isSaleable = $product->isSaleable();
             ?>
+            <?php if ($isSaleable): ?>
+            <form id="product_addtocart_form_<?= $productId ?>"
+                  method="post"
+                  action="<?= $escaper->escapeUrl($productViewModel->getAddToCartUrl($product, ['useUencPlaceholder' => true])) ?>"
+                  class="tjv-product-card group flex flex-col overflow-hidden rounded-lg border border-neutral-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+                <?= $block->getBlockHtml('formkey') ?>
+                <input type="hidden" name="product" value="<?= $productId ?>">
+            <?php else: ?>
             <article class="tjv-product-card group flex flex-col overflow-hidden rounded-lg border border-neutral-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
-                <a href="<?= $escaper->escapeUrl($block->getProductUrl($product)) ?>"
-                   class="relative block overflow-hidden bg-neutral-100">
-                    <img src="<?= $escaper->escapeUrl($block->getProductImageUrl($product)) ?>"
-                         alt="<?= $escaper->escapeHtmlAttr($product->getName()) ?>"
-                         class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                         loading="lazy">
+            <?php endif; ?>
 
-                </a>
+                <div class="tjv-product-media relative overflow-hidden bg-neutral-100">
+                    <a href="<?= $escaper->escapeUrl($block->getProductUrl($product)) ?>" class="block">
+                        <img src="<?= $escaper->escapeUrl($block->getProductImageUrl($product)) ?>"
+                             alt="<?= $escaper->escapeHtmlAttr($productName) ?>"
+                             class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                             loading="lazy">
+                    </a>
+                    <div class="tjv-product-actions absolute right-3 top-3 z-10 flex translate-x-3 flex-col gap-2 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100 group-focus-within:translate-x-0 group-focus-within:opacity-100">
+                        <?php if ($isSaleable): ?>
+                            <button type="submit" data-addto="cart" class="tjv-product-action" title="<?= $escaper->escapeHtmlAttr(__('Add to Cart')) ?>" aria-label="<?= $escaper->escapeHtmlAttr(__('Add to Cart') . ' ' . $productName) ?>">
+                                <?= $lucideIcons->shoppingCartHtml('h-4 w-4', 20, 20, ['aria-hidden' => 'true']) ?>
+                            </button>
+                        <?php endif; ?>
+
+                        <?php if ($showAddToWishlist): ?>
+                            <button x-data="initWishlist()"
+                                    x-defer="intersect"
+                                    @click.prevent="addToWishlist(<?= $productId ?>)"
+                                    type="button"
+                                    class="tjv-product-action"
+                                    data-addto="wishlist"
+                                    title="<?= $escaper->escapeHtmlAttr(__('Add to Wish List')) ?>"
+                                    aria-label="<?= $escaper->escapeHtmlAttr(__('Add to Wish List') . ' ' . $productName) ?>">
+                                <?= $lucideIcons->heartHtml('h-4 w-4', 20, 20, ['aria-hidden' => 'true']) ?>
+                            </button>
+                        <?php endif; ?>
+
+                        <?php if ($showAddToCompare): ?>
+                            <button x-data="initCompareOnProductList()"
+                                    x-defer="intersect"
+                                    @click.prevent="addToCompare(<?= $productId ?>)"
+                                    type="button"
+                                    class="tjv-product-action"
+                                    data-addto="compare"
+                                    title="<?= $escaper->escapeHtmlAttr(__('Add to Compare')) ?>"
+                                    aria-label="<?= $escaper->escapeHtmlAttr(__('Add to Compare') . ' ' . $productName) ?>">
+                                <?= $lucideIcons->scaleHtml('h-4 w-4', 20, 20, ['aria-hidden' => 'true']) ?>
+                            </button>
+                        <?php endif; ?>
+                    </div>
+                </div>
 
                 <div class="flex flex-1 flex-col p-4">
                     <?php if ($categoryName): ?>
@@ -94,7 +136,7 @@ $products = $block->getProducts('most_sale');
 
                     <h3 class="tjv-product-name mb-3 truncate text-base font-semibold text-neutral-900">
                         <a href="<?= $escaper->escapeUrl($block->getProductUrl($product)) ?>" class="hover:text-neutral-600">
-                            <?= $escaper->escapeHtml($product->getName()) ?>
+                            <?= $escaper->escapeHtml($productName) ?>
                         </a>
                     </h3>
 
@@ -124,7 +166,12 @@ $products = $block->getProducts('most_sale');
                         <?php endif; ?>
                     </div>
                 </div>
+
+            <?php if ($isSaleable): ?>
+            </form>
+            <?php else: ?>
             </article>
+            <?php endif; ?>
         <?php endforeach; ?>
     </div>
 </section>
