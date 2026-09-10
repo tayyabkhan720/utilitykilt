@@ -1,8 +1,33 @@
 <?php
-/** @var \TJV\ProductLists\Block\ProductList $block */
-$products = $block->getProducts('popular');
-?>
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\ProductPage;
+use Hyva\Theme\ViewModel\ProductCompare;
+use Hyva\Theme\ViewModel\Wishlist;
+use Hyva\Theme\ViewModel\LucideIcons;
+use Hyva\Theme\ViewModel\BlockJsDependencies;
 
+/** @var \TJV\ProductLists\Block\ProductList $block */
+/** @var ViewModelRegistry $viewModels */
+
+$productViewModel = $viewModels->require(ProductPage::class);
+$compareViewModel = $viewModels->require(ProductCompare::class);
+$wishlistViewModel = $viewModels->require(Wishlist::class);
+$lucideIcons = $viewModels->require(LucideIcons::class);
+
+$showAddToCompare = $compareViewModel->showInProductList();
+$showAddToWishlist = $wishlistViewModel->isEnabled();
+
+// Ensures the compare/wishlist JS is emitted once on this page, even with
+// three TJV product-list blocks rendering — mirrors how core catalog_list_item.xml
+// guards against duplicate JS via a boolean layout flag.
+$viewModels->require(BlockJsDependencies::class)
+    ->setBlockTemplateDependency($block, 'Magento_Catalog::product/list/js/compare.phtml');
+$viewModels->require(BlockJsDependencies::class)
+    ->setBlockTemplateDependency($block, 'Magento_Catalog::product/list/js/wishlist.phtml');
+
+    /** @var \TJV\ProductLists\Block\ProductList $block */
+$products = $block->getProducts('popular_products');
+?>
 <?php if ($products): ?>
 <section class="tjv-product-section tjv-popular-products px-4 py-10 sm:px-6 lg:px-8"
          aria-labelledby="tjv-popular-products-title">
@@ -42,67 +67,118 @@ $products = $block->getProducts('popular');
                 >
             </div>
         </div>
+<?php foreach ($products as $product): ?>
+    <?php
+    $finalPrice = (float) $product->getFinalPrice();
+    $regularPrice = (float) $product->getPrice();
+    $discount = $block->getDiscountPercent($product);
+    $rating = (float) $product->getRatingSummary();
+    $reviews = (int) $product->getReviewsCount();
+    $categoryName = $block->getParentCategoryName($product);
+    $productId = (int) $product->getId();
+    $productName = $product->getName();
+    $isSaleable = $product->isSaleable();
+    ?>
+    <?php if ($isSaleable): ?>
+    <form id="product_addtocart_form_<?= $productId ?>"
+          method="post"
+          action="<?= $escaper->escapeUrl($productViewModel->getAddToCartUrl($product, ['useUencPlaceholder' => true])) ?>"
+          class="tjv-product-card group flex flex-col overflow-hidden rounded-lg border border-neutral-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+        <?= $block->getBlockHtml('formkey') ?>
+        <input type="hidden" name="product" value="<?= $productId ?>">
+    <?php else: ?>
+    <article class="tjv-product-card group flex flex-col overflow-hidden rounded-lg border border-neutral-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+    <?php endif; ?>
 
-        <?php foreach ($products as $product): ?>
-            <?php
-            $finalPrice = (float) $product->getFinalPrice();
-            $regularPrice = (float) $product->getPrice();
-            $discount = $block->getDiscountPercent($product);
-            $rating = (float) $product->getRatingSummary();
-            $reviews = (int) $product->getReviewsCount();
-            $categoryName = $block->getParentCategoryName($product);
-            ?>
-            <article class="tjv-product-card group flex flex-col overflow-hidden rounded-lg border border-neutral-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+        <div class="tjv-product-media relative overflow-hidden bg-neutral-100">
+            <a href="<?= $escaper->escapeUrl($block->getProductUrl($product)) ?>" class="block">
+                <img src="<?= $escaper->escapeUrl($block->getProductImageUrl($product)) ?>"
+                     alt="<?= $escaper->escapeHtmlAttr($productName) ?>"
+                     class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                     loading="lazy">
+            </a>
+            <div class="tjv-product-actions absolute right-3 top-3 z-10 flex translate-x-3 flex-col gap-2 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100 group-focus-within:translate-x-0 group-focus-within:opacity-100">
+                <?php if ($isSaleable): ?>
+                    <button type="submit" data-addto="cart" class="tjv-product-action" title="<?= $escaper->escapeHtmlAttr(__('Add to Cart')) ?>" aria-label="<?= $escaper->escapeHtmlAttr(__('Add to Cart') . ' ' . $productName) ?>">
+                        <?= $lucideIcons->shoppingCartHtml('h-4 w-4', 20, 20, ['aria-hidden' => 'true']) ?>
+                    </button>
+                <?php endif; ?>
+
+                <?php if ($showAddToWishlist): ?>
+                    <button x-data="initWishlist()"
+                            x-defer="intersect"
+                            @click.prevent="addToWishlist(<?= $productId ?>)"
+                            type="button"
+                            class="tjv-product-action"
+                            data-addto="wishlist"
+                            title="<?= $escaper->escapeHtmlAttr(__('Add to Wish List')) ?>"
+                            aria-label="<?= $escaper->escapeHtmlAttr(__('Add to Wish List') . ' ' . $productName) ?>">
+                        <?= $lucideIcons->heartHtml('h-4 w-4', 20, 20, ['aria-hidden' => 'true']) ?>
+                    </button>
+                <?php endif; ?>
+
+                <?php if ($showAddToCompare): ?>
+                    <button x-data="initCompareOnProductList()"
+                            x-defer="intersect"
+                            @click.prevent="addToCompare(<?= $productId ?>)"
+                            type="button"
+                            class="tjv-product-action"
+                            data-addto="compare"
+                            title="<?= $escaper->escapeHtmlAttr(__('Add to Compare')) ?>"
+                            aria-label="<?= $escaper->escapeHtmlAttr(__('Add to Compare') . ' ' . $productName) ?>">
+                        <?= $lucideIcons->scaleHtml('h-4 w-4', 20, 20, ['aria-hidden' => 'true']) ?>
+                    </button>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <div class="flex flex-1 flex-col p-4">
+            <?php if ($categoryName): ?>
                 <a href="<?= $escaper->escapeUrl($block->getProductUrl($product)) ?>"
-                   class="relative block overflow-hidden bg-neutral-100">
-                    <img src="<?= $escaper->escapeUrl($block->getProductImageUrl($product)) ?>"
-                         alt="<?= $escaper->escapeHtmlAttr($product->getName()) ?>"
-                         class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                         loading="lazy">
+                   class="mb-2 text-xs font-semibold uppercase tracking-wider text-neutral-500 hover:text-neutral-900">
+                    <?= $escaper->escapeHtml($categoryName) ?>
                 </a>
+            <?php endif; ?>
 
-                <div class="flex flex-1 flex-col p-4">
-                    <?php if ($categoryName): ?>
-                        <a href="<?= $escaper->escapeUrl($block->getProductUrl($product)) ?>"
-                           class="mb-2 text-xs font-semibold uppercase tracking-wider text-neutral-500 hover:text-neutral-900">
-                            <?= $escaper->escapeHtml($categoryName) ?>
-                        </a>
-                    <?php endif; ?>
+            <h3 class="tjv-product-name mb-3 truncate text-base font-semibold text-neutral-900">
+                <a href="<?= $escaper->escapeUrl($block->getProductUrl($product)) ?>" class="hover:text-neutral-600">
+                    <?= $escaper->escapeHtml($productName) ?>
+                </a>
+            </h3>
 
-                    <h3 class="tjv-product-name mb-3 truncate text-base font-semibold text-neutral-900">
-                        <a href="<?= $escaper->escapeUrl($block->getProductUrl($product)) ?>" class="hover:text-neutral-600">
-                            <?= $escaper->escapeHtml($product->getName()) ?>
-                        </a>
-                    </h3>
+            <div class="tjv-product-rating mb-3 flex items-center gap-2 text-sm"
+                 aria-label="<?= $escaper->escapeHtmlAttr((string) $rating) ?>%">
+                <span class="tjv-stars text-amber-500" aria-hidden="true">★★★★★</span>
+                <?php if ($reviews > 0): ?>
+                    <span class="tjv-review-count text-neutral-500">
+                        (<?= $escaper->escapeHtml((string) $reviews) ?>)
+                    </span>
+                <?php endif; ?>
+            </div>
 
-                    <div class="tjv-product-rating mb-3 flex items-center gap-2 text-sm"
-                         aria-label="<?= $escaper->escapeHtmlAttr((string) $rating) ?>%">
-                        <span class="tjv-stars text-amber-500" aria-hidden="true">★★★★★</span>
-                        <?php if ($reviews > 0): ?>
-                            <span class="tjv-review-count text-neutral-500">
-                                (<?= $escaper->escapeHtml((string) $reviews) ?>)
-                            </span>
-                        <?php endif; ?>
-                    </div>
+            <div class="tjv-product-price mt-auto flex items-center gap-2">
+                <?php if ($regularPrice > $finalPrice): ?>
+                    <span class="tjv-old-price text-sm text-neutral-400 line-through">
+                        <?= $escaper->escapeHtml($block->getFormattedPrice($regularPrice)) ?>
+                    </span>
+                <?php endif; ?>
+                <span class="tjv-final-price text-lg font-bold text-neutral-900">
+                    <?= $escaper->escapeHtml($block->getFormattedPrice($finalPrice)) ?>
+                </span>
+                <?php if ($discount > 0): ?>
+                    <span class="text-xs font-bold text-white bg-[#a4342a] px-2 py-0.5 rounded-full">
+                        -<?= $escaper->escapeHtml((string) $discount) ?>%
+                    </span>
+                <?php endif; ?>
+            </div>
+        </div>
 
-                    <div class="tjv-product-price mt-auto flex items-center gap-2">
-                        <?php if ($regularPrice > $finalPrice): ?>
-                            <span class="tjv-old-price text-sm text-neutral-400 line-through">
-                                <?= $escaper->escapeHtml($block->getFormattedPrice($regularPrice)) ?>
-                            </span>
-                        <?php endif; ?>
-                        <span class="tjv-final-price text-lg font-bold text-neutral-900">
-                            <?= $escaper->escapeHtml($block->getFormattedPrice($finalPrice)) ?>
-                        </span>
-                        <?php if ($discount > 0): ?>
-                            <span class="text-xs font-bold text-white bg-[#a4342a] px-2 py-0.5 rounded-full">
-                                -<?= $escaper->escapeHtml((string) $discount) ?>%
-                            </span>
-                        <?php endif; ?>
-                    </div>
-                </div>
-            </article>
-        <?php endforeach; ?>
+    <?php if ($isSaleable): ?>
+    </form>
+    <?php else: ?>
+    </article>
+    <?php endif; ?>
+<?php endforeach; ?>
     </div>
 </section>
 <?php endif; ?>

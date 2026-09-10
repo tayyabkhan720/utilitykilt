@@ -2,7 +2,7 @@
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
-        <referenceContainer name="content">
+        <!-- <referenceContainer name="content">
             <block class="TJV\ProductLists\Block\ProductList"
                    name="tjv.popular.products"
                    template="TJV_ProductLists::popular_product.phtml"
@@ -12,6 +12,16 @@
                    name="tjv.most.sale.products"
                    template="TJV_ProductLists::most_sale.phtml"
                    after="tjv.popular.products"/>
-        </referenceContainer>
+        </referenceContainer> -->
+         <referenceBlock name="tjv.product.list.most.sale">
+            <arguments>
+                <argument name="view_model" xsi:type="object">Hyva\Theme\Model\ViewModelRegistry</argument>
+            </arguments>
+        </referenceBlock>
+        <referenceBlock name="tjv.product.list.most.sale">
+    <arguments>
+        <argument name="view_model" xsi:type="object">Hyva\Theme\Model\ViewModelRegistry</argument>
+    </arguments>
+</referenceBlock>
     </body>
 </page>
