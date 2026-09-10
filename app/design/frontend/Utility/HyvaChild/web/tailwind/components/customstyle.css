@@ -33,6 +33,42 @@ span.old-price{
 .product-item-photo img{
     @apply w-full;
 }
+
+.tjv-product-media {
+    min-height: 280px;
+}
+
+.tjv-product-action {
+    display: flex;
+    width: 42px;
+    height: 42px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #b8b8b8;
+    border-radius: 8px;
+    background: #fff;
+    color: #4b5563;
+    cursor: pointer;
+    transition: background-color .2s ease, color .2s ease, border-color .2s ease;
+}
+
+.tjv-product-action:hover,
+.tjv-product-action:focus-visible {
+    border-color: #1b1b1b;
+    background: #1b1b1b;
+    color: #fff;
+}
+
+.tjv-product-action svg {
+    width: 21px;
+    height: 21px;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.5;
+}
+
 .block-bestseller .product-item{
     @apply bg-[#21366a] border border-white/8;
 }
