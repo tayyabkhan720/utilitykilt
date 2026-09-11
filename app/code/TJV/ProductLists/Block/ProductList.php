@@ -30,9 +30,9 @@ class ProductList extends Template
      * Most Sale Product IDs.
      */
     private const MOST_SALE_PRODUCT_IDS = [
-        201,
-        202,
-        203,
+        2601,
+        2609,
+        2645,
     ];
 
     private const BUNDLE_PRODUCT_IDS = [
