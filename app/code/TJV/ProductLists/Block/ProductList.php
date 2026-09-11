@@ -10,9 +10,11 @@ use Magento\Catalog\Helper\ImageFactory;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
 use Magento\Framework\Data\Helper\PostHelper;
 use Magento\Framework\App\ResourceConnection;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Framework\View\Element\Template;
 use Magento\Store\Model\StoreManagerInterface;
+use Magento\Store\Model\ScopeInterface;
 use Magento\Wishlist\Helper\Data as WishlistHelper;
 
 class ProductList extends Template
@@ -57,6 +59,7 @@ class ProductList extends Template
         private readonly StoreManagerInterface $storeManager,
         private readonly PriceCurrencyInterface $priceCurrency,
         private readonly ResourceConnection $resourceConnection,
+        private readonly ScopeConfigInterface $scopeConfig,
         array $data = []
     ) {
         parent::__construct($context, $data);
@@ -92,6 +95,8 @@ class ProductList extends Template
             'special_to_date',
             'small_image',
             'thumbnail',
+            'url_key',
+
         ]);
 
         $collection->addIdFilter($ids);
@@ -100,6 +105,7 @@ class ProductList extends Template
         // The IDs are explicitly curated for this list and may belong to another
         // website in installations with multiple storefronts.
         $collection->setStoreId($storeId);
+        $collection->addUrlRewrite();
 
         /**
          * Add review rating and review count.
@@ -251,7 +257,24 @@ class ProductList extends Template
      */
     public function getProductUrl(Product $product): string
     {
-        return (string) $product->getProductUrl();
+        $url = (string) $product->getProductUrl();
+
+        if (
+            !str_contains($url, '/catalog/product/view')
+            || !$product->getUrlKey()
+        ) {
+            return $url;
+        }
+
+        $suffix = (string) $this->scopeConfig->getValue(
+            'catalog/seo/product_url_suffix',
+            ScopeInterface::SCOPE_STORE,
+            (int) $this->storeManager->getStore()->getId()
+        );
+
+        return rtrim($this->storeManager->getStore()->getBaseUrl(), '/')
+            . '/'
+            . ltrim((string) $product->getUrlKey() . $suffix, '/');
     }
 
     /**
