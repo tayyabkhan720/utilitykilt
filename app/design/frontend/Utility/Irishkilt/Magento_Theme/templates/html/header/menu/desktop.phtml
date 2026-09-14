@@ -1,0 +1,260 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes. All rights reserved.
+ * See COPYING.txt for license details.
+ *
+ * MODIFIED: top-level dropdowns render as a full-width multi-column megamenu
+ * instead of nested flyout panels. Level-1 children become column headings,
+ * level-2 children become the links listed under each column.
+ */
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\HyvaCsp;
+use Hyva\Theme\ViewModel\LucideIcons;
+use Hyva\Theme\ViewModel\Navigation;
+use Magento\Framework\View\Element\Template;
+use Magento\Framework\Escaper;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+/** @var HyvaCsp $hyvaCsp */
+
+/** @var Navigation $viewModelNavigation */
+$viewModelNavigation = $viewModels->require(Navigation::class, $block);
+
+/** @var LucideIcons $lucideIcons */
+$lucideIcons = $viewModels->require(LucideIcons::class);
+
+$uniqueId = '_' . uniqid();
+
+$menuItems = $viewModelNavigation->getNavigation(4);
+$block->setData('cache_tags', $viewModelNavigation->getIdentities());
+
+// Renders a 3rd-level list (if a column item itself has children) as a flat
+// indented sub-list under its parent link — no further flyouts.
+$renderLeafChildren = function ($items) use ($escaper) {
+    ?>
+    <ul class="mt-1 ml-3 border-l border-gray-200">
+        <?php foreach ($items as $leaf): ?>
+            <li>
+                <a
+                    href="<?= $escaper->escapeUrl($leaf['url']) ?>"
+                    title="<?= $escaper->escapeHtmlAttr($leaf['name']) ?>"
+                    class="block py-1 pl-3 text-sm text-gray-600 hover:text-primary hover:underline"
+                >
+                    <?= $escaper->escapeHtml($leaf['name']) ?>
+                </a>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+    <?php
+};
+
+// Renders the full-width megamenu panel for a top-level item.
+// Each direct child (level 1) becomes a column with a heading;
+// that child's own children (level 2) become the links in the column.
+$renderMegaPanel = function ($columns, $parentIndex) use ($escaper, $renderLeafChildren) {
+    $columnCount = count($columns);
+    // Cap visual columns at 6 so very long menus don't get illegibly thin;
+    // extra columns will simply wrap onto a new row.
+    $gridColsClass = 'grid-cols-' . max(1, min($columnCount, 6));
+    ?>
+    <div
+        id="mega-panel-<?= $escaper->escapeHtmlAttr($parentIndex) ?>"
+            class="absolute top-full left-0 min-w-[900px] bg-white shadow-lg border-t border-gray-100 z-50"
+
+    >
+        <div class="max-w-screen-xl mx-auto grid <?= $escaper->escapeHtmlAttr($gridColsClass) ?> gap-8 px-8 py-8">
+            <?php foreach ($columns as $column): ?>
+                <div>
+                    <a
+                        href="<?= $escaper->escapeUrl($column['url']) ?>"
+                        class="block text-sm font-semibold uppercase tracking-wide text-gray-900 pb-2 mb-2 border-b border-gray-200 hover:text-primary"
+                    >
+                        <?= $escaper->escapeHtml($column['name']) ?>
+                    </a>
+                    <?php if (!empty($column['childData'])): ?>
+                        <ul>
+                            <?php foreach ($column['childData'] as $link): ?>
+                                <li>
+                                    <a
+                                        href="<?= $escaper->escapeUrl($link['url']) ?>"
+                                        title="<?= $escaper->escapeHtmlAttr($link['name']) ?>"
+                                        class="block py-1 text-gray-700 hover:text-primary hover:underline"
+                                    >
+                                        <?= $escaper->escapeHtml($link['name']) ?>
+                                    </a>
+                                    <?php if (!empty($link['childData'])): ?>
+                                        <?= $renderLeafChildren($link['childData']) ?>
+                                    <?php endif; ?>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    <?php endif; ?>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+    <?php
+};
+?>
+<div x-data="initMenuDesktop" class="z-20 navigation hidden lg:flex">
+    <div class="hidden lg:block lg:px-8">
+        <nav
+            class="relative"
+            aria-label="<?= $escaper->escapeHtmlAttr(__('Main menu')) ?>"
+        >
+            <ul class="flex justify-start flex-wrap gap-x-7 py-4">
+                <?php foreach ($menuItems as $index => $menuItem): ?>
+                    <li
+                        class="menu-item relative level-0 border-b-2 border-transparent hover:border-primary data-[active]:border-primary"
+                        x-data="initMenuDesktopItem"
+                        x-bind="eventListeners"
+                        @click.outside="close"
+                        @keydown.escape="close"
+                        @mouseenter="canHoverOpen"
+                        @mouseleave="canHoverClose"
+                    >
+                        <span class="flex items-center text-md">
+                            <a
+                                href="<?= $escaper->escapeUrl($menuItem['url']) ?>"
+                                class="level-0 block text-lg py-2 px-1 rounded aria-[current=page]:text-lg"
+                            >
+                                <?= $escaper->escapeHtml($menuItem['name']) ?>
+                            </a>
+                            <?php if (!empty($menuItem['childData'])): ?>
+                                <button
+                                    type="button"
+                                    class="group rounded p-1"
+                                    @click="toggle"
+                                    aria-expanded="false"
+                                    :aria-expanded="open"
+                                    aria-controls="mega-panel-<?= $escaper->escapeHtml($index) ?>"
+                                >
+                                    <?= $lucideIcons->chevronDownHtml(
+                                        'transition-transform group-aria-expanded:rotate-180',
+                                        20,
+                                        20,
+                                        ['aria-hidden' => 'true']
+                                    ) ?>
+                                    <span class="sr-only">
+                                        <?= $escaper->escapeHtml(__('Show submenu for %1 category', $menuItem['name'])) ?>
+                                    </span>
+                                </button>
+                            <?php endif; ?>
+                        </span>
+                       <?php if (!empty($menuItem['childData'])): ?>
+    <div x-show="open" x-transition x-cloak>
+
+        <?php if ($menuItem['name'] === 'Kilts'): ?>
+
+            <?= $renderMegaPanel($menuItem['childData'], $index) ?>
+
+        <?php else: ?>
+
+            <div
+                id="submenu-<?= $escaper->escapeHtmlAttr($index) ?>"
+                class="absolute left-0 top-full mt-1 min-w-[260px] bg-white shadow-lg border border-gray-200 rounded-md z-50"
+            >
+                <ul class="py-2">
+                    <?php foreach ($menuItem['childData'] as $child): ?>
+                        <li class="relative group">
+
+                            <a
+                                href="<?= $escaper->escapeUrl($child['url']) ?>"
+                                class="flex items-center justify-between px-4 py-2 hover:bg-gray-100 text-gray-700"
+                            >
+                                <?= $escaper->escapeHtml($child['name']) ?>
+
+                                <?php if (!empty($child['childData'])): ?>
+                                    <?= $lucideIcons->chevronRightHtml('w-4 h-4') ?>
+                                <?php endif; ?>
+                            </a>
+
+                            <?php if (!empty($child['childData'])): ?>
+                                <div class="absolute left-full top-0 hidden group-hover:block min-w-[240px] bg-white shadow-lg border border-gray-200 rounded-md">
+                                    <ul class="py-2">
+                                        <?php foreach ($child['childData'] as $grandChild): ?>
+                                            <li>
+                                                <a
+                                                    href="<?= $escaper->escapeUrl($grandChild['url']) ?>"
+                                                    class="block px-4 py-2 hover:bg-gray-100 text-gray-700"
+                                                >
+                                                    <?= $escaper->escapeHtml($grandChild['name']) ?>
+                                                </a>
+                                            </li>
+                                        <?php endforeach; ?>
+                                    </ul>
+                                </div>
+                            <?php endif; ?>
+
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+
+        <?php endif; ?>
+
+    </div>
+<?php endif; ?>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<script>
+    function initMenuDesktop() {
+        return {
+            init() {
+                this.setActiveMenu();
+            },
+            setActiveMenu() {
+                Array.from(this.$root.querySelectorAll('a')).forEach(link => {
+                    if (link.href === `${window.location.origin}${window.location.pathname}`) {
+                        link.setAttribute('aria-current', 'page');
+                    }
+                });
+            }
+        }
+    }
+
+    function initMenuDesktopItem() {
+        return {
+            open: false,
+            canHover(func) {
+                return window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+            },
+            canHoverOpen() {
+                if (!this.canHover()) return;
+                this.open = true;
+            },
+            canHoverClose() {
+                if (!this.canHover()) return;
+                this.open = false;
+            },
+            toggle() {
+                this.open = !this.open;
+            },
+            close() {
+                this.open = false;
+            },
+            eventListeners: {
+                ['@pageshow.window'](event) {
+                    if (event.persisted) {
+                        this.open = false;
+                    };
+                }
+            }
+        }
+    }
+
+    window.addEventListener('alpine:init', () => {
+        Alpine.data('initMenuDesktop', initMenuDesktop);
+        Alpine.data('initMenuDesktopItem', initMenuDesktopItem);
+    }, { once: true })
+</script>
+<?php $hyvaCsp->registerInlineScript() ?>
