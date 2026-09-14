@@ -10,7 +10,7 @@
     <body>
         <referenceContainer name="content">
             <block class="Magento\Framework\View\Element\Template"
-                   name="homepage.content"
+                   name="homepage.slider"
                    template="Magento_Theme::html/homepage-slider.phtml"
                    before="-"
                     />
