@@ -25,9 +25,9 @@ $heroicons = $viewModels->require(HeroiconsOutline::class);
 // on the Magento_ReCaptchaNewsletter module
 $recaptcha = $block->getData('viewModelRecaptcha');
 ?>
-<div class="bg-[#13233f]">
+<div class="bg-[#13233f] border-b border-solid border-white/8">
     <form
-        class="form subscribe p-8 border-b border-solid border-white/8"
+        class="form subscribe  max-w-[1240px] p-8 mx-auto"
         action="<?= $escaper->escapeUrl($block->getFormActionUrl()) ?>"
         method="post"
         x-data="initNewsletterForm"
