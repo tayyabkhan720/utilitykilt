@@ -1,0 +1,126 @@
+@layer utilities {
+  @keyframes marquee {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* 1. Define custom animation properties natively instead of using @apply group-hover */
+  .animate-marquee {
+    animation: marquee 22s linear infinite;
+  }
+
+  /* 2. Map the pause behavior to the parent .group element cleanly using a CSS selector */
+  .group:hover .animate-marquee {
+    animation-play-state: paused;
+  }
+
+  /* 3. Handle structure layouts without breaking Tailwind compilation */
+  .marquee-wrap {
+    overflow: hidden;
+    white-space: nowrap;
+  }
+}
+
+.price-box.price-final_price{
+    @apply flex gap-6 items-center;
+}
+span.special-price{
+    @apply text-[13.5px] font-semibold text-primary;
+}
+span.old-price{
+    @apply text-[#7C89A0] font-normal;
+}
+.product-item-photo img{
+    @apply w-full;
+}
+
+.tjv-product-media {
+    min-height: 280px;
+}
+
+.tjv-product-action {
+    display: flex;
+    width: 42px;
+    height: 42px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #b8b8b8;
+    border-radius: 8px;
+    background: #fff;
+    color: #4b5563;
+    cursor: pointer;
+    transition: background-color .2s ease, color .2s ease, border-color .2s ease;
+}
+
+.tjv-product-action:hover,
+.tjv-product-action:focus-visible {
+    border-color: #1b1b1b;
+    background: #1b1b1b;
+    color: #fff;
+}
+
+.tjv-product-action svg {
+    width: 21px;
+    height: 21px;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.5;
+}
+
+.block-bestseller .product-item{
+    @apply bg-[#21366a] border border-white/8;
+}
+.summary-it{
+    @apply text-[10.5px] text-[#9FB0C7];
+}
+.catalog-category-view .price-box.price-final_price {
+    @apply flex gap-6 items-center my-2;
+}
+
+.catalog-category-view .price-box.price-final_price span.special-price
+{
+    @apply text-primary font-bold text-lg;
+}
+.catalog-category-view .price-box.price-final_price span.old-price{
+    @apply text-red-500 line-through;
+}
+.catalog-category-view .categories-main ul li{
+    @apply inline-block p-[5px] float-left;
+}
+
+.categories-details figure img {
+    @apply w-full h-auto max-w-[150px] min-w-[150px];
+}
+.categories-details label.subcat-label{
+    @apply text-center uppercase cursor-pointer block my-6;
+}
+.catalog-category-view .pr-act{
+    @apply hidden;
+}
+.snap-track {
+    @apply pt-0;
+}
+label{
+    @apply !text-black text-base font-semibold;
+}
+.psac-submit{
+    @apply !bg-primary;
+}
+:is([type=checkbox], .form-checkbox):focus{
+    @apply ring-1 ring-primary;
+}
+:is([type=checkbox], .form-checkbox):checked, 
+:is([type=radio],.form-radio):checked,
+:is([type=checkbox], .form-checkbox):indeterminate {
+    @apply bg-primary border-primary;
+}
+@media (max-width: 768px) {
+    .categories-main ul li{
+        @apply w-full;
+    }
+    .homeslider .pagebuilder-slide-wrapper {
+     @apply !bg-contain;
+}
+}
