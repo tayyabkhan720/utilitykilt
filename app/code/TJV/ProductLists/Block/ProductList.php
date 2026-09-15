@@ -36,10 +36,11 @@ class ProductList extends Template
     ];
 
     private const BUNDLE_PRODUCT_IDS = [
-    301,
-    302,
-    303,
-];
+        3094,
+        1328,
+        3238,
+        1287
+    ];
 
     /**
      * Magento Review entity type.
