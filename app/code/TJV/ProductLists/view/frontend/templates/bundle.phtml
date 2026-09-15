@@ -1,154 +1,174 @@
 <?php
-/**
- * Copyright © Magento, Inc. All rights reserved.
- * See COPYING.txt for license details.
- */
-?>
-<?php
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\ProductPage;
+use Hyva\Theme\ViewModel\ProductCompare;
+use Hyva\Theme\ViewModel\Wishlist;
+use Hyva\Theme\ViewModel\LucideIcons;
+use Hyva\Theme\ViewModel\BlockJsDependencies;
 
-// phpcs:disable Magento2.Templates.ThisInTemplate.FoundThis
-// phpcs:disable Magento2.Files.LineLength.MaxExceeded
+/** @var \TJV\ProductLists\Block\ProductList $block */
+/** @var ViewModelRegistry $viewModels */
 
-/**
- * Template for displaying new products widget
- *
- * @var $block \Magento\Catalog\Block\Product\Widget\NewWidget
- */
-if ($exist = ($block->getProductCollection() && $block->getProductCollection()->getSize())) {
-    $type = 'widget-new-list';
+$productViewModel = $viewModels->require(ProductPage::class);
+$compareViewModel = $viewModels->require(ProductCompare::class);
+$wishlistViewModel = $viewModels->require(Wishlist::class);
+$lucideIcons = $viewModels->require(LucideIcons::class);
 
-    $mode = 'list';
+$showAddToCompare = $compareViewModel->showInProductList();
+$showAddToWishlist = $wishlistViewModel->isEnabled();
 
-    $image = 'new_products_content_widget_list';
-    $title = __('New Products');
-    $items = $block->getProductCollection()->getItems();
-    /** @var Magento\Catalog\Helper\Output $_helper */
-    $_helper = $this->helper(Magento\Catalog\Helper\Output::class);
+$viewModels->require(BlockJsDependencies::class)
+    ->setBlockTemplateDependency($block, 'Magento_Catalog::product/list/js/compare.phtml');
+$viewModels->require(BlockJsDependencies::class)
+    ->setBlockTemplateDependency($block, 'Magento_Catalog::product/list/js/wishlist.phtml');
 
-    $showWishlist = true;
-    $showCompare = true;
-    $showCart = true;
-    $templateType = \Magento\Catalog\Block\Product\ReviewRendererInterface::DEFAULT_VIEW;
-    $description = true;
-}
+$products = $block->getProducts('bundle');
 ?>
 
-<?php if ($exist) :?>
-    <div class="block widget block-new-products <?= /* @noEscape */ $mode ?>">
-        <div class="block-title hidden">
-            <strong role="heading" aria-level="2"><?= $block->escapeHtml($title) ?></strong>
-        </div>
-        <div class="block-content">
-            <?= /* @noEscape */ '<!-- ' . $image . '-->' ?>
-            <div class="products-<?= /* @noEscape */ $mode ?> <?= /* @noEscape */ $mode ?>">
-                <ol class="irish product-items <?= /* @noEscape */ $type ?>">
-                    <?php foreach ($items as $_item) :?>
-                        <li class="product-item my-4 ">
-                            <div class="product-item-info ">
-                                <a href="<?= $block->escapeUrl($block->getProductUrl($_item)) ?>"
-                                   class="product-item-photo">
-                                    <?= $block->getImage($_item, $image)->toHtml() ?>
-                                </a>
-                                <div class="product-item-details">
-                                    <strong class="product-item-name mb-1 text-[14.5px] font-semibold text-[#1b1b1b]">
-                                        <a title="<?= $block->escapeHtmlAttr($_item->getName()) ?>"
-                                           href="<?= $block->escapeUrl($block->getProductUrl($_item)) ?>"
-                                           class="product-item-link">
-                                            <?= $block->escapeHtml($_item->getName()) ?>
-                                        </a>
-                                    </strong>
-                                    <?= $block->getProductPriceHtml($_item, $type) ?>
+<?php if ($products): ?>
+<section class="tjv-product-section tjv-bundle-products px-4 py-10 sm:px-6 lg:px-8"
+         aria-labelledby="tjv-bundle-products-title">
+    <div class="tjv-product-grid grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
 
-                                    <?php if ($templateType) :?>
-                                        <?= $block->getReviewsSummaryHtml($_item, $templateType) ?>
-                                    <?php endif; ?>
-                                    <?php if ($description) :?>
-                                        <div class="product-item-description hidden">
-                                            <?= /* @noEscape */ $_helper->productAttribute(
-                                                $_item,
-                                                $_item->getShortDescription(),
-                                                'short_description'
-                                            ) ?>
-                                            <a title="<?= $block->escapeHtmlAttr($_item->getName()) ?>"
-                                               href="<?= $block->escapeUrl($block->getProductUrl($_item))?>"
-                                               class="action more"><?= $block->escapeHtml(__('Learn More')) ?></a>
-                                        </div>
-                                    <?php endif; ?>
-                                </div>
-                                   <?php if ($showWishlist || $showCompare || $showCart) :?>
-                                        <div class="product-item-actions">
-                                            <?php if ($showCart) :?>
-                                                <div class="actions-primary">
-                                                    <?php if ($_item->isSaleable()) :?>
-                                                        <?php if (!$_item->getTypeInstance()->isPossibleBuyFromList($_item)
-                                                        ) :?>
-                                                            <button class="action tocart primary flex h-[38px] w-[38px] shrink-0 cursor-pointer items-center justify-center rounded-full border-0 bg-[#1b1b1b] text-white"
-                                                                    data-mage-init='{"redirectUrl":{"url":"<?= $block->escapeUrl($block->getAddToCartUrl($_item)) ?>"}}'
-                                                                    type="button"
-                                                                    title="<?= $block->escapeHtmlAttr(__('Add to Cart')) ?>">
-                                                                <span>
-                                                                <svg
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                        >
-                            <path d="M6 8h12l-1 12H7L6 8Z"></path>
-                            <path d="M9 8V6a3 3 0 0 1 6 0v2"></path>
-                        </svg>
-                                                                </span>
-                                                            </button>
-                                                        <?php else :?>
-                                                            <?php
-                                                                $postDataHelper = $this->helper(Magento\Framework\Data\Helper\PostHelper::class);
-                                                                $postData = $postDataHelper->getPostData($block->getAddToCartUrl($_item), ['product' => $_item->getEntityId()])
-                                                            ?>
-                                                            <button class="action tocart primary"
-                                                                    data-post='<?= /* @noEscape */ $postData ?>'
-                                                                    type="button" title="<?= $block->escapeHtmlAttr(__('Add to Cart')) ?>">
-                                                                <span><?= $block->escapeHtml(__('Add to Cart')) ?></span>
-                                                            </button>
-                                                        <?php endif; ?>
-                                                    <?php else :?>
-                                                        <?php if ($_item->isAvailable()) :?>
-                                                            <div class="stock available"><span><?= $block->escapeHtml(__('In stock')) ?></span></div>
-                                                        <?php else :?>
-                                                            <div class="stock unavailable"><span><?= $block->escapeHtml(__('Out of stock')) ?></span></div>
-                                                        <?php endif; ?>
-                                                    <?php endif; ?>
-                                                </div>
-                                            <?php endif; ?>
-                                            <?php if ($showWishlist || $showCompare) :?>
-                                                <div class="actions-secondary hidden" data-role="add-to-links">
-                                                    <?php if ($this->helper(Magento\Wishlist\Helper\Data::class)->isAllow() && $showWishlist) :?>
-                                                        <a href="#"
-                                                           data-post='<?= /* @noEscape */ $block->getAddToWishlistParams($_item) ?>'
-                                                           class="action towishlist" data-action="add-to-wishlist"
-                                                           title="<?= $block->escapeHtmlAttr(__('Add to Wish List')) ?>">
-                                                            <span><?= $block->escapeHtml(__('Add to Wish List')) ?></span>
-                                                        </a>
-                                                    <?php endif; ?>
-                                                    <?php if ($block->getAddToCompareUrl() && $showCompare) :?>
-                                                        <?php $compareHelper = $this->helper(Magento\Catalog\Helper\Product\Compare::class); ?>
-                                                        <a href="#" class="action tocompare"
-                                                           title="<?= $block->escapeHtmlAttr(__('Add to Compare')) ?>"
-                                                           data-post='<?= /* @noEscape */ $compareHelper->getPostDataParams($_item) ?>'
-                                                        >
-                                                            <span><?= $block->escapeHtml(__('Add to Compare')) ?></span>
-                                                        </a>
-                                                    <?php endif; ?>
-                                                </div>
-                                            <?php endif; ?>
-                                        </div>
-                                    <?php endif; ?>
-                            </div>
-                        </li>
-                    <?php endforeach ?>
-                </ol>
+
+        <?php foreach ($products as $product): ?>
+            <?php
+            $finalPrice = (float) $product->getFinalPrice();
+            $regularPrice = (float) $product->getPrice();
+            $discount = $block->getDiscountPercent($product);
+            $rating = (float) $product->getRatingSummary();
+            $reviews = (int) $product->getReviewsCount();
+            $categoryName = $block->getParentCategoryName($product);
+            $productId = (int) $product->getId();
+            $productName = $product->getName();
+            $isSaleable = $product->isSaleable();
+            ?>
+            <?php if ($isSaleable): ?>
+            <form id="product_addtocart_form_<?= $productId ?>"
+                  method="post"
+                  action="<?= $escaper->escapeUrl($productViewModel->getAddToCartUrl($product, ['useUencPlaceholder' => true])) ?>"
+                  class="tjv-product-card group flex flex-col overflow-hidden rounded-lg border border-neutral-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+                <?= $block->getBlockHtml('formkey') ?>
+                <input type="hidden" name="product" value="<?= $productId ?>">
+            <?php else: ?>
+            <article class="tjv-product-card group flex flex-col overflow-hidden rounded-lg border border-neutral-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+            <?php endif; ?>
+
+                <div class="tjv-product-media relative overflow-hidden bg-neutral-100">
+                    <a href="<?= $escaper->escapeUrl($block->getProductUrl($product)) ?>" class="block">
+                        <img src="<?= $escaper->escapeUrl($block->getProductImageUrl($product)) ?>"
+                             alt="<?= $escaper->escapeHtmlAttr($productName) ?>"
+                             class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                             loading="lazy">
+                    </a>
+                    <div class="tjv-product-actions absolute right-0 top-3 z-10 flex translate-x-3 flex-col gap-2 opacity-0 transition-all bg-[#fff] p-4 duration-300 group-hover:translate-x-0 group-hover:opacity-100 group-focus-within:translate-x-0 group-focus-within:opacity-100">
+                        <?php if ($isSaleable): ?>
+                            <button type="submit" data-addto="cart" class="tjv-product-action border p-2" title="<?= $escaper->escapeHtmlAttr(__('Add to Cart')) ?>" aria-label="<?= $escaper->escapeHtmlAttr(__('Add to Cart') . ' ' . $productName) ?>">
+                                <?= $lucideIcons->shoppingCartHtml('h-4 w-4', 20, 20, ['aria-hidden' => 'true']) ?>
+                            </button>
+                        <?php endif; ?>
+
+                        <?php if ($showAddToWishlist): ?>
+                            <button x-data="initWishlist()"
+                                    x-defer="intersect"
+                                    @click.prevent="addToWishlist(<?= $productId ?>)"
+                                    type="button"
+                                    class="tjv-product-action border p-2"
+                                    data-addto="wishlist"
+                                    title="<?= $escaper->escapeHtmlAttr(__('Add to Wish List')) ?>"
+                                    aria-label="<?= $escaper->escapeHtmlAttr(__('Add to Wish List') . ' ' . $productName) ?>">
+                                <?= $lucideIcons->heartHtml('h-4 w-4', 20, 20, ['aria-hidden' => 'true']) ?>
+                            </button>
+                        <?php endif; ?>
+
+                        <?php if ($showAddToCompare): ?>
+                            <button x-data="initCompareOnProductList()"
+                                    x-defer="intersect"
+                                    @click.prevent="addToCompare(<?= $productId ?>)"
+                                    type="button"
+                                    class="tjv-product-action border p-2"
+                                    data-addto="compare"
+                                    title="<?= $escaper->escapeHtmlAttr(__('Add to Compare')) ?>"
+                                    aria-label="<?= $escaper->escapeHtmlAttr(__('Add to Compare') . ' ' . $productName) ?>">
+                                <?= $lucideIcons->scaleHtml('h-4 w-4', 20, 20, ['aria-hidden' => 'true']) ?>
+                            </button>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
+                <div class="flex flex-1 flex-col p-4">
+                    <?php if ($categoryName): ?>
+                        <a href="<?= $escaper->escapeUrl($block->getProductUrl($product)) ?>"
+                           class="mb-2 text-xs font-semibold uppercase tracking-wider text-neutral-500 hover:text-neutral-900">
+                            <?= $escaper->escapeHtml($categoryName) ?>
+                        </a>
+                    <?php endif; ?>
+
+                    <h3 class="tjv-product-name mb-3 truncate text-base font-semibold text-neutral-900">
+                        <a href="<?= $escaper->escapeUrl($block->getProductUrl($product)) ?>" class="hover:text-neutral-600">
+                            <?= $escaper->escapeHtml($productName) ?>
+                        </a>
+                    </h3>
+
+                    <div class="tjv-product-rating mb-3 flex items-center gap-2 text-sm"
+                         aria-label="<?= $escaper->escapeHtmlAttr((string) $rating) ?>%">
+                        <span class="tjv-stars text-amber-500" aria-hidden="true">★★★★★</span>
+                        <?php if ($reviews > 0): ?>
+                            <span class="tjv-review-count text-neutral-500">
+                                (<?= $escaper->escapeHtml((string) $reviews) ?>)
+                            </span>
+                        <?php endif; ?>
+                    </div>
+
+                    <div class="tjv-product-price mt-auto flex items-center gap-2">
+                        <?php if ($regularPrice > $finalPrice): ?>
+                            <span class="tjv-old-price text-sm text-neutral-400 line-through">
+                                <?= $escaper->escapeHtml($block->getFormattedPrice($regularPrice)) ?>
+                            </span>
+                        <?php endif; ?>
+                        <span class="tjv-final-price text-lg font-bold text-neutral-900">
+                            <?= $escaper->escapeHtml($block->getFormattedPrice($finalPrice)) ?>
+                        </span>
+                        <?php if ($discount > 0): ?>
+                            <span class="text-xs font-bold text-white bg-[#a4342a] px-2 py-0.5 rounded-full">
+                                -<?= $escaper->escapeHtml((string) $discount) ?>%
+                            </span>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
+            <?php if ($isSaleable): ?>
+            </form>
+            <?php else: ?>
+            </article>
+            <?php endif; ?>
+        <?php endforeach; ?>
+         <div class="relative flex flex-col items-center overflow-hidden rounded-[10px] bg-[#f1ece2] px-5 pt-9 text-center">
+            <span class="tag">
+                SALE UPTO 40%
+            </span>
+            <h3>
+                Claim Your Tartan Now
+            </h3>
+            <a
+                href="#"
+                class="mb-6 rounded-[30px] bg-[#13233f] px-[30px] py-3 font-[Arial,Helvetica,sans-serif] text-[12.5px] font-bold tracking-[0.4px] text-white"
+            >
+                SHOP NOW
+            </a>
+            <div class="relative min-h-[170px] w-full flex-1">
+                <img
+                    class="absolute bottom-[-14px] left-[2%] z-[2] h-[170px] w-[56%] rotate-[-6deg] rounded-[6px] object-cover shadow-[0_12px_22px_rgba(0,0,0,0.18)]"
+                    src="https://picsum.photos/seed/iks-kilt-outfit/900/1100"
+                    alt="Kilt outfit"
+                >
+                <img
+                    class="absolute bottom-[-14px] right-[2%] z-[1] h-[150px] w-[52%] rotate-[7deg] rounded-[6px] object-cover shadow-[0_12px_22px_rgba(0,0,0,0.18)]"
+                    src="https://picsum.photos/seed/iks-tartan-kilt/900/1100"
+                    alt="Tartan kilt"
+                >
             </div>
-            <?= $block->getPagerHtml() ?>
-        </div>
+        </div> 
     </div>
-<?php endif;?>
+</section>
+<?php endif; ?>
