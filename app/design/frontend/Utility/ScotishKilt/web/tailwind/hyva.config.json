@@ -1,0 +1,38 @@
+{
+  "notice": [
+    "This is a complementary config file for Tailwind v4 and is not a replacement for the Tailwind v3 config file.",
+    "For usage, see the docs: https://docs.hyva.io/hyva-themes/working-with-tailwindcss/using-hyva-modules/"
+  ],
+  "tailwind": {
+    "include": [
+      {
+        "comment": "Example of how to include parent themes or modules. Use the 'src' key, instead of 'example_src' to use this",
+        "src": "vendor/hyva-themes/magento2-default-theme"
+      },
+      {
+        "src": "app/code/TJV/ProductLists"
+      }
+    ],
+    "exclude": []
+  },
+"tokens": {
+  "values": {
+    "color": {
+      "primary": {
+        "lighter": "#b8894a", 
+        "DEFAULT": "#b8894a", 
+        "darker": "#145985"   
+      },
+      "secondary": {
+        "lighter": "#38BDF8", 
+        "DEFAULT": "#0EA5E9", 
+        "darker": "#0284C7"   
+      },
+      "on": {
+        "primary": "#ffffff",
+        "secondary": "#ffffff"
+      }
+    }
+  }
+}
+}
