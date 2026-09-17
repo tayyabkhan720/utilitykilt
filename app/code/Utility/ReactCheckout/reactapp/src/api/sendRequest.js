@@ -77,11 +77,13 @@ export default function sendRequest(
       // eslint-disable-next-line no-console
       console.log('🔥 sendRequest RESPONSE:', response);
 
-      if (!responseContainErrors(response) || !responseDataEmpty(response)) {
+      if (!responseContainErrors(response) && !responseDataEmpty(response)) {
         return response;
       }
 
-      const exception = new GraphQLResponseException(response);
+      const exception = responseContainErrors(response)
+        ? new GraphQLResponseException(response)
+        : new Error('The server returned an empty response.');
 
       dispatch({
         type: SET_PAGE_MESSAGE,
