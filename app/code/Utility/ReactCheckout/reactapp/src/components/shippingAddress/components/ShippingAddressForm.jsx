@@ -163,7 +163,7 @@ function ShippingAddressForm() {
   return (
     <>
       <div className="py-2">
-        <div className="flex">
+        <div className="flex space-between gap-4">
           <TextInput
             required
             name={fields.firstname}
@@ -183,7 +183,7 @@ function ShippingAddressForm() {
             placeholder={__('Last name')}
           />
         </div>
-        <div className="flex space-between">
+        <div className="flex space-between gap-4">
           <TextInput
             required
             label={__('Phone')}
@@ -213,7 +213,7 @@ function ShippingAddressForm() {
           placeholder={__('Street')}
           name={`${fields.street}[0]`}
         />
-        <div className="flex">
+        <div className="flex space-between gap-4">
           <SelectInput
             required
             label={__('Country')}
@@ -234,7 +234,7 @@ function ShippingAddressForm() {
             onBlur={handleFieldBlur}
           />
         </div>
-        <div className="flex">
+        <div className="flex space-between gap-4">
           <TextInput
             required
             placeholder="12345"

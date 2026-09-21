@@ -34,7 +34,7 @@ function UserInfoBox() {
       </div>
 
       {!isLoggedIn && (
-        <div className="flex items-center justify-center">
+        <div className="flex items-center">
           <Button click={setFormToEditMode} variant="secondary">
             {__('Edit')}
           </Button>
