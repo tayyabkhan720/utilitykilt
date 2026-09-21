@@ -32,7 +32,7 @@ function Message() {
       <div
         className={`relative px-6 py-2 my-4 text-white border-0 rounded ${
           msgType === 'error' ? 'bg-red-500' : ''
-        } ${msgType === 'success' ? 'bg-green-500' : ''}`}
+        } ${msgType === 'success' ? 'bg-primary' : ''}`}
       >
         <span className="inline-block mr-8 align-middle">{msg}</span>
         <button

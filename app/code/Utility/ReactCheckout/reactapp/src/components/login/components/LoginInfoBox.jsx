@@ -23,7 +23,7 @@ function LoginInfoBox() {
             </h3>
             <button
               type="button"
-              className="px-4 py-1 text-sm font-semibold text-white bg-gray-500"
+              className="px-2 py-1 bg-primary text-sm font-semibold rounded text-white"
               onClick={() => {
                 setFieldValue(fields.customerWantsToSignIn, false);
               }}

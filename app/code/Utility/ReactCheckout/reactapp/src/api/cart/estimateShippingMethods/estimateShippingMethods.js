@@ -3,10 +3,10 @@ import { ESTIMATE_PLACEHOLDER_FIRSTNAME } from '../../../utils/estimateAddressCo
 
 const ESTIMATE_PLACEHOLDER_VALUES = {
   firstname: ESTIMATE_PLACEHOLDER_FIRSTNAME,
-  lastname: 'Estimate',
+  lastname: 'lastname',
   company: '',
-  street: ['Estimate'],
-  city: 'Estimate',
+  street: ['Address'],
+  city: 'City',
   zipcode: '00000',
   phone: '00000000000',
   saveInBook: false,
