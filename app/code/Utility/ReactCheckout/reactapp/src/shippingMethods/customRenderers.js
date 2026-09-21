@@ -9,4 +9,8 @@
  * include them here as well. That is the only time you need to touch this file.
  */
 
-export default {};
+import CategoryShippingMethod from './CategoryShippingMethod';
+
+export default {
+  tjv_category__category: CategoryShippingMethod,
+};
