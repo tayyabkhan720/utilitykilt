@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config/etc/system_file.xsd">
+    <system>
+        <section id="tjv_promo" translate="label" sortOrder="999"
+                 showInDefault="1" showInWebsite="1" showInStore="1">
+            <class>separator-top</class>
+            <label>TJV Promotion Settings</label>
+            <tab>sales</tab>
+            <resource>Magento_Config::config</resource>
+            
+            <group id="buy_one_free_shipping" translate="label" sortOrder="10"
+                   showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Buy One Get Shipping Free</label>
+                
+                <field id="enabled" translate="label" type="select" sortOrder="10"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Buy One Get Shipping Free</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <config_path>tjv_promo/buy_one_free_shipping/enabled</config_path>
+                </field>
+
+                <field id="trigger_product_ids" translate="label comment" type="text" sortOrder="20"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Trigger Product IDs</label>
+                    <comment>
+                        <![CDATA[
+                        Enter product IDs or SKUs (comma-separated).<br/>
+                        Example: <strong>123,456,789</strong><br/>
+                        When customer buys ANY of these, free shipping applies.
+                        ]]>
+                    </comment>
+                    <config_path>tjv_promo/buy_one_free_shipping/trigger_product_ids</config_path>
+                </field>
+
+                <field id="free_shipping_product_ids" translate="label comment" type="text" sortOrder="30"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Free Shipping Product IDs</label>
+                    <comment>
+                        <![CDATA[
+                        Enter product IDs or SKUs (comma-separated).<br/>
+                        Example: <strong>200,201,202</strong><br/>
+                        These products get free shipping when trigger condition is met.
+                        ]]>
+                    </comment>
+                    <config_path>tjv_promo/buy_one_free_shipping/free_shipping_product_ids</config_path>
+                </field>
+
+                <field id="description" translate="label" type="label" sortOrder="40"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>How It Works</label>
+                    <comment>
+                        <![CDATA[
+                        <strong>Example:</strong><br/>
+                        Trigger: <code>123,456</code> (Shirts)<br/>
+                        Free Shipping: <code>789</code> (Caps)<br/>
+                        <strong>Result:</strong> Buy Shirt → Cap gets FREE SHIPPING
+                        ]]>
+                    </comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>
