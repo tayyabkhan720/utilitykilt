@@ -61,7 +61,10 @@ class Category extends AbstractCarrier implements CarrierInterface
         }
 
         $categoryRates = [];
-        $configuredRates = $this->categoryShippingConfig->getRates((int)$request->getStoreId());
+        $configuredRates = $this->categoryShippingConfig->getRates(
+            (int)$request->getStoreId(),
+            (string)$request->getDestCountryId()
+        );
         foreach ($categoryIds as $itemCategories) {
             $itemRateSources = [];
             foreach (array_unique(array_map('intval', $itemCategories['ids'])) as $categoryId) {
@@ -82,6 +85,7 @@ class Category extends AbstractCarrier implements CarrierInterface
                 }
             }
 
+            $itemRateSources = $this->removeAncestorRates($itemRateSources);
             foreach ($itemRateSources as $sourceId => $rate) {
                 if (!isset($categoryRates[$sourceId])) {
                     $categoryRates[$sourceId] = [
@@ -125,7 +129,8 @@ class Category extends AbstractCarrier implements CarrierInterface
     private function getCategoryRate(int $categoryId, int $storeId, array $configuredRates): ?array
     {
         $category = $this->categoryRepository->get($categoryId, $storeId);
-        $categoryIds = array_reverse(array_map('intval', explode('/', (string)$category->getPath())));
+        $pathIds = array_map('intval', explode('/', (string)$category->getPath()));
+        $categoryIds = array_reverse($pathIds);
 
         foreach ($categoryIds as $ancestorId) {
             $configured = $configuredRates[(string)$ancestorId] ?? [];
@@ -145,14 +150,50 @@ class Category extends AbstractCarrier implements CarrierInterface
                 : $first;
 
             return $first > 0.0 || $second > 0.0
-                ? ['first' => $first, 'second' => $second, 'source_id' => $ancestorId]
+                ? [
+                    'first' => $first,
+                    'second' => $second,
+                    'source_id' => $ancestorId,
+                    'source_path' => implode('/', array_slice(
+                        $pathIds,
+                        0,
+                        array_search($ancestorId, $pathIds, true) + 1
+                    )),
+                ]
                 : null;
         }
 
         $fallback = max(0.0, (float)$category->getData('shipping_cost'));
         return $fallback > 0.0
-            ? ['first' => $fallback, 'second' => $fallback, 'source_id' => $categoryId]
+            ? [
+                'first' => $fallback,
+                'second' => $fallback,
+                'source_id' => $categoryId,
+                'source_path' => implode('/', $pathIds),
+            ]
             : null;
+    }
+
+    private function removeAncestorRates(array $rates): array
+    {
+        foreach ($rates as $sourceId => $rate) {
+            foreach ($rates as $otherSourceId => $otherRate) {
+                if ($sourceId === $otherSourceId) {
+                    continue;
+                }
+
+                $sourcePath = trim((string)($rate['source_path'] ?? ''), '/');
+                $otherPath = trim((string)($otherRate['source_path'] ?? ''), '/');
+                if ($sourcePath !== '' && $otherPath !== ''
+                    && strpos($otherPath, $sourcePath . '/') === 0
+                ) {
+                    unset($rates[$sourceId]);
+                    break;
+                }
+            }
+        }
+
+        return $rates;
     }
 
     public function getAllowedMethods()
