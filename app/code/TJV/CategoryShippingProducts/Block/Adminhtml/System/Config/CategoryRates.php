@@ -101,7 +101,7 @@ class CategoryRates extends Field
             $html .= '<table class="admin__control-table"><thead><tr><th>'
                 . $this->escaper->escapeHtml(__('Category')) . '</th><th>'
                 . $this->escaper->escapeHtml(__('First Product Shipping')) . '</th><th>'
-                . $this->escaper->escapeHtml(__('Second Product Shipping'))
+                . $this->escaper->escapeHtml(__('Others Product Shipping'))
                 . '</th></tr></thead><tbody>';
             foreach ($topLevelCategories as $parent) {
                 $html .= $this->renderCategoryRows(
@@ -121,7 +121,7 @@ class CategoryRates extends Field
             $html .= '<table class="admin__control-table"><thead><tr><th>'
                 . $this->escaper->escapeHtml(__('Category')) . '</th><th>'
                 . $this->escaper->escapeHtml(__('First Product Shipping')) . '</th><th>'
-                . $this->escaper->escapeHtml(__('Second Product Shipping'))
+                . $this->escaper->escapeHtml(__('Others Product Shipping'))
                 . '</th></tr></thead><tbody>';
             foreach ($topLevelCategories as $parent) {
                 $html .= $this->renderCategoryRows(
