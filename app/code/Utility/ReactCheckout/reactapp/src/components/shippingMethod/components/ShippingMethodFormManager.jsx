@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { Form } from 'formik';
 import { node } from 'prop-types';
 import { string as YupString } from 'yup';
@@ -32,7 +38,9 @@ function ShippingMethodFormManager({ children, formikData }) {
     initialValidationSchema
   );
   const { aggregatedData } = useCheckoutFormContext();
-  const { selectedMethod, setShippingMethod } = useShippingMethodCartContext();
+  const { selectedMethod, methodList, setShippingMethod } =
+    useShippingMethodCartContext();
+  const autoSelectingRef = useRef(false);
   const { setMessage, setPageLoader, setErrorMessage, setSuccessMessage } =
     useShippingMethodAppContext();
 
@@ -79,6 +87,32 @@ function ShippingMethodFormManager({ children, formikData }) {
     }
     setFieldValue(SHIPPING_METHOD, { ...selectedMethod });
   }, [selectedMethod, setFieldValue]);
+
+  useEffect(() => {
+    if (
+      !_isObjEmpty(selectedMethod) ||
+      _isObjEmpty(methodList) ||
+      autoSelectingRef.current
+    ) {
+      return;
+    }
+
+    const defaultMethod =
+      methodList.tjv_category__category || Object.values(methodList)[0];
+    if (!defaultMethod?.carrierCode || !defaultMethod?.methodCode) {
+      return;
+    }
+
+    const shippingMethod = {
+      carrierCode: defaultMethod.carrierCode,
+      methodCode: defaultMethod.methodCode,
+    };
+    autoSelectingRef.current = true;
+    setFieldValue(SHIPPING_METHOD, shippingMethod);
+    setShippingMethod(shippingMethod).finally(() => {
+      autoSelectingRef.current = false;
+    });
+  }, [methodList, selectedMethod, setFieldValue, setShippingMethod]);
 
   // Update initialvalues based on the initial cart data fetch.
   useEffect(() => {

@@ -11,6 +11,7 @@ use Magento\Shipping\Model\Rate\Result;
 use Magento\Shipping\Model\Rate\ResultFactory;
 use Magento\Quote\Model\Quote\Address\RateResult\MethodFactory;
 use Psr\Log\LoggerInterface;
+use TJV\CategoryShippingProducts\Helper\Config as CategoryShippingConfig;
 
 class Category extends AbstractCarrier implements CarrierInterface
 {
@@ -20,6 +21,7 @@ class Category extends AbstractCarrier implements CarrierInterface
     private MethodFactory $rateMethodFactory;
     private CategoryRepository $categoryRepository;
     private PriceCurrencyInterface $priceCurrency;
+    private CategoryShippingConfig $categoryShippingConfig;
 
     public function __construct(
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
@@ -29,13 +31,25 @@ class Category extends AbstractCarrier implements CarrierInterface
         MethodFactory $rateMethodFactory,
         CategoryRepository $categoryRepository,
         PriceCurrencyInterface $priceCurrency,
+        CategoryShippingConfig|array $categoryShippingConfig = [],
         array $data = []
     ) {
+        if (is_array($categoryShippingConfig)) {
+            $data = $categoryShippingConfig;
+            $categoryShippingConfig = $this->resolveCategoryShippingConfig();
+        }
         parent::__construct($scopeConfig, $rateErrorFactory, $logger, $data);
         $this->rateResultFactory = $rateResultFactory;
         $this->rateMethodFactory = $rateMethodFactory;
         $this->categoryRepository = $categoryRepository;
         $this->priceCurrency = $priceCurrency;
+        $this->categoryShippingConfig = $categoryShippingConfig;
+    }
+
+    private function resolveCategoryShippingConfig(): CategoryShippingConfig
+    {
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        return $objectManager->get(CategoryShippingConfig::class);
     }
 
     public function collectRates(RateRequest $request)
@@ -72,16 +86,39 @@ class Category extends AbstractCarrier implements CarrierInterface
         }
 
         $categoryIds = array_unique(array_map('intval', $categoryIds));
-        $baseAmount = 0.0;
+        $categoryRates = [];
+        $configuredRates = $this->categoryShippingConfig->getRates((int)$request->getStoreId());
         foreach ($categoryIds as $categoryId) {
             try {
                 $category = $this->categoryRepository->get($categoryId, (int)$request->getStoreId());
-                $baseAmount += max(0.0, (float)$category->getData('shipping_cost'));
+                $fallback = max(0.0, (float)$category->getData('shipping_cost'));
+                $configured = $configuredRates[(string)$categoryId] ?? [];
+                $first = isset($configured['first']) && $configured['first'] !== ''
+                    ? max(0.0, (float)$configured['first'])
+                    : $fallback;
+                $second = isset($configured['second']) && $configured['second'] !== ''
+                    ? max(0.0, (float)$configured['second'])
+                    : $first;
+                if ($first > 0.0 || $second > 0.0) {
+                    $categoryRates[] = ['first' => $first, 'second' => $second];
+                }
             } catch (\Magento\Framework\Exception\NoSuchEntityException $exception) {
                 $this->_logger->warning(
                     'Unable to load category for category shipping rate.',
                     ['category_id' => $categoryId, 'exception' => $exception]
                 );
+            }
+        }
+
+        usort($categoryRates, static function (array $left, array $right): int {
+            return $right['first'] <=> $left['first'];
+        });
+
+        $baseAmount = 0.0;
+        if ($categoryRates) {
+            $baseAmount = $categoryRates[0]['first'];
+            foreach (array_slice($categoryRates, 1) as $categoryRate) {
+                $baseAmount += $categoryRate['second'];
             }
         }
 
