@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="tjv_category_shipping_products" translate="label" sortOrder="998"
+                 showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Category Shipping Products</label>
+            <tab>sales</tab>
+            <resource>Magento_Config::config</resource>
+            <group id="shipping_rates" translate="label" sortOrder="10"
+                   showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Shipping Rates by Category</label>
+                <field id="rates" translate="label comment" sortOrder="10"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Category Shipping Rates</label>
+                    <comment>Configure first and second product shipping charges for every category in the selected store view.</comment>
+                    <frontend_model>TJV\CategoryShippingProducts\Block\Adminhtml\System\Config\CategoryRates</frontend_model>
+                    <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
+                    <config_path>tjv_category_shipping_products/shipping_rates/rates</config_path>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>
