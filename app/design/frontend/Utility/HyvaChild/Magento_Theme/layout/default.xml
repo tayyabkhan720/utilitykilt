@@ -14,6 +14,7 @@
         </arguments>
         <block class="Magento\Wishlist\Block\Link" name="header-wishlist" as="wishlist" template="Magento_Wishlist::link.phtml"/>
     </referenceBlock> -->
+    <referenceContainer name="header.container" htmlClass="page-header sticky top-0 z-50"/>
 
             <referenceContainer name="header.container">
             <block class="Magento\Framework\View\Element\Template"

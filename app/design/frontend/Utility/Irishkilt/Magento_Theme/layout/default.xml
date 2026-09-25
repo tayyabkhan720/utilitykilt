@@ -16,6 +16,7 @@
     </referenceBlock> -->
         <!-- 1. Footer Container Adjustments -->
                 <referenceBlock name="homepage.content" remove="true"/>
+    <referenceContainer name="header.container" htmlClass="page-header sticky top-0 z-10"/>
 
     <referenceContainer name="footer-container">
         <block class="Magento\Newsletter\Block\Subscribe"
