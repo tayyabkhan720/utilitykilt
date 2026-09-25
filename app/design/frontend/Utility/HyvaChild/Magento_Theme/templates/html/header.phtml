@@ -36,6 +36,14 @@ $showWishlist = $block->getShowWishlist() !== null ? (bool) $block->getShowWishl
             searchOpen: false,
             cart: {},
             isCartOpen: false,
+            isScrolled: false,  // ADD THIS
+
+            init() {  // ADD THIS init() method
+                window.addEventListener('scroll', () => {
+                    this.isScrolled = window.scrollY > 20;
+                });
+            },
+
             getData(data) {
                 this.cart = data.cart ?? {};
             },
@@ -93,10 +101,11 @@ $showWishlist = $block->getShowWishlist() !== null ? (bool) $block->getShowWishl
 <?php $hyvaCsp->registerInlineScript() ?>
 
 <div id="header"
-     class="relative z-30 w-full border-b shadow bg-white border-gray-100"
+     class="relative z-30 w-full border-b bg-white border-gray-100 transition-all duration-300"
      x-data="initHeader()"
      @private-content-loaded.window="getData(event.detail.data)"
->
+    :class="isScrolled ? 'shadow-lg backdrop-blur-sm bg-white/95' : ''">
+    
     <div class="container flex flex-wrap lg:flex-nowrap items-center justify-between w-full px-6 py-3 mx-auto mt-0">
         <!--Logo-->
         <div class="sm:order-1 lg:order-0 w-full pb-2 sm:w-auto sm:pb-0">

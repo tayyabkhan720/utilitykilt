@@ -10,6 +10,6 @@
     <body>
 
      <referenceBlock name="homepage.content" remove="true"/>
-
+    <referenceContainer name="header.container" htmlClass="page-header sticky top-0 z-50"/>
     </body>
 </page>
