@@ -19,8 +19,8 @@
   "values": {
     "color": {
       "primary": {
-        "lighter": "#018749", 
-        "DEFAULT": "#018749", 
+        "lighter": "#1B3A28", 
+        "DEFAULT": "#1B3A28", 
         "darker": "#145985"   
       },
       "secondary": {
