@@ -13,7 +13,7 @@ use Magento\Framework\Escaper;
 /** @var Template $block */
 /** @var Escaper $escaper */
 ?>
-<div class="bg-primary">
+<div class="bg-primary border-b border-white/14">
     <div class="container py-8">
         <div class="flex flex-wrap gap-y-16">
 
@@ -115,8 +115,11 @@ use Magento\Framework\Escaper;
       
     </div>
 </div>
-  <div class="container py-2 flex items-center sm:flex-row flex-col justify-center">
-            <p class="text-[#696969]"><?= $block->getChildHtml('copyright') ?></p>
+<div class="bg-primary border-b border-white/14">
+    <p class="text-center px-6 py-5 text-[#d8ded9]">Accepted Payments: Visa · Mastercard · PayPal · Amex</p>
+</div>
+  <div class="bg-[#0c2318] py-2 flex items-center sm:flex-row flex-col justify-center">
+            <p class=""><?= $block->getChildHtml('copyright') ?></p>
     </div>
 
 
