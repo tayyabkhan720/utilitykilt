@@ -12,7 +12,6 @@
                 <label>Shipping Rates by Category</label>
                 <field id="rates" translate="label comment" sortOrder="10"
                        showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Category Shipping Rates</label>
                     <comment>Configure first and second product shipping charges for every category in the selected store view.</comment>
                     <frontend_model>TJV\CategoryShippingProducts\Block\Adminhtml\System\Config\CategoryRates</frontend_model>
                     <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
