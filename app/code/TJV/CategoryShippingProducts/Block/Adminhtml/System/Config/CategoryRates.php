@@ -24,6 +24,15 @@ class CategoryRates extends Field
         'new_zealand' => 'New Zealand',
         'rest_of_world' => 'Rest of the World',
     ];
+    private const COUNTRY_COLUMNS = [
+        'United Kingdom' => ['id' => 'uk', 'scope' => 'regions'],
+        'Europe' => ['id' => 'europe', 'scope' => 'regions'],
+        'USA' => ['id' => 'usa', 'scope' => 'regions'],
+        'Canada' => ['id' => 'canada', 'scope' => 'regions'],
+        'Australia' => ['id' => 'australia', 'scope' => 'regions'],
+        'New Zealand' => ['id' => 'new_zealand', 'scope' => 'regions'],
+        'Italy' => ['id' => 'IT', 'scope' => 'countries'],
+    ];
 
     public function __construct(
         \Magento\Backend\Block\Template\Context $context,
@@ -95,50 +104,106 @@ class CategoryRates extends Field
         $html = '<div class="tjv-category-rates">';
         $html .= '<p><strong>' . $this->escaper->escapeHtml(__('Configure rates by destination country.'))
             . '</strong></p>';
-        foreach ($regions as $regionId => $regionName) {
-            $html .= '<details' . ($regionId === '' ? ' open' : '') . '><summary><strong>'
-                . $this->escaper->escapeHtml(__($regionName)) . '</strong></summary>';
-            $html .= '<table class="admin__control-table"><thead><tr><th>'
-                . $this->escaper->escapeHtml(__('Category')) . '</th><th>'
-                . $this->escaper->escapeHtml(__('First Product Shipping')) . '</th><th>'
-                . $this->escaper->escapeHtml(__('Others Product Shipping'))
-                . '</th></tr></thead><tbody>';
-            foreach ($topLevelCategories as $parent) {
-                $html .= $this->renderCategoryRows(
-                    $parent,
-                    $children,
-                    $configured,
-                    $name,
-                    $regionId,
-                    0
-                );
+        $html .= '<div class="tjv-category-rates__country-table"'
+            . ' style="display:block;width:100%;max-width:100%;min-width:0;overflow-x:auto;'
+            . 'overflow-y:hidden;box-sizing:border-box;">'
+            . '<table class="admin__control-table"'
+            . ' style="width:2380px;min-width:2380px;table-layout:fixed;border-collapse:collapse;">'
+            . '<thead><tr>';
+        foreach (self::COUNTRY_COLUMNS as $countryName => $destination) {
+            $html .= '<th style="width:340px;border:1px solid #c6c6c6;padding:8px;">'
+                . $this->escaper->escapeHtml(__($countryName)) . '</th>';
+        }
+
+        $html .= '</tr></thead><tbody><tr>';
+        foreach (self::COUNTRY_COLUMNS as $destination) {
+            $html .= '<td style="width:340px;vertical-align:top;border:1px solid #c6c6c6;padding:8px;">'
+                . $this->renderDestinationTable(
+                $topLevelCategories,
+                $children,
+                $configured,
+                $name,
+                $destination['id'],
+                $destination['scope']
+            ) . '</td>';
+        }
+        $html .= '</tr></tbody></table></div>';
+
+        $primaryRegionIds = [];
+        foreach (self::COUNTRY_COLUMNS as $destination) {
+            if ($destination['scope'] === 'regions') {
+                $primaryRegionIds[] = $destination['id'];
             }
-            $html .= '</tbody></table></details>';
+        }
+        $html .= '<details class="tjv-category-rates__other-destinations"><summary><strong>'
+            . $this->escaper->escapeHtml(__('Default and other destinations'))
+            . '</strong></summary>';
+        foreach ($regions as $regionId => $regionName) {
+            if ($regionId !== '' && in_array($regionId, $primaryRegionIds, true)) {
+                continue;
+            }
+            $html .= '<details><summary><strong>'
+                . $this->escaper->escapeHtml(__($regionName)) . '</strong></summary>';
+            $html .= $this->renderDestinationTable(
+                $topLevelCategories,
+                $children,
+                $configured,
+                $name,
+                $regionId
+            ) . '</details>';
         }
         foreach ($countries as $countryId => $countryName) {
+            if ($countryId === 'IT') {
+                continue;
+            }
             $html .= '<details><summary><strong>' . $this->escaper->escapeHtml($countryName)
                 . '</strong></summary>';
-            $html .= '<table class="admin__control-table"><thead><tr><th>'
-                . $this->escaper->escapeHtml(__('Category')) . '</th><th>'
-                . $this->escaper->escapeHtml(__('First Product Shipping')) . '</th><th>'
-                . $this->escaper->escapeHtml(__('Others Product Shipping'))
-                . '</th></tr></thead><tbody>';
-            foreach ($topLevelCategories as $parent) {
-                $html .= $this->renderCategoryRows(
-                    $parent,
-                    $children,
-                    $configured,
-                    $name,
-                    $countryId,
-                    0,
-                    'countries'
-                );
-            }
-            $html .= '</tbody></table></details>';
+            $html .= $this->renderDestinationTable(
+                $topLevelCategories,
+                $children,
+                $configured,
+                $name,
+                $countryId,
+                'countries'
+            ) . '</details>';
         }
+        $html .= '</details>';
 
         $html .= '</div>';
         return $html;
+    }
+
+    private function renderDestinationTable(
+        array $topLevelCategories,
+        array $children,
+        array $configured,
+        string $name,
+        string $destinationId,
+        string $scope = 'regions'
+    ): string {
+        $html = '<table class="admin__control-table"'
+            . ' style="width:100%;table-layout:fixed;border-collapse:collapse;">'
+            . '<colgroup><col style="width:40%;"><col style="width:30%;"><col style="width:30%;"></colgroup>'
+            . '<thead><tr><th style="border:1px solid #c6c6c6;padding:6px;">'
+            . $this->escaper->escapeHtml(__('Category')) . '</th><th'
+            . ' style="border:1px solid #c6c6c6;padding:6px;">'
+            . $this->escaper->escapeHtml(__('First Product Shipping')) . '</th><th'
+            . ' style="border:1px solid #c6c6c6;padding:6px;">'
+            . $this->escaper->escapeHtml(__('Others Product Shipping'))
+            . '</th></tr></thead><tbody>';
+        foreach ($topLevelCategories as $parent) {
+            $html .= $this->renderCategoryRows(
+                $parent,
+                $children,
+                $configured,
+                $name,
+                $destinationId,
+                0,
+                $scope
+            );
+        }
+
+        return $html . '</tbody></table>';
     }
 
     private function renderCategoryRows(
@@ -172,23 +237,39 @@ class CategoryRates extends Field
         $ratePath = $regionId === ''
             ? $name . '[' . $categoryId . ']'
             : $name . '[' . $categoryId . '][' . $scope . '][' . $regionId . ']';
-        $html = '<tr><td>' . $label . ' <small>(ID: ' . $categoryId . ')</small></td>';
+        $cellStyle = 'border:1px solid #d5d5d5;padding:6px;vertical-align:top;';
+        $html = '<tr><td style="' . $cellStyle . '">' . $label
+            . ' <small>(ID: ' . $categoryId . ')</small></td>';
         foreach (['first', 'second'] as $rate) {
-            $html .= '<td><input class="input-text" type="number" min="0" step="0.01" name="'
+            $html .= '<td style="' . $cellStyle . '"><input class="input-text"'
+                . ' style="width:90px;max-width:100%;box-sizing:border-box;"'
+                . ' type="number" min="0" step="0.01" name="'
                 . $this->escaper->escapeHtmlAttr($ratePath . '[' . $rate . ']')
                 . '" value="' . ($rate === 'first' ? $first : $second) . '" /></td>';
         }
         $html .= '</tr>';
-        foreach ($children[(int)$category->getId()] ?? [] as $child) {
-            $html .= $this->renderCategoryRows(
-                $child,
-                $children,
-                $configured,
-                $name,
-                $regionId,
-                $depth + 1,
-                $scope
-            );
+
+        $childCategories = $children[(int)$category->getId()] ?? [];
+        if ($childCategories) {
+            $html .= '<tr><td colspan="3" style="' . $cellStyle
+                . '"><details class="tjv-category-rates__children"><summary>'
+                . $this->escaper->escapeHtml(__('Show subcategories (%1)', count($childCategories)))
+                . '</summary><table class="admin__control-table"'
+                . ' style="width:100%;table-layout:fixed;border-collapse:collapse;">'
+                . '<colgroup><col style="width:40%;"><col style="width:30%;"><col style="width:30%;"></colgroup>'
+                . '<tbody>';
+            foreach ($childCategories as $child) {
+                $html .= $this->renderCategoryRows(
+                    $child,
+                    $children,
+                    $configured,
+                    $name,
+                    $regionId,
+                    $depth + 1,
+                    $scope
+                );
+            }
+            $html .= '</tbody></table></details></td></tr>';
         }
 
         return $html;
