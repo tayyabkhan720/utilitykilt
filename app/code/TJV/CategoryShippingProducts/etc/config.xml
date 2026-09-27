@@ -7,8 +7,8 @@
                 <active>1</active>
                 <sallowspecific>0</sallowspecific>
                 <model>TJV\CategoryShippingProducts\Model\Carrier\Category</model>
-                <name>Shipping by Category</name>
-                <title>Category Shipping</title>
+                <name>Shipping</name>
+                <title>Shipping Method</title>
                 <specificerrmsg>This shipping method is not available for the selected products.</specificerrmsg>
             </tjv_category>
         </carriers>

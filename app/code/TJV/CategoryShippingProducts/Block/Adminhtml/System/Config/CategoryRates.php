@@ -11,6 +11,8 @@ use Magento\Store\Model\StoreManagerInterface;
 
 class CategoryRates extends Field
 {
+    private const COUNTRY_COLUMNS_CONFIG_KEY = '_country_columns';
+    private const HIDDEN_COLUMNS_CONFIG_KEY = '_hidden_columns';
     private CollectionFactory $categoryCollectionFactory;
     private StoreManagerInterface $storeManager;
     private Escaper $escaper;
@@ -31,6 +33,7 @@ class CategoryRates extends Field
         'Canada' => ['id' => 'canada', 'scope' => 'regions'],
         'Australia' => ['id' => 'australia', 'scope' => 'regions'],
         'New Zealand' => ['id' => 'new_zealand', 'scope' => 'regions'],
+        'Rest of the World' => ['id' => 'rest_of_world', 'scope' => 'regions'],
         'Italy' => ['id' => 'IT', 'scope' => 'countries'],
     ];
 
@@ -68,6 +71,36 @@ class CategoryRates extends Field
                 . ' (' . (string)$country->getCountryId() . ')';
         }
         asort($countries);
+        $countryColumns = $configured[self::COUNTRY_COLUMNS_CONFIG_KEY] ?? [];
+        if (!is_array($countryColumns)) {
+            $countryColumns = [];
+        }
+        $fixedCountryIds = [];
+        foreach (self::COUNTRY_COLUMNS as $destination) {
+            if ($destination['scope'] === 'countries') {
+                $fixedCountryIds[] = $destination['id'];
+            }
+        }
+        $countryColumns = array_values(array_unique(array_filter(
+            $countryColumns,
+            static function ($countryId) use ($countries, $fixedCountryIds): bool {
+                return is_string($countryId)
+                    && isset($countries[$countryId])
+                    && !in_array($countryId, $fixedCountryIds, true);
+            }
+        )));
+        $hiddenColumns = $configured[self::HIDDEN_COLUMNS_CONFIG_KEY] ?? [];
+        if (!is_array($hiddenColumns)) {
+            $hiddenColumns = [];
+        }
+        $hiddenColumns = array_values(array_unique(array_filter(
+            $hiddenColumns,
+            static function ($destinationKey): bool {
+                return is_string($destinationKey)
+                    && preg_match('/^(regions|countries):[A-Z_a-z0-9]+$/', $destinationKey) === 1;
+            }
+        )));
+        $configuredCountryIds = $this->getConfiguredCountryIds($configured, $countries);
 
         $collection = $this->categoryCollectionFactory->create();
         $collection->setStoreId($storeId)
@@ -101,31 +134,136 @@ class CategoryRates extends Field
             }
         }
 
-        $html = '<div class="tjv-category-rates">';
+        $html = '<div class="tjv-category-rates" data-remove-label="'
+            . $this->escaper->escapeHtmlAttr(__('Remove'))
+            . '" data-mage-init=\'{"TJV_CategoryShippingProducts/js/category-rates":{}}\'>';
         $html .= '<p><strong>' . $this->escaper->escapeHtml(__('Configure rates by destination country.'))
             . '</strong></p>';
+        $html .= '<div class="tjv-category-rates__country-controls" style="margin:12px 0;">'
+            . '<label for="tjv-category-rates-country">'
+            . $this->escaper->escapeHtml(__('Add country to the table')) . '</label> '
+            . '<select id="tjv-category-rates-country" data-role="country-select">'
+            . '<option value="">' . $this->escaper->escapeHtml(__('Select a country')) . '</option>';
+        foreach ($countries as $countryId => $countryName) {
+            if (in_array($countryId, $fixedCountryIds, true)) {
+                if (!in_array('countries:' . $countryId, $hiddenColumns, true)) {
+                    continue;
+                }
+                $destinationKey = 'countries:' . $countryId;
+            } else {
+                $destinationKey = 'countries:' . $countryId;
+            }
+            $html .= '<option value="' . $this->escaper->escapeHtmlAttr($destinationKey) . '"'
+                . (in_array($countryId, $fixedCountryIds, true) ? ' data-base-column="true"' : '')
+                . (in_array($countryId, $countryColumns, true) ? ' hidden="hidden"' : '') . '>'
+                . $this->escaper->escapeHtml($countryName) . '</option>';
+        }
+        foreach (self::COUNTRY_COLUMNS as $countryName => $destination) {
+            if ($destination['scope'] !== 'regions') {
+                continue;
+            }
+            $destinationKey = $destination['scope'] . ':' . $destination['id'];
+            if (in_array($destinationKey, $hiddenColumns, true)) {
+                $html .= '<option value="' . $this->escaper->escapeHtmlAttr($destinationKey)
+                    . '" data-base-column="true">'
+                    . $this->escaper->escapeHtml(__($countryName)) . '</option>';
+            }
+        }
+        $html .= '</select> <button type="button" class="action-secondary" data-action="add-country">'
+            . '<span>' . $this->escaper->escapeHtml(__('Add country')) . '</span></button>';
+        $html .= '<input type="hidden" name="'
+            . $this->escaper->escapeHtmlAttr($name . '[' . self::COUNTRY_COLUMNS_CONFIG_KEY . '][]')
+            . '" value="" data-role="country-column" />';
+        foreach ($countryColumns as $countryId) {
+            $html .= '<input type="hidden" name="'
+                . $this->escaper->escapeHtmlAttr($name . '[' . self::COUNTRY_COLUMNS_CONFIG_KEY . '][]')
+                . '" value="' . $this->escaper->escapeHtmlAttr($countryId)
+                . '" data-role="country-column" data-country-id="'
+                . $this->escaper->escapeHtmlAttr($countryId) . '" />';
+        }
+        $html .= '<input type="hidden" name="'
+            . $this->escaper->escapeHtmlAttr($name . '[' . self::HIDDEN_COLUMNS_CONFIG_KEY . '][]')
+            . '" value="" data-role="hidden-column" />';
+        foreach ($hiddenColumns as $destinationKey) {
+            $html .= '<input type="hidden" name="'
+                . $this->escaper->escapeHtmlAttr($name . '[' . self::HIDDEN_COLUMNS_CONFIG_KEY . '][]')
+                . '" value="' . $this->escaper->escapeHtmlAttr($destinationKey)
+                . '" data-role="hidden-column" data-destination-key="'
+                . $this->escaper->escapeHtmlAttr($destinationKey) . '" />';
+        }
+        $html .= '</div>';
+        $visibleDestinations = [];
+        foreach (self::COUNTRY_COLUMNS as $destination) {
+            $key = $destination['scope'] . ':' . $destination['id'];
+            if (!in_array($key, $hiddenColumns, true)) {
+                $visibleDestinations[] = $destination;
+            }
+        }
+        foreach ($countryColumns as $countryId) {
+            $visibleDestinations[] = ['id' => $countryId, 'scope' => 'countries'];
+        }
+        $columnCount = count($visibleDestinations);
         $html .= '<div class="tjv-category-rates__country-table"'
             . ' style="display:block;width:100%;max-width:100%;min-width:0;overflow-x:auto;'
             . 'overflow-y:hidden;box-sizing:border-box;">'
             . '<table class="admin__control-table"'
-            . ' style="width:2380px;min-width:2380px;table-layout:fixed;border-collapse:collapse;">'
-            . '<thead><tr>';
+            . ' style="width:' . (340 * $columnCount) . 'px;min-width:' . (340 * $columnCount)
+            . 'px;table-layout:fixed;border-collapse:collapse;" data-role="country-table">'
+            . '<thead><tr data-role="country-table-head">';
         foreach (self::COUNTRY_COLUMNS as $countryName => $destination) {
-            $html .= '<th style="width:340px;border:1px solid #c6c6c6;padding:8px;">'
-                . $this->escaper->escapeHtml(__($countryName)) . '</th>';
+            $destinationKey = $destination['scope'] . ':' . $destination['id'];
+            if (in_array($destinationKey, $hiddenColumns, true)) {
+                continue;
+            }
+            $html .= '<th style="width:340px;border:1px solid #c6c6c6;padding:8px;"'
+                . ' data-country-column="' . $this->escaper->escapeHtmlAttr($destinationKey)
+                . '" data-destination-key="' . $this->escaper->escapeHtmlAttr($destinationKey)
+                . '" data-country-label="' . $this->escaper->escapeHtmlAttr(__($countryName)) . '">'
+                . $this->escaper->escapeHtml(__($countryName)) . ' '
+                . '<button type="button" class="action-secondary" data-action="remove-country"'
+                . ' data-destination-key="' . $this->escaper->escapeHtmlAttr($destinationKey)
+                . '" data-base-column="true">'
+                . '<span>' . $this->escaper->escapeHtml(__('Remove')) . '</span></button></th>';
+        }
+        foreach ($countryColumns as $countryId) {
+            $html .= '<th style="width:340px;border:1px solid #c6c6c6;padding:8px;"'
+                . ' data-country-column="countries:' . $this->escaper->escapeHtmlAttr($countryId)
+                . '" data-destination-key="countries:' . $this->escaper->escapeHtmlAttr($countryId)
+                . '" data-country-label="' . $this->escaper->escapeHtmlAttr($countries[$countryId]) . '">'
+                . $this->escaper->escapeHtml($countries[$countryId]) . ' '
+                . '<button type="button" class="action-secondary" data-action="remove-country"'
+                . ' data-destination-key="countries:' . $this->escaper->escapeHtmlAttr($countryId) . '">'
+                . '<span>' . $this->escaper->escapeHtml(__('Remove')) . '</span></button></th>';
         }
 
-        $html .= '</tr></thead><tbody><tr>';
+        $html .= '</tr></thead><tbody><tr data-role="country-table-row">';
         foreach (self::COUNTRY_COLUMNS as $destination) {
-            $html .= '<td style="width:340px;vertical-align:top;border:1px solid #c6c6c6;padding:8px;">'
+            $destinationKey = $destination['scope'] . ':' . $destination['id'];
+            if (in_array($destinationKey, $hiddenColumns, true)) {
+                continue;
+            }
+            $html .= '<td style="width:340px;vertical-align:top;border:1px solid #c6c6c6;padding:8px;"'
+                . ' data-country-column="' . $this->escaper->escapeHtmlAttr($destinationKey) . '">'
                 . $this->renderDestinationTable(
-                $topLevelCategories,
-                $children,
-                $configured,
-                $name,
-                $destination['id'],
-                $destination['scope']
-            ) . '</td>';
+                    $topLevelCategories,
+                    $children,
+                    $configured,
+                    $name,
+                    $destination['id'],
+                    $destination['scope']
+                ) . '</td>';
+        }
+        foreach ($countryColumns as $countryId) {
+            $html .= '<td style="width:340px;vertical-align:top;border:1px solid #c6c6c6;padding:8px;"'
+                . ' data-country-column="countries:' . $this->escaper->escapeHtmlAttr($countryId) . '">'
+                . $this->renderDestinationTable(
+                    $topLevelCategories,
+                    $children,
+                    $configured,
+                    $name,
+                    $countryId,
+                    'countries'
+                ) . '</td>';
         }
         $html .= '</tr></tbody></table></div>';
 
@@ -139,10 +277,13 @@ class CategoryRates extends Field
             . $this->escaper->escapeHtml(__('Default and other destinations'))
             . '</strong></summary>';
         foreach ($regions as $regionId => $regionName) {
-            if ($regionId !== '' && in_array($regionId, $primaryRegionIds, true)) {
+            if ($regionId !== '' && in_array($regionId, $primaryRegionIds, true)
+                && !in_array('regions:' . $regionId, $hiddenColumns, true)
+            ) {
                 continue;
             }
-            $html .= '<details><summary><strong>'
+            $html .= '<details data-destination-key="regions:' . $this->escaper->escapeHtmlAttr($regionId)
+                . '"><summary><strong>'
                 . $this->escaper->escapeHtml(__($regionName)) . '</strong></summary>';
             $html .= $this->renderDestinationTable(
                 $topLevelCategories,
@@ -153,10 +294,17 @@ class CategoryRates extends Field
             ) . '</details>';
         }
         foreach ($countries as $countryId => $countryName) {
-            if ($countryId === 'IT') {
+            if ((in_array($countryId, $fixedCountryIds, true)
+                    && !in_array('countries:' . $countryId, $hiddenColumns, true))
+                || in_array($countryId, $countryColumns, true)
+                || (!in_array($countryId, $configuredCountryIds, true)
+                    && !in_array('countries:' . $countryId, $hiddenColumns, true))
+            ) {
                 continue;
             }
-            $html .= '<details><summary><strong>' . $this->escaper->escapeHtml($countryName)
+            $html .= '<details data-destination-key="countries:' . $this->escaper->escapeHtmlAttr($countryId)
+                . '" data-country-destination="' . $this->escaper->escapeHtmlAttr($countryId)
+                . '"><summary><strong>' . $this->escaper->escapeHtml($countryName)
                 . '</strong></summary>';
             $html .= $this->renderDestinationTable(
                 $topLevelCategories,
@@ -168,6 +316,26 @@ class CategoryRates extends Field
             ) . '</details>';
         }
         $html .= '</details>';
+        $html .= '<template data-role="country-template">'
+            . $this->renderDestinationTable(
+                $topLevelCategories,
+                $children,
+                $configured,
+                $name,
+                '__COUNTRY__',
+                'countries'
+            )
+            . '</template>';
+        $html .= '<template data-role="region-template">'
+            . $this->renderDestinationTable(
+                $topLevelCategories,
+                $children,
+                $configured,
+                $name,
+                '__DESTINATION__',
+                'regions'
+            )
+            . '</template>';
 
         $html .= '</div>';
         return $html;
@@ -238,8 +406,7 @@ class CategoryRates extends Field
             ? $name . '[' . $categoryId . ']'
             : $name . '[' . $categoryId . '][' . $scope . '][' . $regionId . ']';
         $cellStyle = 'border:1px solid #d5d5d5;padding:6px;vertical-align:top;';
-        $html = '<tr><td style="' . $cellStyle . '">' . $label
-            . ' <small>(ID: ' . $categoryId . ')</small></td>';
+        $html = '<tr><td style="' . $cellStyle . '">' . $label . '</td>';
         foreach (['first', 'second'] as $rate) {
             $html .= '<td style="' . $cellStyle . '"><input class="input-text"'
                 . ' style="width:90px;max-width:100%;box-sizing:border-box;"'
@@ -283,6 +450,25 @@ class CategoryRates extends Field
                 continue;
             }
 
+            if ((string)$categoryId === self::COUNTRY_COLUMNS_CONFIG_KEY) {
+                $normalized[self::COUNTRY_COLUMNS_CONFIG_KEY] = array_values(array_filter(
+                    $row,
+                    static function ($countryId): bool {
+                        return is_string($countryId) && $countryId !== '';
+                    }
+                ));
+                continue;
+            }
+            if ((string)$categoryId === self::HIDDEN_COLUMNS_CONFIG_KEY) {
+                $normalized[self::HIDDEN_COLUMNS_CONFIG_KEY] = array_values(array_filter(
+                    $row,
+                    static function ($destinationKey): bool {
+                        return is_string($destinationKey) && $destinationKey !== '';
+                    }
+                ));
+                continue;
+            }
+
             $normalized[(string)$categoryId] = [
                 'first' => $row['first'] ?? '',
                 'second' => $row['second'] ?? '',
@@ -296,5 +482,25 @@ class CategoryRates extends Field
         }
 
         return $normalized;
+    }
+
+    private function getConfiguredCountryIds(array $configured, array $countries): array
+    {
+        $countryIds = [];
+        foreach ($configured as $categoryId => $categoryConfig) {
+            if ((string)$categoryId === self::COUNTRY_COLUMNS_CONFIG_KEY || !is_array($categoryConfig)) {
+                continue;
+            }
+            foreach (($categoryConfig['countries'] ?? []) as $countryId => $rate) {
+                if (isset($countries[$countryId])
+                    && is_array($rate)
+                    && (($rate['first'] ?? '') !== '' || ($rate['second'] ?? '') !== '')
+                ) {
+                    $countryIds[$countryId] = $countryId;
+                }
+            }
+        }
+
+        return array_values($countryIds);
     }
 }
