@@ -58,6 +58,9 @@ class Config
             return [];
         }
 
+        unset($decoded['_country_columns']);
+        unset($decoded['_hidden_columns']);
+
         if ($countryId === '') {
             return $decoded;
         }
