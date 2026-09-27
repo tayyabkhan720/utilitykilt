@@ -22,18 +22,31 @@ class Config
         'australia' => ['AU'],
         'new_zealand' => ['NZ'],
     ];
+    /** @var ScopeConfigInterface */
     private ScopeConfigInterface $scopeConfig;
+
+    /** @var SerializerInterface */
     private SerializerInterface $serializer;
 
+    /**
+     * @param ScopeConfigInterface $scopeConfig
+     * @param SerializerInterface $serializer
+     */
     public function __construct(
         ScopeConfigInterface $scopeConfig,
         SerializerInterface $serializer
-    )
-    {
+    ) {
         $this->scopeConfig = $scopeConfig;
         $this->serializer = $serializer;
     }
 
+    /**
+     * Return configured category rates, resolved for a destination country when provided.
+     *
+     * @param int $storeId
+     * @param string $countryId
+     * @return array
+     */
     public function getRates(int $storeId, string $countryId = ''): array
     {
         $value = $this->scopeConfig->getValue(
@@ -97,6 +110,12 @@ class Config
         return $countryRates;
     }
 
+    /**
+     * Resolve a country to its configured region identifier.
+     *
+     * @param string $countryId
+     * @return string|null
+     */
     private function getRegionForCountry(string $countryId): ?string
     {
         foreach (self::REGIONS as $region => $countries) {
@@ -108,6 +127,12 @@ class Config
         return 'rest_of_world';
     }
 
+    /**
+     * Check whether a rate array contains a configured amount.
+     *
+     * @param mixed $rate
+     * @return bool
+     */
     private function hasRate($rate): bool
     {
         return is_array($rate)

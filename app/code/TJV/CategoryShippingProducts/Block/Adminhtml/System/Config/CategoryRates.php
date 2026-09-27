@@ -13,9 +13,16 @@ class CategoryRates extends Field
 {
     private const COUNTRY_COLUMNS_CONFIG_KEY = '_country_columns';
     private const HIDDEN_COLUMNS_CONFIG_KEY = '_hidden_columns';
+    /** @var CollectionFactory */
     private CollectionFactory $categoryCollectionFactory;
+
+    /** @var StoreManagerInterface */
     private StoreManagerInterface $storeManager;
+
+    /** @var Escaper */
     private Escaper $escaper;
+
+    /** @var CountryCollectionFactory */
     private CountryCollectionFactory $countryCollectionFactory;
     private const REGIONS = [
         'uk' => 'United Kingdom',
@@ -37,22 +44,35 @@ class CategoryRates extends Field
         'Italy' => ['id' => 'IT', 'scope' => 'countries'],
     ];
 
+    /**
+     * @param \Magento\Backend\Block\Template\Context $context
+     * @param CollectionFactory $categoryCollectionFactory
+     * @param StoreManagerInterface $storeManager
+     * @param Escaper $escaper
+     * @param CountryCollectionFactory $countryCollectionFactory
+     * @param array $data
+     */
     public function __construct(
         \Magento\Backend\Block\Template\Context $context,
         CollectionFactory $categoryCollectionFactory,
         StoreManagerInterface $storeManager,
         Escaper $escaper,
-        array $data = [],
-        ?CountryCollectionFactory $countryCollectionFactory = null
+        CountryCollectionFactory $countryCollectionFactory,
+        array $data = []
     ) {
         parent::__construct($context, $data);
         $this->categoryCollectionFactory = $categoryCollectionFactory;
         $this->storeManager = $storeManager;
         $this->escaper = $escaper;
-        $this->countryCollectionFactory = $countryCollectionFactory
-            ?: \Magento\Framework\App\ObjectManager::getInstance()->get(CountryCollectionFactory::class);
+        $this->countryCollectionFactory = $countryCollectionFactory;
     }
 
+    /**
+     * Render the category rates editor for the selected store view.
+     *
+     * @param AbstractElement $element
+     * @return string
+     */
     protected function _getElementHtml(AbstractElement $element)
     {
         $storeId = (int)$this->getRequest()->getParam('store', 0);
@@ -341,6 +361,17 @@ class CategoryRates extends Field
         return $html;
     }
 
+    /**
+     * Render category rate inputs for a destination.
+     *
+     * @param array $topLevelCategories
+     * @param array $children
+     * @param array $configured
+     * @param string $name
+     * @param string $destinationId
+     * @param string $scope
+     * @return string
+     */
     private function renderDestinationTable(
         array $topLevelCategories,
         array $children,
@@ -374,6 +405,18 @@ class CategoryRates extends Field
         return $html . '</tbody></table>';
     }
 
+    /**
+     * Render a category and its nested categories.
+     *
+     * @param \Magento\Catalog\Model\Category $category
+     * @param array $children
+     * @param array $configured
+     * @param string $name
+     * @param string $regionId
+     * @param int $depth
+     * @param string $scope
+     * @return string
+     */
     private function renderCategoryRows(
         $category,
         array $children,
@@ -442,6 +485,12 @@ class CategoryRates extends Field
         return $html;
     }
 
+    /**
+     * Normalize submitted rate rows and editor metadata.
+     *
+     * @param array $rows
+     * @return array
+     */
     private function normalizeRows(array $rows): array
     {
         $normalized = [];
@@ -484,6 +533,13 @@ class CategoryRates extends Field
         return $normalized;
     }
 
+    /**
+     * Return countries that have a non-empty country-specific rate.
+     *
+     * @param array $configured
+     * @param array $countries
+     * @return array
+     */
     private function getConfiguredCountryIds(array $configured, array $countries): array
     {
         $countryIds = [];
