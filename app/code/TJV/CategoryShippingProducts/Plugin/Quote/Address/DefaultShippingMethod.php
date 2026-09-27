@@ -6,6 +6,13 @@ use Magento\Quote\Model\Quote\Address;
 
 class DefaultShippingMethod
 {
+    /**
+     * Select this carrier when no shipping method has been chosen yet.
+     *
+     * @param Address $subject
+     * @param Address $result
+     * @return Address
+     */
     public function afterCollectShippingRates(Address $subject, Address $result): Address
     {
         if ($result->getShippingMethod() || !$result->getCountryId()) {
@@ -17,11 +24,16 @@ class DefaultShippingMethod
                 continue;
             }
 
-            $amount = (float)$rate->getPrice();
+            $baseAmount = (float)$rate->getPrice();
+            $store = $result->getQuote()->getStore();
+            $shippingAmount = $store->getBaseCurrency()->convert(
+                $baseAmount,
+                $store->getCurrentCurrencyCode()
+            );
             $result->setShippingMethod($rate->getCode());
             $result->setShippingDescription($rate->getMethodTitle());
-            $result->setBaseShippingAmount($amount);
-            $result->setShippingAmount($amount);
+            $result->setBaseShippingAmount($baseAmount);
+            $result->setShippingAmount((float)$shippingAmount);
             break;
         }
 

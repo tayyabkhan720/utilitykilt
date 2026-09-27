@@ -3,7 +3,6 @@
 namespace TJV\CategoryShippingProducts\Model\Carrier;
 
 use Magento\Catalog\Model\CategoryRepository;
-use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Quote\Model\Quote\Address\RateRequest;
 use Magento\Quote\Model\Quote\Address\RateResult\MethodFactory;
 use Magento\Shipping\Model\Carrier\AbstractCarrier;
@@ -17,12 +16,28 @@ class Category extends AbstractCarrier implements CarrierInterface
 {
     protected $_code = 'tjv_category';
 
+    /** @var ResultFactory */
     private ResultFactory $rateResultFactory;
+
+    /** @var MethodFactory */
     private MethodFactory $rateMethodFactory;
+
+    /** @var CategoryRepository */
     private CategoryRepository $categoryRepository;
-    private PriceCurrencyInterface $priceCurrency;
+
+    /** @var CategoryShippingConfig */
     private CategoryShippingConfig $categoryShippingConfig;
 
+    /**
+     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+     * @param \Magento\Quote\Model\Quote\Address\RateResult\ErrorFactory $rateErrorFactory
+     * @param LoggerInterface $logger
+     * @param ResultFactory $rateResultFactory
+     * @param MethodFactory $rateMethodFactory
+     * @param CategoryRepository $categoryRepository
+     * @param CategoryShippingConfig $categoryShippingConfig
+     * @param array $data
+     */
     public function __construct(
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Quote\Model\Quote\Address\RateResult\ErrorFactory $rateErrorFactory,
@@ -30,7 +45,6 @@ class Category extends AbstractCarrier implements CarrierInterface
         ResultFactory $rateResultFactory,
         MethodFactory $rateMethodFactory,
         CategoryRepository $categoryRepository,
-        PriceCurrencyInterface $priceCurrency,
         CategoryShippingConfig $categoryShippingConfig,
         array $data = []
     ) {
@@ -38,10 +52,15 @@ class Category extends AbstractCarrier implements CarrierInterface
         $this->rateResultFactory = $rateResultFactory;
         $this->rateMethodFactory = $rateMethodFactory;
         $this->categoryRepository = $categoryRepository;
-        $this->priceCurrency = $priceCurrency;
         $this->categoryShippingConfig = $categoryShippingConfig;
     }
 
+    /**
+     * Collect the category-based shipping rate for the quote items.
+     *
+     * @param RateRequest $request
+     * @return Result|bool
+     */
     public function collectRates(RateRequest $request)
     {
         if ($this->getConfigData('active') === '0' || !$request->getAllItems()) {
@@ -61,6 +80,7 @@ class Category extends AbstractCarrier implements CarrierInterface
         }
 
         $categoryRates = [];
+        $categoryRateById = [];
         $configuredRates = $this->categoryShippingConfig->getRates(
             (int)$request->getStoreId(),
             (string)$request->getDestCountryId()
@@ -69,15 +89,19 @@ class Category extends AbstractCarrier implements CarrierInterface
             $itemRateSources = [];
             foreach (array_unique(array_map('intval', $itemCategories['ids'])) as $categoryId) {
                 try {
-                    $rate = $this->getCategoryRate(
-                        $categoryId,
-                        (int)$request->getStoreId(),
-                        $configuredRates
-                    );
+                    if (!array_key_exists($categoryId, $categoryRateById)) {
+                        $categoryRateById[$categoryId] = $this->getCategoryRate(
+                            $categoryId,
+                            (int)$request->getStoreId(),
+                            $configuredRates
+                        );
+                    }
+                    $rate = $categoryRateById[$categoryId];
                     if ($rate !== null) {
                         $itemRateSources[(int)$rate['source_id']] = $rate;
                     }
                 } catch (\Magento\Framework\Exception\NoSuchEntityException $exception) {
+                    $categoryRateById[$categoryId] = null;
                     $this->_logger->warning(
                         'Unable to load category for category shipping rate.',
                         ['category_id' => $categoryId, 'exception' => $exception]
@@ -110,8 +134,6 @@ class Category extends AbstractCarrier implements CarrierInterface
             return false;
         }
 
-        $store = $request->getStore();
-        $amount = $store ? $this->priceCurrency->convert($baseAmount, $store) : $baseAmount;
         /** @var Result $result */
         $result = $this->rateResultFactory->create();
         $method = $this->rateMethodFactory->create();
@@ -119,13 +141,21 @@ class Category extends AbstractCarrier implements CarrierInterface
         $method->setCarrierTitle((string)$this->getConfigData('title'));
         $method->setMethod('category');
         $method->setMethodTitle((string)$this->getConfigData('name'));
-        $method->setPrice($amount);
-        $method->setCost($amount);
+        $method->setPrice($baseAmount);
+        $method->setCost($baseAmount);
         $result->append($method);
 
         return $result;
     }
 
+    /**
+     * Resolve the nearest configured rate for a category or its ancestors.
+     *
+     * @param int $categoryId
+     * @param int $storeId
+     * @param array $configuredRates
+     * @return array|null
+     */
     private function getCategoryRate(int $categoryId, int $storeId, array $configuredRates): ?array
     {
         $category = $this->categoryRepository->get($categoryId, $storeId);
@@ -174,6 +204,12 @@ class Category extends AbstractCarrier implements CarrierInterface
             : null;
     }
 
+    /**
+     * Remove ancestor rates when a more specific category rate is present.
+     *
+     * @param array $rates
+     * @return array
+     */
     private function removeAncestorRates(array $rates): array
     {
         foreach ($rates as $sourceId => $rate) {
@@ -196,6 +232,11 @@ class Category extends AbstractCarrier implements CarrierInterface
         return $rates;
     }
 
+    /**
+     * Return the available shipping method code and label.
+     *
+     * @return array
+     */
     public function getAllowedMethods()
     {
         return ['category' => $this->getConfigData('name')];
