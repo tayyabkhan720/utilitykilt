@@ -33,6 +33,7 @@ class CategoryRates extends Field
         'Canada' => ['id' => 'canada', 'scope' => 'regions'],
         'Australia' => ['id' => 'australia', 'scope' => 'regions'],
         'New Zealand' => ['id' => 'new_zealand', 'scope' => 'regions'],
+        'Rest of the World' => ['id' => 'rest_of_world', 'scope' => 'regions'],
         'Italy' => ['id' => 'IT', 'scope' => 'countries'],
     ];
 
