@@ -12,7 +12,7 @@
                 <label>Shipping Rates by Category</label>
                 <field id="rates" translate="label comment" sortOrder="10"
                        showInDefault="1" showInWebsite="1" showInStore="1">
-                    <comment>Configure first and second product shipping charges for every category in the selected store view.</comment>
+                    <comment>Configure category shipping charges by destination country, preset region, or custom country group. Country-specific rates override group rates, which override preset-region and default rates.</comment>
                     <frontend_model>TJV\CategoryShippingProducts\Block\Adminhtml\System\Config\CategoryRates</frontend_model>
                     <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
                     <config_path>tjv_category_shipping_products/shipping_rates/rates</config_path>

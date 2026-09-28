@@ -13,6 +13,7 @@ class CategoryRates extends Field
 {
     private const COUNTRY_COLUMNS_CONFIG_KEY = '_country_columns';
     private const HIDDEN_COLUMNS_CONFIG_KEY = '_hidden_columns';
+    private const COUNTRY_GROUPS_CONFIG_KEY = '_country_groups';
     /** @var CollectionFactory */
     private CollectionFactory $categoryCollectionFactory;
 
@@ -109,6 +110,7 @@ class CategoryRates extends Field
                     && !in_array($countryId, $fixedCountryIds, true);
             }
         )));
+        $countryGroups = $this->getCountryGroups($configured, $countries);
         $hiddenColumns = $configured[self::HIDDEN_COLUMNS_CONFIG_KEY] ?? [];
         if (!is_array($hiddenColumns)) {
             $hiddenColumns = [];
@@ -117,7 +119,7 @@ class CategoryRates extends Field
             $hiddenColumns,
             static function ($destinationKey): bool {
                 return is_string($destinationKey)
-                    && preg_match('/^(regions|countries):[A-Z_a-z0-9]+$/', $destinationKey) === 1;
+                    && preg_match('/^(regions|countries|groups):[A-Z_a-z0-9]+$/', $destinationKey) === 1;
             }
         )));
         $configuredCountryIds = $this->getConfiguredCountryIds($configured, $countries);
@@ -157,7 +159,9 @@ class CategoryRates extends Field
         $html = '<div class="tjv-category-rates" data-remove-label="'
             . $this->escaper->escapeHtmlAttr(__('Remove'))
             . '" data-mage-init=\'{"TJV_CategoryShippingProducts/js/category-rates":{}}\'>';
-        $html .= '<p><strong>' . $this->escaper->escapeHtml(__('Configure rates by destination country.'))
+        $html .= '<p><strong>' . $this->escaper->escapeHtml(
+            __('Configure rates by destination country or custom country group.')
+        )
             . '</strong></p>';
         $html .= '<div class="tjv-category-rates__country-controls" style="margin:12px 0;">'
             . '<label for="tjv-category-rates-country">'
@@ -189,8 +193,31 @@ class CategoryRates extends Field
                     . $this->escaper->escapeHtml(__($countryName)) . '</option>';
             }
         }
+        foreach ($countryGroups as $groupId => $group) {
+            $destinationKey = 'groups:' . $groupId;
+            $html .= '<option value="' . $this->escaper->escapeHtmlAttr($destinationKey)
+                . '" data-base-column="true"'
+                . (!in_array($destinationKey, $hiddenColumns, true) ? ' hidden="hidden"' : '') . '>'
+                . $this->escaper->escapeHtml($this->getCountryGroupLabel($group)) . '</option>';
+        }
         $html .= '</select> <button type="button" class="action-secondary" data-action="add-country">'
             . '<span>' . $this->escaper->escapeHtml(__('Add country')) . '</span></button>';
+        $html .= '<fieldset style="display:inline-block;margin-left:16px;vertical-align:top;">'
+            . '<legend>' . $this->escaper->escapeHtml(__('Create a country group')) . '</legend>'
+            . '<label for="tjv-category-rates-group-name">'
+            . $this->escaper->escapeHtml(__('Group name')) . '</label> '
+            . '<input type="text" id="tjv-category-rates-group-name" class="input-text"'
+            . ' data-role="group-name" maxlength="100" /> '
+            . '<label for="tjv-category-rates-group-countries">'
+            . $this->escaper->escapeHtml(__('Countries (Ctrl/Cmd-click to select multiple)')) . '</label> '
+            . '<select id="tjv-category-rates-group-countries" multiple="multiple" size="5"'
+            . ' data-role="group-countries">';
+        foreach ($countries as $countryId => $countryName) {
+            $html .= '<option value="' . $this->escaper->escapeHtmlAttr($countryId) . '">'
+                . $this->escaper->escapeHtml($countryName) . '</option>';
+        }
+        $html .= '</select> <button type="button" class="action-secondary" data-action="group-countries">'
+            . '<span>' . $this->escaper->escapeHtml(__('Group Countries')) . '</span></button></fieldset>';
         $html .= '<input type="hidden" name="'
             . $this->escaper->escapeHtmlAttr($name . '[' . self::COUNTRY_COLUMNS_CONFIG_KEY . '][]')
             . '" value="" data-role="country-column" />';
@@ -211,6 +238,34 @@ class CategoryRates extends Field
                 . '" data-role="hidden-column" data-destination-key="'
                 . $this->escaper->escapeHtmlAttr($destinationKey) . '" />';
         }
+        foreach ($countryGroups as $groupId => $group) {
+            $html .= '<input type="hidden" name="'
+                . $this->escaper->escapeHtmlAttr(
+                    $name . '[' . self::COUNTRY_GROUPS_CONFIG_KEY . '][' . $groupId . '][name]'
+                )
+                . '" value="' . $this->escaper->escapeHtmlAttr($group['name'])
+                . '" data-role="country-group-name" data-group-id="'
+                . $this->escaper->escapeHtmlAttr($groupId) . '" />';
+            foreach ($group['countries'] as $countryId) {
+                $html .= '<input type="hidden" name="'
+                    . $this->escaper->escapeHtmlAttr(
+                        $name . '[' . self::COUNTRY_GROUPS_CONFIG_KEY . '][' . $groupId . '][countries][]'
+                    )
+                    . '" value="' . $this->escaper->escapeHtmlAttr($countryId)
+                    . '" data-role="country-group-country" data-group-id="'
+                    . $this->escaper->escapeHtmlAttr($groupId) . '" />';
+            }
+        }
+        $html .= '<template data-role="country-group-name-template"><input type="hidden" name="'
+            . $this->escaper->escapeHtmlAttr(
+                $name . '[' . self::COUNTRY_GROUPS_CONFIG_KEY . '][__GROUP__][name]'
+            )
+            . '" value="" data-role="country-group-name" data-group-id="__GROUP__" /></template>'
+            . '<template data-role="country-group-country-template"><input type="hidden" name="'
+            . $this->escaper->escapeHtmlAttr(
+                $name . '[' . self::COUNTRY_GROUPS_CONFIG_KEY . '][__GROUP__][countries][]'
+            )
+            . '" value="" data-role="country-group-country" data-group-id="__GROUP__" /></template>';
         $html .= '</div>';
         $visibleDestinations = [];
         foreach (self::COUNTRY_COLUMNS as $destination) {
@@ -221,6 +276,15 @@ class CategoryRates extends Field
         }
         foreach ($countryColumns as $countryId) {
             $visibleDestinations[] = ['id' => $countryId, 'scope' => 'countries'];
+        }
+        foreach ($countryGroups as $groupId => $group) {
+            if (!in_array('groups:' . $groupId, $hiddenColumns, true)) {
+                $visibleDestinations[] = [
+                    'id' => $groupId,
+                    'scope' => 'groups',
+                    'label' => $this->getCountryGroupLabel($group),
+                ];
+            }
         }
         $columnCount = count($visibleDestinations);
         $html .= '<div class="tjv-category-rates__country-table"'
@@ -255,6 +319,22 @@ class CategoryRates extends Field
                 . ' data-destination-key="countries:' . $this->escaper->escapeHtmlAttr($countryId) . '">'
                 . '<span>' . $this->escaper->escapeHtml(__('Remove')) . '</span></button></th>';
         }
+        foreach ($countryGroups as $groupId => $group) {
+            if (in_array('groups:' . $groupId, $hiddenColumns, true)) {
+                continue;
+            }
+            $destinationKey = 'groups:' . $groupId;
+            $label = $this->getCountryGroupLabel($group);
+            $html .= '<th style="width:340px;border:1px solid #c6c6c6;padding:8px;"'
+                . ' data-country-column="' . $this->escaper->escapeHtmlAttr($destinationKey)
+                . '" data-destination-key="' . $this->escaper->escapeHtmlAttr($destinationKey)
+                . '" data-country-label="' . $this->escaper->escapeHtmlAttr($label) . '">'
+                . $this->escaper->escapeHtml($label) . ' '
+                . '<button type="button" class="action-secondary" data-action="remove-country"'
+                . ' data-destination-key="' . $this->escaper->escapeHtmlAttr($destinationKey)
+                . '" data-base-column="true">'
+                . '<span>' . $this->escaper->escapeHtml(__('Remove')) . '</span></button></th>';
+        }
 
         $html .= '</tr></thead><tbody><tr data-role="country-table-row">';
         foreach (self::COUNTRY_COLUMNS as $destination) {
@@ -283,6 +363,21 @@ class CategoryRates extends Field
                     $name,
                     $countryId,
                     'countries'
+                ) . '</td>';
+        }
+        foreach ($countryGroups as $groupId => $group) {
+            if (in_array('groups:' . $groupId, $hiddenColumns, true)) {
+                continue;
+            }
+            $html .= '<td style="width:340px;vertical-align:top;border:1px solid #c6c6c6;padding:8px;"'
+                . ' data-country-column="groups:' . $this->escaper->escapeHtmlAttr($groupId) . '">'
+                . $this->renderDestinationTable(
+                    $topLevelCategories,
+                    $children,
+                    $configured,
+                    $name,
+                    $groupId,
+                    'groups'
                 ) . '</td>';
         }
         $html .= '</tr></tbody></table></div>';
@@ -335,6 +430,22 @@ class CategoryRates extends Field
                 'countries'
             ) . '</details>';
         }
+        foreach ($countryGroups as $groupId => $group) {
+            if (!in_array('groups:' . $groupId, $hiddenColumns, true)) {
+                continue;
+            }
+            $html .= '<details data-destination-key="groups:' . $this->escaper->escapeHtmlAttr($groupId)
+                . '"><summary><strong>' . $this->escaper->escapeHtml($this->getCountryGroupLabel($group))
+                . '</strong></summary>';
+            $html .= $this->renderDestinationTable(
+                $topLevelCategories,
+                $children,
+                $configured,
+                $name,
+                $groupId,
+                'groups'
+            ) . '</details>';
+        }
         $html .= '</details>';
         $html .= '<template data-role="country-template">'
             . $this->renderDestinationTable(
@@ -354,6 +465,16 @@ class CategoryRates extends Field
                 $name,
                 '__DESTINATION__',
                 'regions'
+            )
+            . '</template>';
+        $html .= '<template data-role="group-template">'
+            . $this->renderDestinationTable(
+                $topLevelCategories,
+                $children,
+                $configured,
+                $name,
+                '__GROUP__',
+                'groups'
             )
             . '</template>';
 
@@ -517,6 +638,10 @@ class CategoryRates extends Field
                 ));
                 continue;
             }
+            if ((string)$categoryId === self::COUNTRY_GROUPS_CONFIG_KEY) {
+                $normalized[self::COUNTRY_GROUPS_CONFIG_KEY] = is_array($row) ? $row : [];
+                continue;
+            }
 
             $normalized[(string)$categoryId] = [
                 'first' => $row['first'] ?? '',
@@ -527,6 +652,9 @@ class CategoryRates extends Field
             }
             if (isset($row['regions']) && is_array($row['regions'])) {
                 $normalized[(string)$categoryId]['regions'] = $row['regions'];
+            }
+            if (isset($row['groups']) && is_array($row['groups'])) {
+                $normalized[(string)$categoryId]['groups'] = $row['groups'];
             }
         }
 
@@ -558,5 +686,63 @@ class CategoryRates extends Field
         }
 
         return array_values($countryIds);
+    }
+
+    /**
+     * Return valid custom country groups, excluding countries already assigned to a group.
+     *
+     * @param array $configured
+     * @param array $countries
+     * @return array
+     */
+    private function getCountryGroups(array $configured, array $countries): array
+    {
+        $groups = $configured[self::COUNTRY_GROUPS_CONFIG_KEY] ?? [];
+        if (!is_array($groups)) {
+            return [];
+        }
+
+        $normalized = [];
+        $assignedCountries = [];
+        foreach ($groups as $groupId => $group) {
+            if (!is_string($groupId) || !is_array($group) || !is_string($group['name'] ?? null)) {
+                continue;
+            }
+            $name = trim($group['name']);
+            $countryIds = $group['countries'] ?? [];
+            if ($name === '' || !is_array($countryIds)) {
+                continue;
+            }
+            $countryIds = array_values(array_unique(array_filter(
+                $countryIds,
+                static function ($countryId) use ($countries, $assignedCountries): bool {
+                    return is_string($countryId)
+                        && isset($countries[$countryId])
+                        && !isset($assignedCountries[$countryId]);
+                }
+            )));
+            sort($countryIds);
+            $expectedId = 'group_' . implode('_', $countryIds);
+            if (count($countryIds) < 2 || $groupId !== $expectedId) {
+                continue;
+            }
+            foreach ($countryIds as $countryId) {
+                $assignedCountries[$countryId] = true;
+            }
+            $normalized[$groupId] = ['name' => $name, 'countries' => $countryIds];
+        }
+
+        return $normalized;
+    }
+
+    /**
+     * Return a group label including its country codes.
+     *
+     * @param array $group
+     * @return string
+     */
+    private function getCountryGroupLabel(array $group): string
+    {
+        return $group['name'] . ' (' . implode(', ', $group['countries']) . ')';
     }
 }

@@ -1,4 +1,4 @@
-define([], function () {
+define(['mage/translate'], function ($t) {
     'use strict';
 
     return function (config, element) {
@@ -10,9 +10,18 @@ define([], function () {
         const otherDestinations = element.querySelector('.tjv-category-rates__other-destinations');
         const countryTemplate = element.querySelector('template[data-role="country-template"]');
         const regionTemplate = element.querySelector('template[data-role="region-template"]');
+        const groupTemplate = element.querySelector('template[data-role="group-template"]');
+        const groupNameInput = element.querySelector('[data-role="group-name"]');
+        const groupCountriesSelect = element.querySelector('[data-role="group-countries"]');
+        const groupNameTemplate = countryControls &&
+            countryControls.querySelector('template[data-role="country-group-name-template"]');
+        const groupCountryTemplate = countryControls &&
+            countryControls.querySelector('template[data-role="country-group-country-template"]');
 
         if (!countrySelect || !countryTable || !tableHead || !tableRow
             || !countryControls || !otherDestinations || !countryTemplate || !regionTemplate
+            || !groupTemplate || !groupNameInput || !groupCountriesSelect
+            || !groupNameTemplate || !groupCountryTemplate
         ) {
             console.error('Category shipping country controls could not be initialized.');
             return;
@@ -56,14 +65,16 @@ define([], function () {
                 return {detail: existingDetail, rateTable: rateTable};
             }
 
-            const template = scope === 'regions' ? regionTemplate : countryTemplate;
+            const template = scope === 'regions' ? regionTemplate
+                : (scope === 'groups' ? groupTemplate : countryTemplate);
             rateTable = template.content.querySelector('table');
             if (!rateTable) {
                 console.error('Country shipping rates could not be created for ' + destinationKey + '.');
                 return null;
             }
             rateTable = rateTable.cloneNode(true);
-            const placeholder = scope === 'regions' ? '__DESTINATION__' : '__COUNTRY__';
+            const placeholder = scope === 'regions' ? '__DESTINATION__'
+                : (scope === 'groups' ? '__GROUP__' : '__COUNTRY__');
             rateTable.querySelectorAll('[name]').forEach(function (input) {
                 input.name = input.name.split(placeholder).join(destinationId);
             });
@@ -121,12 +132,12 @@ define([], function () {
                 columnInput.dataset.countryId = countryId;
                 countryControls.appendChild(columnInput);
 
-                const option = Array.from(countrySelect.options).find(function (item) {
-                    return item.value === destinationKey;
-                });
-                if (option) {
-                    option.hidden = true;
-                }
+            }
+            const option = Array.from(countrySelect.options).find(function (item) {
+                return item.value === destinationKey;
+            });
+            if (option) {
+                option.hidden = true;
             }
 
             const hiddenInput = Array.from(countryControls.querySelectorAll(
@@ -139,6 +150,70 @@ define([], function () {
             }
             updateTableWidth();
         }
+
+        function addCountryGroup() {
+            const groupName = groupNameInput.value.trim();
+            const countryIds = Array.from(groupCountriesSelect.selectedOptions)
+                .map(function (option) {
+                    return option.value;
+                })
+                .sort();
+
+            if (!groupName || countryIds.length < 2) {
+                window.alert($t('Enter a group name and select at least two countries.'));
+                return;
+            }
+
+            const groupId = 'group_' + countryIds.join('_');
+            const destinationKey = 'groups:' + groupId;
+            const existingGroup = Array.from(countryControls.querySelectorAll(
+                '[data-role="country-group-name"]'
+            )).find(function (input) {
+                return input.dataset.groupId === groupId;
+            });
+            if (existingGroup) {
+                window.alert($t('These countries already belong to a group.'));
+                return;
+            }
+
+            const label = groupName + ' (' + countryIds.join(', ') + ')';
+            const nameInput = groupNameTemplate.content.querySelector('input').cloneNode();
+            nameInput.name = nameInput.name.split('__GROUP__').join(groupId);
+            nameInput.value = groupName;
+            nameInput.dataset.groupId = groupId;
+            countryControls.appendChild(nameInput);
+            countryIds.forEach(function (countryId) {
+                const countryInput = groupCountryTemplate.content.querySelector('input').cloneNode();
+                countryInput.name = countryInput.name.split('__GROUP__').join(groupId);
+                countryInput.value = countryId;
+                countryInput.dataset.groupId = groupId;
+                countryControls.appendChild(countryInput);
+                const option = Array.from(groupCountriesSelect.options).find(function (item) {
+                    return item.value === countryId;
+                });
+                if (option) {
+                    option.disabled = true;
+                    option.selected = false;
+                }
+            });
+
+            const option = document.createElement('option');
+            option.value = destinationKey;
+            option.textContent = label;
+            option.dataset.baseColumn = 'true';
+            countrySelect.appendChild(option);
+            addCountry(destinationKey, label, true);
+            groupNameInput.value = '';
+        }
+
+        countryControls.querySelectorAll('[data-role="country-group-country"]').forEach(function (input) {
+            const option = Array.from(groupCountriesSelect.options).find(function (item) {
+                return item.value === input.value;
+            });
+            if (option) {
+                option.disabled = true;
+            }
+        });
 
         element.addEventListener('click', function (event) {
             const target = event.target;
@@ -154,6 +229,11 @@ define([], function () {
                     addCountry(option.value, option.textContent.trim(), option.dataset.baseColumn === 'true');
                     countrySelect.value = '';
                 }
+                return;
+            }
+
+            if (button.dataset.action === 'group-countries') {
+                addCountryGroup();
                 return;
             }
 

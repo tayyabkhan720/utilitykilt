@@ -71,8 +71,13 @@ class Config
             return [];
         }
 
+        $countryGroups = $decoded['_country_groups'] ?? [];
+        if (!is_array($countryGroups)) {
+            $countryGroups = [];
+        }
         unset($decoded['_country_columns']);
         unset($decoded['_hidden_columns']);
+        unset($decoded['_country_groups']);
 
         if ($countryId === '') {
             return $decoded;
@@ -80,12 +85,14 @@ class Config
 
         $countryRates = [];
         $region = $this->getRegionForCountry($countryId);
+        $groupId = $this->getGroupForCountry($countryId, $countryGroups);
         foreach ($decoded as $categoryId => $categoryRate) {
             if (!is_array($categoryRate)) {
                 continue;
             }
 
             $countryRate = $categoryRate['countries'][$countryId] ?? null;
+            $groupRate = $groupId ? ($categoryRate['groups'][$groupId] ?? null) : null;
             $regionRate = $region ? ($categoryRate['regions'][$region] ?? null) : null;
             if (!$this->hasRate($regionRate)) {
                 $legacyRegion = [
@@ -100,11 +107,12 @@ class Config
             }
             $countryRates[(string)$categoryId] = $this->hasRate($countryRate)
                 ? $countryRate
+                : ($this->hasRate($groupRate) ? $groupRate
                 : ($this->hasRate($regionRate) ? $regionRate
                 : [
                     'first' => $categoryRate['first'] ?? '',
                     'second' => $categoryRate['second'] ?? '',
-                ]);
+                ]));
         }
 
         return $countryRates;
@@ -125,6 +133,51 @@ class Config
         }
 
         return 'rest_of_world';
+    }
+
+    /**
+     * Resolve a country to its custom group identifier, if configured.
+     *
+     * @param string $countryId
+     * @param array $countryGroups
+     * @return string|null
+     */
+    private function getGroupForCountry(string $countryId, array $countryGroups): ?string
+    {
+        $assignedCountries = [];
+        foreach ($countryGroups as $groupId => $group) {
+            if (!is_string($groupId) || !preg_match('/^group_[A-Z0-9_]+$/', $groupId)
+                || !is_array($group) || !is_array($group['countries'] ?? null)
+                || !is_string($group['name'] ?? null) || trim($group['name']) === ''
+            ) {
+                continue;
+            }
+
+            $countries = array_values(array_unique(array_filter(
+                $group['countries'],
+                static function ($id): bool {
+                    return is_string($id) && preg_match('/^[A-Z0-9]{2,3}$/', $id) === 1;
+                }
+            )));
+            sort($countries);
+            if (count($countries) < 2 || $groupId !== 'group_' . implode('_', $countries)) {
+                continue;
+            }
+
+            foreach ($countries as $groupCountryId) {
+                if (isset($assignedCountries[$groupCountryId])) {
+                    continue 2;
+                }
+            }
+            foreach ($countries as $groupCountryId) {
+                $assignedCountries[$groupCountryId] = true;
+            }
+            if (in_array($countryId, $countries, true)) {
+                return $groupId;
+            }
+        }
+
+        return null;
     }
 
     /**
