@@ -34,6 +34,19 @@ define(['mage/translate'], function ($t) {
             countryTable.style.minWidth = width;
         }
 
+        function updateGroupedCountryOptions() {
+            const groupedCountryIds = new Set(
+                Array.from(countryControls.querySelectorAll('[data-role="country-group-country"]'))
+                    .map(function (input) {
+                        return input.value;
+                    })
+            );
+
+            Array.from(groupCountriesSelect.options).forEach(function (option) {
+                option.disabled = groupedCountryIds.has(option.value);
+            });
+        }
+
         function findDestination(destinationKey) {
             return Array.from(otherDestinations.querySelectorAll('[data-destination-key]'))
                 .find(function (destination) {
@@ -188,14 +201,8 @@ define(['mage/translate'], function ($t) {
                 countryInput.value = countryId;
                 countryInput.dataset.groupId = groupId;
                 countryControls.appendChild(countryInput);
-                const option = Array.from(groupCountriesSelect.options).find(function (item) {
-                    return item.value === countryId;
-                });
-                if (option) {
-                    option.disabled = true;
-                    option.selected = false;
-                }
             });
+            updateGroupedCountryOptions();
 
             const option = document.createElement('option');
             option.value = destinationKey;
@@ -206,14 +213,7 @@ define(['mage/translate'], function ($t) {
             groupNameInput.value = '';
         }
 
-        countryControls.querySelectorAll('[data-role="country-group-country"]').forEach(function (input) {
-            const option = Array.from(groupCountriesSelect.options).find(function (item) {
-                return item.value === input.value;
-            });
-            if (option) {
-                option.disabled = true;
-            }
-        });
+        updateGroupedCountryOptions();
 
         element.addEventListener('click', function (event) {
             const target = event.target;
@@ -255,6 +255,41 @@ define(['mage/translate'], function ($t) {
             const rateTable = cell.querySelector('table');
             if (!rateTable) {
                 console.error('The selected country rates could not be restored.');
+                return;
+            }
+
+            if (destinationKey.startsWith('groups:')) {
+                if (!window.confirm($t(
+                    'Removing this group will delete its shipping rates and release its countries. Continue?'
+                ))) {
+                    return;
+                }
+
+                const groupId = destinationKey.slice('groups:'.length);
+                countryControls.querySelectorAll(
+                    '[data-role="country-group-country"][data-group-id="' + groupId + '"]'
+                ).forEach(function (input) {
+                    input.remove();
+                });
+                countryControls.querySelectorAll(
+                    '[data-group-id="' + groupId + '"]'
+                ).forEach(function (input) {
+                    input.remove();
+                });
+                rateTable.querySelectorAll('[name]').forEach(function (input) {
+                    input.remove();
+                });
+                updateGroupedCountryOptions();
+
+                const groupOption = Array.from(countrySelect.options).find(function (item) {
+                    return item.value === destinationKey;
+                });
+                if (groupOption) {
+                    groupOption.remove();
+                }
+                heading.remove();
+                cell.remove();
+                updateTableWidth();
                 return;
             }
 
