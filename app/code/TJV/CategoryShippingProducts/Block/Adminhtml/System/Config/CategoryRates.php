@@ -75,7 +75,7 @@ class CategoryRates extends Field
      * @return string
      */
     protected function _getElementHtml(AbstractElement $element)
-    {
+    {   
         $storeId = (int)$this->getRequest()->getParam('store', 0);
         if ($storeId <= 0) {
             $storeId = (int)$this->storeManager->getDefaultStoreView()->getId();
@@ -156,17 +156,43 @@ class CategoryRates extends Field
             }
         }
 
-        $html = '<div class="tjv-category-rates" data-remove-label="'
+        $html = '<div class="tjv-category-rates" style="width:1100px;min-width:100%;max-width:100%;'
+        . 'box-sizing:border-box;overflow:hidden;" data-remove-label="'
             . $this->escaper->escapeHtmlAttr(__('Remove'))
             . '" data-mage-init=\'{"TJV_CategoryShippingProducts/js/category-rates":{}}\'>';
         $html .= '<p><strong>' . $this->escaper->escapeHtml(
             __('Configure rates by destination country or custom country group.')
         )
             . '</strong></p>';
-        $html .= '<div class="tjv-category-rates__country-controls" style="margin:12px 0;">'
+        $html .= '<div style="display:flex; gap:12px;">
+            <fieldset style="display:block;width:50%;max-width:100%;box-sizing:border-box;'
+            . 'margin:12px 0;">'
+            . '<legend>' . $this->escaper->escapeHtml(__('Create or edit a country group')) . '</legend>'
+            . '<div><label for="tjv-category-rates-group-name">'
+            . $this->escaper->escapeHtml(__('Group name')) . '</label> '
+            . '<input type="text" id="tjv-category-rates-group-name" class="input-text"'
+            . ' style="max-width:100%;box-sizing:border-box;" data-role="group-name" maxlength="100" /></div> '
+            . '<div><label for="tjv-category-rates-group-countries">'
+            . $this->escaper->escapeHtml(__('Countries (Ctrl/Cmd-click to select multiple)')) . '</label>'
+            . '<select id="tjv-category-rates-group-countries" multiple="multiple" size="5"'
+            . ' style="display:block;width:100%;max-width:100%;box-sizing:border-box;"'
+            . ' data-role="group-countries">';
+        foreach ($countries as $countryId => $countryName) {
+            $html .= '<option value="' . $this->escaper->escapeHtmlAttr($countryId) . '">'
+                . $this->escaper->escapeHtml($countryName) . '</option>';
+        }
+        $html .= '</select></div>'
+            . '<button type="button" class="action-secondary" data-action="group-countries">'
+            . '<span>' . $this->escaper->escapeHtml(__('Group Countries')) . '</span></button>'
+            . '<button type="button" class="action-secondary" data-action="cancel-country-group"'
+            . ' style="display:none;" data-role="cancel-group-edit">'
+            . '<span>' . $this->escaper->escapeHtml(__('Cancel')) . '</span></button></fieldset>';
+        $html .= '<div class="tjv-category-rates__country-controls"'
+            . ' style="width:50%;max-width:100%;min-width:0;box-sizing:border-box;margin:12px 0;">'
             . '<label for="tjv-category-rates-country">'
             . $this->escaper->escapeHtml(__('Add country to the table')) . '</label> '
-            . '<select id="tjv-category-rates-country" data-role="country-select">'
+            . '<select id="tjv-category-rates-country" data-role="country-select"'
+            . ' style="display:block;width:100%;max-width:100%;box-sizing:border-box;">'
             . '<option value="">' . $this->escaper->escapeHtml(__('Select a country')) . '</option>';
         foreach ($countries as $countryId => $countryName) {
             if (in_array($countryId, $fixedCountryIds, true)) {
@@ -202,22 +228,6 @@ class CategoryRates extends Field
         }
         $html .= '</select> <button type="button" class="action-secondary" data-action="add-country">'
             . '<span>' . $this->escaper->escapeHtml(__('Add country')) . '</span></button>';
-        $html .= '<fieldset style="display:inline-block;margin-left:16px;vertical-align:top;">'
-            . '<legend>' . $this->escaper->escapeHtml(__('Create a country group')) . '</legend>'
-            . '<label for="tjv-category-rates-group-name">'
-            . $this->escaper->escapeHtml(__('Group name')) . '</label> '
-            . '<input type="text" id="tjv-category-rates-group-name" class="input-text"'
-            . ' data-role="group-name" maxlength="100" /> '
-            . '<label for="tjv-category-rates-group-countries">'
-            . $this->escaper->escapeHtml(__('Countries (Ctrl/Cmd-click to select multiple)')) . '</label> '
-            . '<select id="tjv-category-rates-group-countries" multiple="multiple" size="5"'
-            . ' data-role="group-countries">';
-        foreach ($countries as $countryId => $countryName) {
-            $html .= '<option value="' . $this->escaper->escapeHtmlAttr($countryId) . '">'
-                . $this->escaper->escapeHtml($countryName) . '</option>';
-        }
-        $html .= '</select> <button type="button" class="action-secondary" data-action="group-countries">'
-            . '<span>' . $this->escaper->escapeHtml(__('Group Countries')) . '</span></button></fieldset>';
         $html .= '<input type="hidden" name="'
             . $this->escaper->escapeHtmlAttr($name . '[' . self::COUNTRY_COLUMNS_CONFIG_KEY . '][]')
             . '" value="" data-role="country-column" />';
@@ -266,7 +276,7 @@ class CategoryRates extends Field
                 $name . '[' . self::COUNTRY_GROUPS_CONFIG_KEY . '][__GROUP__][countries][]'
             )
             . '" value="" data-role="country-group-country" data-group-id="__GROUP__" /></template>';
-        $html .= '</div>';
+        $html .= '</div></div>';
         $visibleDestinations = [];
         foreach (self::COUNTRY_COLUMNS as $destination) {
             $key = $destination['scope'] . ':' . $destination['id'];
@@ -328,8 +338,12 @@ class CategoryRates extends Field
             $html .= '<th style="width:340px;border:1px solid #c6c6c6;padding:8px;"'
                 . ' data-country-column="' . $this->escaper->escapeHtmlAttr($destinationKey)
                 . '" data-destination-key="' . $this->escaper->escapeHtmlAttr($destinationKey)
-                . '" data-country-label="' . $this->escaper->escapeHtmlAttr($label) . '">'
+                . '" data-country-label="' . $this->escaper->escapeHtmlAttr($label)
+                . '" data-group-id="' . $this->escaper->escapeHtmlAttr($groupId) . '">'
                 . $this->escaper->escapeHtml($label) . ' '
+                . '<button type="button" class="action-secondary" data-action="edit-country-group"'
+                . ' data-group-id="' . $this->escaper->escapeHtmlAttr($groupId) . '">'
+                . '<span>' . $this->escaper->escapeHtml(__('Edit')) . '</span></button> '
                 . '<button type="button" class="action-secondary" data-action="remove-country"'
                 . ' data-destination-key="' . $this->escaper->escapeHtmlAttr($destinationKey)
                 . '" data-base-column="true">'
@@ -482,6 +496,12 @@ class CategoryRates extends Field
         return $html;
     }
 
+    public function render(AbstractElement $element)
+    {
+        $html = '<td colspan="3" class="value">' . $this->_getElementHtml($element) . '</td>';
+        return $this->_decorateRowHtml($element, $html);
+    }
+    
     /**
      * Render category rate inputs for a destination.
      *
@@ -705,7 +725,9 @@ class CategoryRates extends Field
         $normalized = [];
         $assignedCountries = [];
         foreach ($groups as $groupId => $group) {
-            if (!is_string($groupId) || !is_array($group) || !is_string($group['name'] ?? null)) {
+            if (!is_string($groupId) || preg_match('/^group_[A-Z0-9_]{2,255}$/', $groupId) !== 1
+                || !is_array($group) || !is_string($group['name'] ?? null)
+            ) {
                 continue;
             }
             $name = trim($group['name']);
@@ -722,8 +744,7 @@ class CategoryRates extends Field
                 }
             )));
             sort($countryIds);
-            $expectedId = 'group_' . implode('_', $countryIds);
-            if (count($countryIds) < 2 || $groupId !== $expectedId) {
+            if (count($countryIds) < 2) {
                 continue;
             }
             foreach ($countryIds as $countryId) {

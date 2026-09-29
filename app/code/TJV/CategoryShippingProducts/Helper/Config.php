@@ -160,7 +160,7 @@ class Config
                 }
             )));
             sort($countries);
-            if (count($countries) < 2 || $groupId !== 'group_' . implode('_', $countries)) {
+            if (count($countries) < 2) {
                 continue;
             }
 
