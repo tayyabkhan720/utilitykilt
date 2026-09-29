@@ -6,5 +6,9 @@
         <observer name="apply_buy_one_get_shipping_free" 
                   instance="TJV\PromoShipping\Observer\ApplyBuyOneGetShippingFreeObserver"/>
     </event>
+    <event name="sales_quote_collect_totals_after">
+        <observer name="restore_buy_one_get_shipping_free"
+                  instance="TJV\PromoShipping\Observer\ApplyBuyOneGetShippingFreeObserver"/>
+    </event>
 
 </config>

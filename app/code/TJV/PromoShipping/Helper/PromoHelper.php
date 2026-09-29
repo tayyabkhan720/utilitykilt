@@ -7,35 +7,62 @@ use Magento\Store\Model\ScopeInterface;
 
 class PromoHelper extends AbstractHelper
 {
-    const XML_PATH_TRIGGER_PRODUCT_IDS = 'tjv_promo/buy_one_free_shipping/trigger_product_ids';
-    const XML_PATH_FREE_SHIPPING_PRODUCT_IDS = 'tjv_promo/buy_one_free_shipping/free_shipping_product_ids';
-    const XML_PATH_ENABLED = 'tjv_promo/buy_one_free_shipping/enabled';
+    private const XML_PATH_TRIGGER_PRODUCT_IDS = 'tjv_promo/buy_one_free_shipping/trigger_product_ids';
+    private const XML_PATH_FREE_SHIPPING_PRODUCT_IDS = 'tjv_promo/buy_one_free_shipping/free_shipping_product_ids';
+    private const XML_PATH_ENABLED = 'tjv_promo/buy_one_free_shipping/enabled';
 
-    protected $scopeConfig;
-
+    /**
+     * @param ScopeConfigInterface $scopeConfig
+     */
     public function __construct(ScopeConfigInterface $scopeConfig)
     {
         $this->scopeConfig = $scopeConfig;
     }
 
-    public function isEnabled()
+    /**
+     * Check whether the promotion is enabled for a store.
+     *
+     * @param int|null $storeId
+     * @return bool
+     */
+    public function isEnabled(?int $storeId = null): bool
     {
         return $this->scopeConfig->isSetFlag(
             self::XML_PATH_ENABLED,
-            ScopeInterface::SCOPE_STORE
+            ScopeInterface::SCOPE_STORE,
+            $storeId
         );
     }
 
-    public function getTriggerProductIds(): array
+    /**
+     * Return configured trigger product IDs for a store.
+     *
+     * @param int|null $storeId
+     * @return array
+     */
+    public function getTriggerProductIds(?int $storeId = null): array
     {
-        return $this->getConfiguredValues(self::XML_PATH_TRIGGER_PRODUCT_IDS);
+        return $this->getConfiguredValues(self::XML_PATH_TRIGGER_PRODUCT_IDS, $storeId);
     }
 
-    public function getFreeShippingProductIds(): array
+    /**
+     * Return configured free-shipping product IDs for a store.
+     *
+     * @param int|null $storeId
+     * @return array
+     */
+    public function getFreeShippingProductIds(?int $storeId = null): array
     {
-        return $this->getConfiguredValues(self::XML_PATH_FREE_SHIPPING_PRODUCT_IDS);
+        return $this->getConfiguredValues(self::XML_PATH_FREE_SHIPPING_PRODUCT_IDS, $storeId);
     }
 
+    /**
+     * Check whether a quote item matches a configured product ID or SKU.
+     *
+     * @param \Magento\Quote\Model\Quote\Item\AbstractItem $item
+     * @param array $configuredProducts
+     * @return bool
+     */
     public function matchesProduct($item, array $configuredProducts): bool
     {
         $productId = (string)$item->getProductId();
@@ -59,11 +86,19 @@ class PromoHelper extends AbstractHelper
         return false;
     }
 
-    private function getConfiguredValues(string $path): array
+    /**
+     * Parse configured comma-separated product IDs or SKUs.
+     *
+     * @param string $path
+     * @param int|null $storeId
+     * @return array
+     */
+    private function getConfiguredValues(string $path, ?int $storeId): array
     {
         $productIds = $this->scopeConfig->getValue(
             $path,
-            ScopeInterface::SCOPE_STORE
+            ScopeInterface::SCOPE_STORE,
+            $storeId
         );
 
         if (empty($productIds)) {
