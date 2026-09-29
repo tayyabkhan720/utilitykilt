@@ -11,9 +11,11 @@ use Magento\Shipping\Model\Rate\Result;
 use Magento\Shipping\Model\Rate\ResultFactory;
 use Psr\Log\LoggerInterface;
 use TJV\CategoryShippingProducts\Helper\Config as CategoryShippingConfig;
+use TJV\PromoShipping\Helper\PromoHelper;
 
 class Category extends AbstractCarrier implements CarrierInterface
 {
+    /** @var string */
     protected $_code = 'tjv_category';
 
     /** @var ResultFactory */
@@ -28,6 +30,9 @@ class Category extends AbstractCarrier implements CarrierInterface
     /** @var CategoryShippingConfig */
     private CategoryShippingConfig $categoryShippingConfig;
 
+    /** @var PromoHelper */
+    private PromoHelper $promoHelper;
+
     /**
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param \Magento\Quote\Model\Quote\Address\RateResult\ErrorFactory $rateErrorFactory
@@ -36,6 +41,7 @@ class Category extends AbstractCarrier implements CarrierInterface
      * @param MethodFactory $rateMethodFactory
      * @param CategoryRepository $categoryRepository
      * @param CategoryShippingConfig $categoryShippingConfig
+     * @param PromoHelper $promoHelper
      * @param array $data
      */
     public function __construct(
@@ -46,6 +52,7 @@ class Category extends AbstractCarrier implements CarrierInterface
         MethodFactory $rateMethodFactory,
         CategoryRepository $categoryRepository,
         CategoryShippingConfig $categoryShippingConfig,
+        PromoHelper $promoHelper,
         array $data = []
     ) {
         parent::__construct($scopeConfig, $rateErrorFactory, $logger, $data);
@@ -53,6 +60,7 @@ class Category extends AbstractCarrier implements CarrierInterface
         $this->rateMethodFactory = $rateMethodFactory;
         $this->categoryRepository = $categoryRepository;
         $this->categoryShippingConfig = $categoryShippingConfig;
+        $this->promoHelper = $promoHelper;
     }
 
     /**
@@ -67,9 +75,26 @@ class Category extends AbstractCarrier implements CarrierInterface
             return false;
         }
 
+        $items = $request->getAllItems();
+        $storeId = (int)$request->getStoreId();
+        $triggerProductIds = $this->promoHelper->getTriggerProductIds($storeId);
+        $freeShippingProductIds = $this->promoHelper->getFreeShippingProductIds($storeId);
+        $promoApplies = $this->isPromoApplicable(
+            $items,
+            $triggerProductIds,
+            $freeShippingProductIds,
+            $storeId
+        );
         $categoryIds = [];
-        foreach ($request->getAllItems() as $item) {
-            if ($item->getParentItem() || $item->getProduct()->isVirtual() || $item->getFreeShipping()) {
+        foreach ($items as $item) {
+            $isPromoFree = $promoApplies
+                && $this->promoHelper->matchesProduct($item, $freeShippingProductIds)
+                && !$this->promoHelper->matchesProduct($item, $triggerProductIds);
+            if ($item->getParentItem()
+                || $item->getProduct()->isVirtual()
+                || $item->getFreeShipping()
+                || $isPromoFree
+            ) {
                 continue;
             }
 
@@ -146,6 +171,34 @@ class Category extends AbstractCarrier implements CarrierInterface
         $result->append($method);
 
         return $result;
+    }
+
+    /**
+     * Check whether the configured trigger product is present in the shipping request.
+     *
+     * @param array $items
+     * @param array $triggerProductIds
+     * @param array $freeShippingProductIds
+     * @param int $storeId
+     * @return bool
+     */
+    private function isPromoApplicable(
+        array $items,
+        array $triggerProductIds,
+        array $freeShippingProductIds,
+        int $storeId
+    ): bool {
+        if (!$this->promoHelper->isEnabled($storeId) || !$triggerProductIds || !$freeShippingProductIds) {
+            return false;
+        }
+
+        foreach ($items as $item) {
+            if ($this->promoHelper->matchesProduct($item, $triggerProductIds)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
