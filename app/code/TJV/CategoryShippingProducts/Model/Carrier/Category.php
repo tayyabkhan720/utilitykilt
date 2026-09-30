@@ -77,19 +77,19 @@ class Category extends AbstractCarrier implements CarrierInterface
 
         $items = $request->getAllItems();
         $storeId = (int)$request->getStoreId();
-        $triggerProductIds = $this->promoHelper->getTriggerProductIds($storeId);
-        $freeShippingProductIds = $this->promoHelper->getFreeShippingProductIds($storeId);
+        $triggerCategoryIds = $this->promoHelper->getTriggerCategoryIds($storeId);
+        $freeShippingCategoryIds = $this->promoHelper->getFreeShippingCategoryIds($storeId);
         $promoApplies = $this->isPromoApplicable(
             $items,
-            $triggerProductIds,
-            $freeShippingProductIds,
+            $triggerCategoryIds,
+            $freeShippingCategoryIds,
             $storeId
         );
         $categoryIds = [];
         foreach ($items as $item) {
             $isPromoFree = $promoApplies
-                && $this->promoHelper->matchesProduct($item, $freeShippingProductIds)
-                && !$this->promoHelper->matchesProduct($item, $triggerProductIds);
+                && $this->promoHelper->matchesCategories($item, $freeShippingCategoryIds)
+                && !$this->promoHelper->matchesCategories($item, $triggerCategoryIds);
             if ($item->getParentItem()
                 || $item->getProduct()->isVirtual()
                 || $item->getFreeShipping()
@@ -174,31 +174,38 @@ class Category extends AbstractCarrier implements CarrierInterface
     }
 
     /**
-     * Check whether the configured trigger product is present in the shipping request.
+     * Check whether a trigger-category item and a free-shipping-category item are present.
      *
      * @param array $items
-     * @param array $triggerProductIds
-     * @param array $freeShippingProductIds
+     * @param array $triggerCategoryIds
+     * @param array $freeShippingCategoryIds
      * @param int $storeId
      * @return bool
      */
     private function isPromoApplicable(
         array $items,
-        array $triggerProductIds,
-        array $freeShippingProductIds,
+        array $triggerCategoryIds,
+        array $freeShippingCategoryIds,
         int $storeId
     ): bool {
-        if (!$this->promoHelper->isEnabled($storeId) || !$triggerProductIds || !$freeShippingProductIds) {
+        if (!$this->promoHelper->isEnabled($storeId) || !$triggerCategoryIds || !$freeShippingCategoryIds) {
             return false;
         }
 
+        $triggerFound = false;
+        $freeShippingFound = false;
         foreach ($items as $item) {
-            if ($this->promoHelper->matchesProduct($item, $triggerProductIds)) {
-                return true;
+            if ($this->promoHelper->matchesCategories($item, $triggerCategoryIds)) {
+                $triggerFound = true;
+            }
+            if ($this->promoHelper->matchesCategories($item, $freeShippingCategoryIds)
+                && !$this->promoHelper->matchesCategories($item, $triggerCategoryIds)
+            ) {
+                $freeShippingFound = true;
             }
         }
 
-        return false;
+        return $triggerFound && $freeShippingFound;
     }
 
     /**
