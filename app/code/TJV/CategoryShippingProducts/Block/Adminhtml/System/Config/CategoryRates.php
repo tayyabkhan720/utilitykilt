@@ -14,6 +14,7 @@ class CategoryRates extends Field
     private const COUNTRY_COLUMNS_CONFIG_KEY = '_country_columns';
     private const HIDDEN_COLUMNS_CONFIG_KEY = '_hidden_columns';
     private const COUNTRY_GROUPS_CONFIG_KEY = '_country_groups';
+    private const COLUMN_ORDER_CONFIG_KEY = '_column_order';
     /** @var CollectionFactory */
     private CollectionFactory $categoryCollectionFactory;
 
@@ -277,26 +278,76 @@ class CategoryRates extends Field
             )
             . '" value="" data-role="country-group-country" data-group-id="__GROUP__" /></template>';
         $html .= '</div></div>';
-        $visibleDestinations = [];
-        foreach (self::COUNTRY_COLUMNS as $destination) {
-            $key = $destination['scope'] . ':' . $destination['id'];
-            if (!in_array($key, $hiddenColumns, true)) {
-                $visibleDestinations[] = $destination;
+        $columnOrder = $configured[self::COLUMN_ORDER_CONFIG_KEY] ?? [];
+        $columnOrder = is_array($columnOrder) ? array_values(array_filter(
+            $columnOrder,
+            static function ($key): bool {
+                return is_string($key)
+                    && preg_match('/^(regions|countries|groups):[A-Z_a-z0-9]+$/', $key) === 1;
             }
+        )) : [];
+
+        $orderedColumns = [];
+        foreach (self::COUNTRY_COLUMNS as $countryName => $destination) {
+            $key = $destination['scope'] . ':' . $destination['id'];
+            if (in_array($key, $hiddenColumns, true)) {
+                continue;
+            }
+            $orderedColumns[] = [
+                'key' => $key,
+                'id' => $destination['id'],
+                'scope' => $destination['scope'],
+                'label' => (string)__($countryName),
+                'base' => true,
+                'group' => false,
+            ];
         }
         foreach ($countryColumns as $countryId) {
-            $visibleDestinations[] = ['id' => $countryId, 'scope' => 'countries'];
+            $orderedColumns[] = [
+                'key' => 'countries:' . $countryId,
+                'id' => $countryId,
+                'scope' => 'countries',
+                'label' => $countries[$countryId],
+                'base' => false,
+                'group' => false,
+            ];
         }
         foreach ($countryGroups as $groupId => $group) {
-            if (!in_array('groups:' . $groupId, $hiddenColumns, true)) {
-                $visibleDestinations[] = [
-                    'id' => $groupId,
-                    'scope' => 'groups',
-                    'label' => $this->getCountryGroupLabel($group),
-                ];
+            if (in_array('groups:' . $groupId, $hiddenColumns, true)) {
+                continue;
             }
+            $orderedColumns[] = [
+                'key' => 'groups:' . $groupId,
+                'id' => $groupId,
+                'scope' => 'groups',
+                'label' => $this->getCountryGroupLabel($group),
+                'base' => true,
+                'group' => true,
+            ];
         }
-        $columnCount = count($visibleDestinations);
+
+        $position = array_flip($columnOrder);
+        foreach ($orderedColumns as $i => &$orderedColumn) {
+            $orderedColumn['_i'] = $i;
+        }
+        unset($orderedColumn);
+        usort($orderedColumns, static function (array $a, array $b) use ($position): int {
+            $pa = $position[$a['key']] ?? (1000 + $a['_i']);
+            $pb = $position[$b['key']] ?? (1000 + $b['_i']);
+            return $pa <=> $pb;
+        });
+
+        $columnCount = count($orderedColumns);
+
+        $columnOrderName = $this->escaper->escapeHtmlAttr($name . '[' . self::COLUMN_ORDER_CONFIG_KEY . '][]');
+        $html .= '<input type="hidden" name="' . $columnOrderName
+            . '" value="" data-role="column-order-anchor" />';
+        foreach ($orderedColumns as $col) {
+            $html .= '<input type="hidden" name="' . $columnOrderName
+                . '" value="' . $this->escaper->escapeHtmlAttr($col['key'])
+                . '" data-role="column-order" />';
+        }
+
         $html .= '<div class="tjv-category-rates__country-table"'
             . ' style="display:block;width:100%;max-width:100%;min-width:0;overflow-x:auto;'
             . 'overflow-y:hidden;box-sizing:border-box;">'
@@ -304,98 +355,41 @@ class CategoryRates extends Field
             . ' style="width:' . (340 * $columnCount) . 'px;min-width:' . (340 * $columnCount)
             . 'px;table-layout:fixed;border-collapse:collapse;" data-role="country-table">'
             . '<thead><tr data-role="country-table-head">';
-        foreach (self::COUNTRY_COLUMNS as $countryName => $destination) {
-            $destinationKey = $destination['scope'] . ':' . $destination['id'];
-            if (in_array($destinationKey, $hiddenColumns, true)) {
-                continue;
+
+        foreach ($orderedColumns as $col) {
+            $key = $this->escaper->escapeHtmlAttr($col['key']);
+            $html .= '<th style="width:340px;border:1px solid #c6c6c6;padding:8px;cursor:move;"'
+                . ' draggable="true" title="' . $this->escaper->escapeHtmlAttr(__('Drag to reorder')) . '"'
+                . ' data-country-column="' . $key . '"'
+                . ' data-destination-key="' . $key . '"'
+                . ' data-country-label="' . $this->escaper->escapeHtmlAttr($col['label']) . '"'
+                . ($col['group'] ? ' data-group-id="' . $this->escaper->escapeHtmlAttr($col['id']) . '"' : '')
+                . '>' . $this->escaper->escapeHtml($col['label']) . ' ';
+            if ($col['group']) {
+                $html .= '<button type="button" class="action-secondary" data-action="edit-country-group"'
+                    . ' data-group-id="' . $this->escaper->escapeHtmlAttr($col['id']) . '">'
+                    . '<span>' . $this->escaper->escapeHtml(__('Edit')) . '</span></button> ';
             }
-            $html .= '<th style="width:340px;border:1px solid #c6c6c6;padding:8px;"'
-                . ' data-country-column="' . $this->escaper->escapeHtmlAttr($destinationKey)
-                . '" data-destination-key="' . $this->escaper->escapeHtmlAttr($destinationKey)
-                . '" data-country-label="' . $this->escaper->escapeHtmlAttr(__($countryName)) . '">'
-                . $this->escaper->escapeHtml(__($countryName)) . ' '
-                . '<button type="button" class="action-secondary" data-action="remove-country"'
-                . ' data-destination-key="' . $this->escaper->escapeHtmlAttr($destinationKey)
-                . '" data-base-column="true">'
-                . '<span>' . $this->escaper->escapeHtml(__('Remove')) . '</span></button></th>';
-        }
-        foreach ($countryColumns as $countryId) {
-            $html .= '<th style="width:340px;border:1px solid #c6c6c6;padding:8px;"'
-                . ' data-country-column="countries:' . $this->escaper->escapeHtmlAttr($countryId)
-                . '" data-destination-key="countries:' . $this->escaper->escapeHtmlAttr($countryId)
-                . '" data-country-label="' . $this->escaper->escapeHtmlAttr($countries[$countryId]) . '">'
-                . $this->escaper->escapeHtml($countries[$countryId]) . ' '
-                . '<button type="button" class="action-secondary" data-action="remove-country"'
-                . ' data-destination-key="countries:' . $this->escaper->escapeHtmlAttr($countryId) . '">'
-                . '<span>' . $this->escaper->escapeHtml(__('Remove')) . '</span></button></th>';
-        }
-        foreach ($countryGroups as $groupId => $group) {
-            if (in_array('groups:' . $groupId, $hiddenColumns, true)) {
-                continue;
-            }
-            $destinationKey = 'groups:' . $groupId;
-            $label = $this->getCountryGroupLabel($group);
-            $html .= '<th style="width:340px;border:1px solid #c6c6c6;padding:8px;"'
-                . ' data-country-column="' . $this->escaper->escapeHtmlAttr($destinationKey)
-                . '" data-destination-key="' . $this->escaper->escapeHtmlAttr($destinationKey)
-                . '" data-country-label="' . $this->escaper->escapeHtmlAttr($label)
-                . '" data-group-id="' . $this->escaper->escapeHtmlAttr($groupId) . '">'
-                . $this->escaper->escapeHtml($label) . ' '
-                . '<button type="button" class="action-secondary" data-action="edit-country-group"'
-                . ' data-group-id="' . $this->escaper->escapeHtmlAttr($groupId) . '">'
-                . '<span>' . $this->escaper->escapeHtml(__('Edit')) . '</span></button> '
-                . '<button type="button" class="action-secondary" data-action="remove-country"'
-                . ' data-destination-key="' . $this->escaper->escapeHtmlAttr($destinationKey)
-                . '" data-base-column="true">'
+            $html .= '<button type="button" class="action-secondary" data-action="remove-country"'
+                . ' data-destination-key="' . $key . '"'
+                . ($col['base'] ? ' data-base-column="true"' : '') . '>'
                 . '<span>' . $this->escaper->escapeHtml(__('Remove')) . '</span></button></th>';
         }
 
         $html .= '</tr></thead><tbody><tr data-role="country-table-row">';
-        foreach (self::COUNTRY_COLUMNS as $destination) {
-            $destinationKey = $destination['scope'] . ':' . $destination['id'];
-            if (in_array($destinationKey, $hiddenColumns, true)) {
-                continue;
-            }
+        foreach ($orderedColumns as $col) {
             $html .= '<td style="width:340px;vertical-align:top;border:1px solid #c6c6c6;padding:8px;"'
-                . ' data-country-column="' . $this->escaper->escapeHtmlAttr($destinationKey) . '">'
+                . ' data-country-column="' . $this->escaper->escapeHtmlAttr($col['key']) . '">'
                 . $this->renderDestinationTable(
                     $topLevelCategories,
                     $children,
                     $configured,
                     $name,
-                    $destination['id'],
-                    $destination['scope']
-                ) . '</td>';
-        }
-        foreach ($countryColumns as $countryId) {
-            $html .= '<td style="width:340px;vertical-align:top;border:1px solid #c6c6c6;padding:8px;"'
-                . ' data-country-column="countries:' . $this->escaper->escapeHtmlAttr($countryId) . '">'
-                . $this->renderDestinationTable(
-                    $topLevelCategories,
-                    $children,
-                    $configured,
-                    $name,
-                    $countryId,
-                    'countries'
-                ) . '</td>';
-        }
-        foreach ($countryGroups as $groupId => $group) {
-            if (in_array('groups:' . $groupId, $hiddenColumns, true)) {
-                continue;
-            }
-            $html .= '<td style="width:340px;vertical-align:top;border:1px solid #c6c6c6;padding:8px;"'
-                . ' data-country-column="groups:' . $this->escaper->escapeHtmlAttr($groupId) . '">'
-                . $this->renderDestinationTable(
-                    $topLevelCategories,
-                    $children,
-                    $configured,
-                    $name,
-                    $groupId,
-                    'groups'
+                    $col['id'],
+                    $col['scope']
                 ) . '</td>';
         }
         $html .= '</tr></tbody></table></div>';
-
         $primaryRegionIds = [];
         foreach (self::COUNTRY_COLUMNS as $destination) {
             if ($destination['scope'] === 'regions') {
@@ -658,6 +652,17 @@ class CategoryRates extends Field
                 ));
                 continue;
             }
+
+            if ((string)$categoryId === self::COLUMN_ORDER_CONFIG_KEY) {
+                $normalized[self::COLUMN_ORDER_CONFIG_KEY] = array_values(array_filter(
+                    $row,
+                    static function ($key): bool {
+                        return is_string($key) && $key !== '';
+                    }
+                ));
+                continue;
+            }
+
             if ((string)$categoryId === self::COUNTRY_GROUPS_CONFIG_KEY) {
                 $normalized[self::COUNTRY_GROUPS_CONFIG_KEY] = is_array($row) ? $row : [];
                 continue;

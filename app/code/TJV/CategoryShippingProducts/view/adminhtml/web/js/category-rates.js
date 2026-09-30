@@ -39,6 +39,105 @@ define(['mage/translate'], function ($t) {
             countryTable.style.minWidth = width;
         }
 
+                // ---------- Column drag & drop ----------
+        const orderAnchor = element.querySelector('[data-role="column-order-anchor"]');
+        let draggedHead = null;
+
+        function markColumnsDraggable() {
+            tableHead.querySelectorAll('th[data-country-column]').forEach(function (th) {
+                th.draggable = true;
+                th.style.cursor = 'move';
+                th.title = $t('Drag to reorder');
+            });
+        }
+
+        function syncColumnOrder() {
+            if (!orderAnchor) {
+                return;
+            }
+            element.querySelectorAll('input[data-role="column-order"]').forEach(function (input) {
+                input.remove();
+            });
+            tableHead.querySelectorAll('th[data-country-column]').forEach(function (th) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = orderAnchor.name;
+                input.value = th.dataset.countryColumn;
+                input.dataset.role = 'column-order';
+                orderAnchor.parentNode.appendChild(input);
+            });
+        }
+
+        function findBodyCell(key) {
+            return Array.from(tableRow.querySelectorAll('td[data-country-column]'))
+                .find(function (cell) {
+                    return cell.dataset.countryColumn === key;
+                });
+        }
+
+        function clearDragMarks() {
+            tableHead.querySelectorAll('th').forEach(function (th) {
+                th.style.outline = '';
+                th.style.opacity = '';
+            });
+        }
+
+        tableHead.addEventListener('dragstart', function (event) {
+            const th = event.target instanceof Element ? event.target.closest('th[data-country-column]') : null;
+            if (!th) {
+                return;
+            }
+            draggedHead = th;
+            event.dataTransfer.effectAllowed = 'move';
+            event.dataTransfer.setData('text/plain', th.dataset.countryColumn); // required by Firefox
+            th.style.opacity = '0.5';
+        });
+
+        tableHead.addEventListener('dragover', function (event) {
+            const th = event.target instanceof Element ? event.target.closest('th[data-country-column]') : null;
+            if (!draggedHead || !th || th === draggedHead) {
+                return;
+            }
+            event.preventDefault();
+            event.dataTransfer.dropEffect = 'move';
+            clearDragMarks();
+            draggedHead.style.opacity = '0.5';
+            th.style.outline = '2px dashed #eb5202';
+        });
+
+        tableHead.addEventListener('drop', function (event) {
+            const target = event.target instanceof Element ? event.target.closest('th[data-country-column]') : null;
+            if (!draggedHead || !target || target === draggedHead) {
+                return;
+            }
+            event.preventDefault();
+
+            const rect = target.getBoundingClientRect();
+            const placeAfter = event.clientX > rect.left + rect.width / 2;
+            const dragCell = findBodyCell(draggedHead.dataset.countryColumn);
+            const targetCell = findBodyCell(target.dataset.countryColumn);
+
+            tableHead.insertBefore(draggedHead, placeAfter ? target.nextSibling : target);
+            if (dragCell && targetCell) {
+                tableRow.insertBefore(dragCell, placeAfter ? targetCell.nextSibling : targetCell);
+            }
+            clearDragMarks();
+            syncColumnOrder();
+        });
+
+        tableHead.addEventListener('dragend', function () {
+            draggedHead = null;
+            clearDragMarks();
+        });
+
+        // Columns added or removed (Add country, group create/remove) stay draggable and in the saved order
+        new MutationObserver(function () {
+            markColumnsDraggable();
+            syncColumnOrder();
+        }).observe(tableHead, {childList: true});
+
+        markColumnsDraggable();
+
         function updateGroupedCountryOptions() {
             const groupedCountryIds = new Set();
 
@@ -95,6 +194,8 @@ define(['mage/translate'], function ($t) {
             updateGroupedCountryOptions();
             groupNameInput.focus();
         }
+
+
 
         function findDestination(destinationKey) {
             return Array.from(otherDestinations.querySelectorAll('[data-destination-key]'))
