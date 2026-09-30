@@ -146,59 +146,138 @@ $renderMegaPanel = function ($columns, $parentIndex) use ($escaper, $renderLeafC
                             <?php endif; ?>
                         </span>
                        <?php if (!empty($menuItem['childData'])): ?>
-    <div x-show="open" x-transition x-cloak>
+                        <div x-show="open" x-transition x-cloak>
 
-        <?php if ($menuItem['name'] === 'Kilts'): ?>
+                            <?php if ($menuItem['name'] === 'Kilts'): ?>
 
-            <?= $renderMegaPanel($menuItem['childData'], $index) ?>
+                                <?= $renderMegaPanel($menuItem['childData'], $index) ?>
 
-        <?php else: ?>
+                            <?php elseif ($menuItem['name'] === 'Accessories'): ?>
 
-            <div
-                id="submenu-<?= $escaper->escapeHtmlAttr($index) ?>"
-                class="absolute left-0 top-full mt-1 min-w-[260px] bg-white shadow-lg border border-gray-200 rounded-md z-50"
-            >
-                <ul class="py-2">
-                    <?php foreach ($menuItem['childData'] as $child): ?>
-                        <li class="relative group">
+                                <?php
+                                // Accessories contains many direct categories, so render them
+                                // in three balanced columns instead of one long dropdown.
+                                $accessoryColumns = array_chunk(
+                                    $menuItem['childData'],
+                                    (int) ceil(count($menuItem['childData']) / 3)
+                                );
+                                ?>
 
-                            <a
-                                href="<?= $escaper->escapeUrl($child['url']) ?>"
-                                class="flex items-center justify-between px-4 py-2 hover:bg-gray-100 text-gray-700"
-                            >
-                                <?= $escaper->escapeHtml($child['name']) ?>
+                                <div
+                                    id="submenu-<?= $escaper->escapeHtmlAttr($index) ?>"
+                                    class="absolute left-1/2 top-full mt-1 w-[760px] -translate-x-1/2
+                                           rounded-md border border-gray-200 bg-white shadow-xl z-50"
+                                >
+                                    <div class="grid grid-cols-3 gap-x-8 px-7 py-6">
+                                        <?php foreach ($accessoryColumns as $column): ?>
+                                            <div class="min-w-0">
+                                                <ul class="space-y-1">
+                                                    <?php foreach ($column as $child): ?>
+                                                        <li class="relative group">
+                                                            <a
+                                                                href="<?= $escaper->escapeUrl($child['url']) ?>"
+                                                                title="<?= $escaper->escapeHtmlAttr($child['name']) ?>"
+                                                                class="flex items-center justify-between rounded px-3 py-2
+                                                                       text-[15px] leading-5 text-gray-700
+                                                                       transition-colors hover:bg-gray-50 hover:text-primary"
+                                                            >
+                                                                <span><?= $escaper->escapeHtml($child['name']) ?></span>
 
-                                <?php if (!empty($child['childData'])): ?>
-                                    <?= $lucideIcons->chevronRightHtml('w-4 h-4') ?>
-                                <?php endif; ?>
-                            </a>
+                                                                <?php if (!empty($child['childData'])): ?>
+                                                                    <?= $lucideIcons->chevronRightHtml(
+                                                                        'w-4 h-4 shrink-0 ml-3 text-gray-400 group-hover:text-primary'
+                                                                    ) ?>
+                                                                <?php endif; ?>
+                                                            </a>
 
-                            <?php if (!empty($child['childData'])): ?>
-                                <div class="absolute left-full top-0 hidden group-hover:block min-w-[240px] bg-white shadow-lg border border-gray-200 rounded-md">
+                                                            <?php if (!empty($child['childData'])): ?>
+                                                                <div
+                                                                    class="absolute left-full top-0 z-50 hidden min-w-[230px]
+                                                                           rounded-md border border-gray-200 bg-white shadow-xl
+                                                                           group-hover:block"
+                                                                >
+                                                                    <ul class="py-2">
+                                                                        <?php foreach ($child['childData'] as $grandChild): ?>
+                                                                            <li>
+                                                                                <a
+                                                                                    href="<?= $escaper->escapeUrl($grandChild['url']) ?>"
+                                                                                    title="<?= $escaper->escapeHtmlAttr($grandChild['name']) ?>"
+                                                                                    class="block px-4 py-2 text-sm text-gray-700
+                                                                                           hover:bg-gray-50 hover:text-primary"
+                                                                                >
+                                                                                    <?= $escaper->escapeHtml($grandChild['name']) ?>
+                                                                                </a>
+                                                                            </li>
+                                                                        <?php endforeach; ?>
+                                                                    </ul>
+                                                                </div>
+                                                            <?php endif; ?>
+                                                        </li>
+                                                    <?php endforeach; ?>
+                                                </ul>
+                                            </div>
+                                        <?php endforeach; ?>
+                                    </div>
+
+                                    <div class="border-t border-gray-100 px-7 py-3">
+                                        <a
+                                            href="<?= $escaper->escapeUrl($menuItem['url']) ?>"
+                                            class="inline-flex items-center text-sm font-semibold text-primary
+                                                   hover:underline"
+                                        >
+                                            <?= $escaper->escapeHtml(__('View all accessories')) ?>
+                                            <span class="ml-1" aria-hidden="true">→</span>
+                                        </a>
+                                    </div>
+                                </div>
+
+                            <?php else: ?>
+
+                                <div
+                                    id="submenu-<?= $escaper->escapeHtmlAttr($index) ?>"
+                                    class="absolute left-0 top-full mt-1 min-w-[260px] bg-white shadow-lg border border-gray-200 rounded-md z-50"
+                                >
                                     <ul class="py-2">
-                                        <?php foreach ($child['childData'] as $grandChild): ?>
-                                            <li>
+                                        <?php foreach ($menuItem['childData'] as $child): ?>
+                                            <li class="relative group">
+
                                                 <a
-                                                    href="<?= $escaper->escapeUrl($grandChild['url']) ?>"
-                                                    class="block px-4 py-2 hover:bg-gray-100 text-gray-700"
+                                                    href="<?= $escaper->escapeUrl($child['url']) ?>"
+                                                    class="flex items-center justify-between px-4 py-2 hover:bg-gray-100 text-gray-700"
                                                 >
-                                                    <?= $escaper->escapeHtml($grandChild['name']) ?>
+                                                    <?= $escaper->escapeHtml($child['name']) ?>
+
+                                                    <?php if (!empty($child['childData'])): ?>
+                                                        <?= $lucideIcons->chevronRightHtml('w-4 h-4') ?>
+                                                    <?php endif; ?>
                                                 </a>
+
+                                                <?php if (!empty($child['childData'])): ?>
+                                                    <div class="absolute left-full top-0 hidden group-hover:block min-w-[240px] bg-white shadow-lg border border-gray-200 rounded-md">
+                                                        <ul class="py-2">
+                                                            <?php foreach ($child['childData'] as $grandChild): ?>
+                                                                <li>
+                                                                    <a
+                                                                        href="<?= $escaper->escapeUrl($grandChild['url']) ?>"
+                                                                        class="block px-4 py-2 hover:bg-gray-100 text-gray-700"
+                                                                    >
+                                                                        <?= $escaper->escapeHtml($grandChild['name']) ?>
+                                                                    </a>
+                                                                </li>
+                                                            <?php endforeach; ?>
+                                                        </ul>
+                                                    </div>
+                                                <?php endif; ?>
+
                                             </li>
                                         <?php endforeach; ?>
                                     </ul>
                                 </div>
+
                             <?php endif; ?>
 
-                        </li>
-                    <?php endforeach; ?>
-                </ul>
-            </div>
-
-        <?php endif; ?>
-
-    </div>
-<?php endif; ?>
+                        </div>
+                    <?php endif; ?>
                     </li>
                 <?php endforeach; ?>
             </ul>
