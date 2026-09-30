@@ -47,15 +47,15 @@ class ApplyBuyOneGetShippingFreeObserver implements ObserverInterface
             return;
         }
 
-        $triggerProducts = $this->promoHelper->getTriggerProductIds($storeId);
-        $freeShippingProducts = $this->promoHelper->getFreeShippingProductIds($storeId);
-        if (!$triggerProducts || !$freeShippingProducts) {
+         $triggerCategories = $this->promoHelper->getTriggerCategoryIds($storeId);
+        $freeShippingCategories = $this->promoHelper->getFreeShippingCategoryIds($storeId);
+        if (!$triggerCategories || !$freeShippingCategories) {
             return;
         }
 
         $triggerFound = false;
         foreach ($items as $item) {
-            if ($this->promoHelper->matchesProduct($item, $triggerProducts)) {
+            if ($this->promoHelper->matchesCategories($item, $triggerCategories)) {
                 $triggerFound = true;
                 break;
             }
@@ -66,8 +66,8 @@ class ApplyBuyOneGetShippingFreeObserver implements ObserverInterface
 
         $freeShippingApplied = false;
         foreach ($items as $item) {
-            if (!$this->promoHelper->matchesProduct($item, $freeShippingProducts)
-                || $this->promoHelper->matchesProduct($item, $triggerProducts)
+            if (!$this->promoHelper->matchesCategories($item, $freeShippingCategories)
+                || $this->promoHelper->matchesCategories($item, $triggerCategories)
             ) {
                 continue;
             }
