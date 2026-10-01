@@ -9,7 +9,7 @@ export default function useShippingMethodCartContext() {
   const { setShippingMethod } = cartActions;
   const {
     selected_shipping_method: selectedMethod = {},
-    shipping_methods: methodList,
+    shipping_methods: methodList = {},
   } = _get(cartData, 'cart', {});
 
   return {

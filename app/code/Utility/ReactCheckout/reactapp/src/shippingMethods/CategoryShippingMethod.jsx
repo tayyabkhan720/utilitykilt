@@ -1,10 +1,10 @@
 import React from 'react';
-import { func, shape, string } from 'prop-types';
+import { bool, func, shape, string } from 'prop-types';
 
 import RadioInput from '../components/common/Form/RadioInput';
 import { __ } from '../i18n';
 
-function CategoryShippingMethod({ method, selected, actions }) {
+function CategoryShippingMethod({ method, selected, disabled, actions }) {
   const selectedMethodId = selected
     ? `${selected.carrierCode}__${selected.methodCode}`
     : '';
@@ -16,6 +16,7 @@ function CategoryShippingMethod({ method, selected, actions }) {
         label={`${method.carrierTitle} (${method.methodTitle}): `}
         name="shippingMethod"
         checked={selectedMethodId === method.id}
+        disabled={disabled}
         onChange={actions.change}
       />
       <div className="pl-8 text-sm">
@@ -37,6 +38,7 @@ CategoryShippingMethod.propTypes = {
     carrierCode: string,
     methodCode: string,
   }),
+  disabled: bool,
   actions: shape({
     change: func.isRequired,
   }).isRequired,
@@ -44,6 +46,7 @@ CategoryShippingMethod.propTypes = {
 
 CategoryShippingMethod.defaultProps = {
   selected: null,
+  disabled: false,
 };
 
 export default CategoryShippingMethod;

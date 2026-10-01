@@ -7,12 +7,23 @@
             <label>Category Shipping Products</label>
             <tab>sales</tab>
             <resource>Magento_Config::config</resource>
+            <group id="general" translate="label" sortOrder="5"
+                   showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>General Settings</label>
+                <field id="active" translate="label comment" type="select" sortOrder="10"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Category Shipping</label>
+                    <comment>Enable or disable the category-based shipping method.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <config_path>carriers/tjv_category/active</config_path>
+                </field>
+            </group>
             <group id="shipping_rates" translate="label" sortOrder="10"
                    showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Shipping Rates by Category</label>
                 <field id="rates" translate="label comment" sortOrder="10"
                        showInDefault="1" showInWebsite="1" showInStore="1">
-                    <comment>Configure category shipping charges by destination country, preset region, or custom country group. Country-specific rates override group rates, which override preset-region and default rates.</comment>
+                    <comment>Configure rates in the selected store view currency. Country rates override group rates, group rates override region rates, and destination-specific rates take priority over generic category defaults. When specificity is equal, the nearest category rate is used.</comment>
                     <frontend_model>TJV\CategoryShippingProducts\Block\Adminhtml\System\Config\CategoryRates</frontend_model>
                     <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
                     <config_path>tjv_category_shipping_products/shipping_rates/rates</config_path>

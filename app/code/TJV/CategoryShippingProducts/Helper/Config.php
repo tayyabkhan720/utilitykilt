@@ -5,6 +5,7 @@ namespace TJV\CategoryShippingProducts\Helper;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Serialize\SerializerInterface;
 use Magento\Store\Model\ScopeInterface;
+use Magento\Store\Model\StoreManagerInterface;
 
 class Config
 {
@@ -27,17 +28,47 @@ class Config
 
     /** @var SerializerInterface */
     private SerializerInterface $serializer;
+    private StoreManagerInterface $storeManager;
 
     /**
      * @param ScopeConfigInterface $scopeConfig
      * @param SerializerInterface $serializer
+     * @param StoreManagerInterface $storeManager
      */
     public function __construct(
         ScopeConfigInterface $scopeConfig,
-        SerializerInterface $serializer
+        SerializerInterface $serializer,
+        StoreManagerInterface $storeManager
     ) {
         $this->scopeConfig = $scopeConfig;
         $this->serializer = $serializer;
+        $this->storeManager = $storeManager;
+    }
+
+    /**
+     * Convert a configured store-view currency amount to Magento's base currency.
+     *
+     * @param float $amount
+     * @param int $storeId
+     * @return float
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    public function convertRateToBaseCurrency(float $amount, int $storeId): float
+    {
+        $store = $this->storeManager->getStore($storeId);
+        $storeCurrencyCode = $store->getDefaultCurrencyCode();
+        $baseCurrency = $store->getBaseCurrency();
+        $exchangeRate = (float)$baseCurrency->getRate($storeCurrencyCode);
+
+        if ($exchangeRate <= 0.0) {
+            throw new \Magento\Framework\Exception\LocalizedException(__(
+                'The currency rate from %1 to %2 is not configured.',
+                $store->getBaseCurrencyCode(),
+                $storeCurrencyCode
+            ));
+        }
+
+        return $amount / $exchangeRate;
     }
 
     /**
@@ -105,14 +136,24 @@ class Config
                     ? ($categoryRate['regions'][$legacyRegion] ?? null)
                     : null;
             }
-            $countryRates[(string)$categoryId] = $this->hasRate($countryRate)
-                ? $countryRate
-                : ($this->hasRate($groupRate) ? $groupRate
-                : ($this->hasRate($regionRate) ? $regionRate
-                : [
+            if ($this->hasRate($countryRate)) {
+                $resolvedRate = $countryRate;
+                $destinationPriority = 3;
+            } elseif ($this->hasRate($groupRate)) {
+                $resolvedRate = $groupRate;
+                $destinationPriority = 2;
+            } elseif ($this->hasRate($regionRate)) {
+                $resolvedRate = $regionRate;
+                $destinationPriority = 1;
+            } else {
+                $resolvedRate = [
                     'first' => $categoryRate['first'] ?? '',
                     'second' => $categoryRate['second'] ?? '',
-                ]));
+                ];
+                $destinationPriority = 0;
+            }
+            $resolvedRate['_destination_priority'] = $destinationPriority;
+            $countryRates[(string)$categoryId] = $resolvedRate;
         }
 
         return $countryRates;

@@ -26,6 +26,7 @@ class CategoryRates extends Field
 
     /** @var CountryCollectionFactory */
     private CountryCollectionFactory $countryCollectionFactory;
+    private string $rateCurrencyCode = '';
     private const REGIONS = [
         'uk' => 'United Kingdom',
         'europe' => 'Europe (excluding UK)',
@@ -82,6 +83,7 @@ class CategoryRates extends Field
             $storeId = (int)$this->storeManager->getDefaultStoreView()->getId();
         }
         $store = $this->storeManager->getStore($storeId);
+        $this->rateCurrencyCode = (string)$store->getDefaultCurrencyCode();
         $rootCategoryId = (int)$store->getRootCategoryId();
         $value = $element->getValue();
         $configured = is_array($value) ? $value : [];
@@ -164,7 +166,9 @@ class CategoryRates extends Field
         $html .= '<p><strong>' . $this->escaper->escapeHtml(
             __('Configure rates by destination country or custom country group.')
         )
-            . '</strong></p>';
+            . '</strong></p><p>' . $this->escaper->escapeHtml(
+                __('Rate amounts are entered in this store view currency (%1). Magento converts them for order totals.', $this->rateCurrencyCode)
+            ) . '</p>';
         $html .= '<div style="display:flex; gap:12px;">
             <fieldset style="display:block;width:50%;max-width:100%;box-sizing:border-box;'
             . 'margin:12px 0;">'
@@ -521,9 +525,9 @@ class CategoryRates extends Field
             . '<thead><tr><th style="border:1px solid #c6c6c6;padding:6px;">'
             . $this->escaper->escapeHtml(__('Category')) . '</th><th'
             . ' style="border:1px solid #c6c6c6;padding:6px;">'
-            . $this->escaper->escapeHtml(__('First Product Shipping')) . '</th><th'
+            . $this->escaper->escapeHtml(__('First Product Shipping (%1)', $this->rateCurrencyCode)) . '</th><th'
             . ' style="border:1px solid #c6c6c6;padding:6px;">'
-            . $this->escaper->escapeHtml(__('Others Product Shipping'))
+            . $this->escaper->escapeHtml(__('Others Product Shipping (%1)', $this->rateCurrencyCode))
             . '</th></tr></thead><tbody>';
         foreach ($topLevelCategories as $parent) {
             $html .= $this->renderCategoryRows(

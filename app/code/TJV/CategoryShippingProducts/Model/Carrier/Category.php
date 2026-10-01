@@ -71,7 +71,7 @@ class Category extends AbstractCarrier implements CarrierInterface
      */
     public function collectRates(RateRequest $request)
     {
-        if ($this->getConfigData('active') === '0' || !$request->getAllItems()) {
+        if (!(bool)$this->getConfigData('active') || !$request->getAllItems()) {
             return false;
         }
 
@@ -159,6 +159,11 @@ class Category extends AbstractCarrier implements CarrierInterface
             return false;
         }
 
+        $baseAmount = $this->categoryShippingConfig->convertRateToBaseCurrency(
+            $baseAmount,
+            $storeId
+        );
+
         /** @var Result $result */
         $result = $this->rateResultFactory->create();
         $method = $this->rateMethodFactory->create();
@@ -221,6 +226,9 @@ class Category extends AbstractCarrier implements CarrierInterface
         $category = $this->categoryRepository->get($categoryId, $storeId);
         $pathIds = array_map('intval', explode('/', (string)$category->getPath()));
         $categoryIds = array_reverse($pathIds);
+        $selectedRate = null;
+        $selectedSourceId = null;
+        $selectedPriority = -1;
 
         foreach ($categoryIds as $ancestorId) {
             $configured = $configuredRates[(string)$ancestorId] ?? [];
@@ -239,18 +247,24 @@ class Category extends AbstractCarrier implements CarrierInterface
                 ? max(0.0, (float)$configured['second'])
                 : $first;
 
-            return $first > 0.0 || $second > 0.0
-                ? [
-                    'first' => $first,
-                    'second' => $second,
-                    'source_id' => $ancestorId,
-                    'source_path' => implode('/', array_slice(
-                        $pathIds,
-                        0,
-                        array_search($ancestorId, $pathIds, true) + 1
-                    )),
-                ]
-                : null;
+            if (($first > 0.0 || $second > 0.0)
+                && (int)($configured['_destination_priority'] ?? 0) > $selectedPriority
+            ) {
+                $selectedRate = ['first' => $first, 'second' => $second];
+                $selectedSourceId = $ancestorId;
+                $selectedPriority = (int)($configured['_destination_priority'] ?? 0);
+            }
+        }
+
+        if ($selectedRate !== null && $selectedSourceId !== null) {
+            return $selectedRate + [
+                'source_id' => $selectedSourceId,
+                'source_path' => implode('/', array_slice(
+                    $pathIds,
+                    0,
+                    array_search($selectedSourceId, $pathIds, true) + 1
+                )),
+            ];
         }
 
         $fallback = max(0.0, (float)$category->getData('shipping_cost'));

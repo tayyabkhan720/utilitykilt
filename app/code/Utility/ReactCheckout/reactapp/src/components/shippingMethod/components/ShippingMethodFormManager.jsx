@@ -11,7 +11,7 @@ import { string as YupString } from 'yup';
 
 import { __ } from '../../../i18n';
 import { _isObjEmpty } from '../../../utils';
-import { SHIPPING_METHOD } from '../../../config';
+import { CATEGORY_SHIPPING_METHOD_ID, SHIPPING_METHOD } from '../../../config';
 import useFormSection from '../../../hook/useFormSection';
 import { formikDataShape } from '../../../utils/propTypes';
 import useCheckoutFormContext from '../../../hook/useCheckoutFormContext';
@@ -89,17 +89,25 @@ function ShippingMethodFormManager({ children, formikData }) {
   }, [selectedMethod, setFieldValue]);
 
   useEffect(() => {
-    if (
-      !_isObjEmpty(selectedMethod) ||
-      _isObjEmpty(methodList) ||
-      autoSelectingRef.current
-    ) {
+    if (_isObjEmpty(methodList) || autoSelectingRef.current) {
       return;
     }
 
     const defaultMethod =
-      methodList.tjv_category__category || Object.values(methodList)[0];
+      methodList[CATEGORY_SHIPPING_METHOD_ID] || Object.values(methodList)[0];
     if (!defaultMethod?.carrierCode || !defaultMethod?.methodCode) {
+      return;
+    }
+
+    const selectedMethodId =
+      selectedMethod?.carrierCode && selectedMethod?.methodCode
+        ? `${selectedMethod.carrierCode}__${selectedMethod.methodCode}`
+        : '';
+    if (
+      selectedMethodId === defaultMethod.id ||
+      (!_isObjEmpty(selectedMethod) &&
+        defaultMethod.id !== CATEGORY_SHIPPING_METHOD_ID)
+    ) {
       return;
     }
 
@@ -109,10 +117,23 @@ function ShippingMethodFormManager({ children, formikData }) {
     };
     autoSelectingRef.current = true;
     setFieldValue(SHIPPING_METHOD, shippingMethod);
-    setShippingMethod(shippingMethod).finally(() => {
-      autoSelectingRef.current = false;
-    });
-  }, [methodList, selectedMethod, setFieldValue, setShippingMethod]);
+    setShippingMethod(shippingMethod)
+      .catch((error) => {
+        console.error(error);
+        setErrorMessage(
+          __('Something went wrong while updating shipping method')
+        );
+      })
+      .finally(() => {
+        autoSelectingRef.current = false;
+      });
+  }, [
+    methodList,
+    selectedMethod,
+    setErrorMessage,
+    setFieldValue,
+    setShippingMethod,
+  ]);
 
   // Update initialvalues based on the initial cart data fetch.
   useEffect(() => {
