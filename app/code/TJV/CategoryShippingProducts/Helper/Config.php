@@ -10,6 +10,7 @@ use Magento\Store\Model\StoreManagerInterface;
 class Config
 {
     private const XML_PATH_RATES = 'tjv_category_shipping_products/shipping_rates/rates';
+    private const FIXED_COUNTRY_COLUMNS = ['IT'];
     private const REGIONS = [
         'uk' => ['GB'],
         'europe' => [
@@ -106,6 +107,22 @@ class Config
         if (!is_array($countryGroups)) {
             $countryGroups = [];
         }
+        $hiddenColumns = $decoded['_hidden_columns'] ?? [];
+        if (!is_array($hiddenColumns)) {
+            $hiddenColumns = [];
+        }
+        $hiddenColumns = array_fill_keys(
+            array_filter($hiddenColumns, 'is_string'),
+            true
+        );
+        $countryColumns = $decoded['_country_columns'] ?? [];
+        if (!is_array($countryColumns)) {
+            $countryColumns = [];
+        }
+        $countryColumns = array_fill_keys(
+            array_filter($countryColumns, 'is_string'),
+            true
+        );
         unset($decoded['_country_columns']);
         unset($decoded['_hidden_columns']);
         unset($decoded['_country_groups']);
@@ -117,6 +134,15 @@ class Config
         $countryRates = [];
         $region = $this->getRegionForCountry($countryId);
         $groupId = $this->getGroupForCountry($countryId, $countryGroups);
+        if ($groupId !== null && isset($hiddenColumns['groups:' . $groupId])) {
+            $groupId = null;
+        }
+        if ($region !== null && isset($hiddenColumns['regions:' . $region])) {
+            $region = isset($hiddenColumns['regions:rest_of_world'])
+                ? null
+                : 'rest_of_world';
+        }
+
         foreach ($decoded as $categoryId => $categoryRate) {
             if (!is_array($categoryRate)) {
                 continue;
@@ -125,6 +151,14 @@ class Config
             $countryRate = $categoryRate['countries'][$countryId] ?? null;
             $groupRate = $groupId ? ($categoryRate['groups'][$groupId] ?? null) : null;
             $regionRate = $region ? ($categoryRate['regions'][$region] ?? null) : null;
+            $countryColumnIsVisible = isset($countryColumns[$countryId])
+                || (in_array($countryId, self::FIXED_COUNTRY_COLUMNS, true)
+                    && !isset($hiddenColumns['countries:' . $countryId]));
+            if (!$countryColumnIsVisible
+                || isset($hiddenColumns['countries:' . $countryId])
+            ) {
+                $countryRate = null;
+            }
             if (!$this->hasRate($regionRate)) {
                 $legacyRegion = [
                     'usa' => 'usa_canada',
@@ -133,6 +167,7 @@ class Config
                     'new_zealand' => 'australia_new_zealand',
                 ][$region] ?? null;
                 $regionRate = $legacyRegion
+                    && !isset($hiddenColumns['regions:' . $legacyRegion])
                     ? ($categoryRate['regions'][$legacyRegion] ?? null)
                     : null;
             }
