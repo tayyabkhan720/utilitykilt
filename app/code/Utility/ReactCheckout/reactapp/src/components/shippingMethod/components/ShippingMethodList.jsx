@@ -4,7 +4,7 @@ import { object } from 'prop-types';
 import RadioInput from '../../common/Form/RadioInput';
 import { __ } from '../../../i18n';
 import { _objToArray } from '../../../utils';
-import { SHIPPING_METHOD } from '../../../config';
+import { CATEGORY_SHIPPING_METHOD_ID, SHIPPING_METHOD } from '../../../config';
 import useShippingMethodFormContext from '../hooks/useShippingMethodFormContext';
 import useShippingMethodCartContext from '../hooks/useShippingMethodCartContext';
 
@@ -20,9 +20,23 @@ function ShippingMethodList({ methodRenderers }) {
   const { carrierCode: methodCarrierCode, methodCode: methodMethodCode } =
     selectedMethod || {};
   const selectedMethodId = `${methodCarrierCode}__${methodMethodCode}`;
+  const hasRequiredCategoryMethod = Boolean(
+    methodList[CATEGORY_SHIPPING_METHOD_ID]
+  );
 
   const handleShippingMethodSelection = async (event) => {
-    const methodSelected = methodList[event.target.value];
+    const selectedMethodValue = event.target.value;
+    if (
+      hasRequiredCategoryMethod &&
+      selectedMethodValue !== CATEGORY_SHIPPING_METHOD_ID
+    ) {
+      return;
+    }
+
+    const methodSelected = methodList[selectedMethodValue];
+    if (!methodSelected) {
+      return;
+    }
     const { carrierCode, methodCode, id: methodId } = methodSelected;
 
     if (methodId === selectedMethodId) {
@@ -48,6 +62,10 @@ function ShippingMethodList({ methodRenderers }) {
                 <MethodRenderer
                   method={method}
                   selected={selectedMethod}
+                  disabled={
+                    hasRequiredCategoryMethod &&
+                    methodId !== CATEGORY_SHIPPING_METHOD_ID
+                  }
                   actions={{ change: handleShippingMethodSelection }}
                 />
               ) : (
@@ -57,6 +75,10 @@ function ShippingMethodList({ methodRenderers }) {
                     label={methodName}
                     name="shippingMethod"
                     checked={selectedMethodId === methodId}
+                    disabled={
+                      hasRequiredCategoryMethod &&
+                      methodId !== CATEGORY_SHIPPING_METHOD_ID
+                    }
                     onChange={handleShippingMethodSelection}
                   />
                   <span className="pt-2 pl-3 font-semibold">

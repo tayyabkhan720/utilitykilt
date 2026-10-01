@@ -9,19 +9,12 @@ export async function setShippingMethodAction(
   appDispatch,
   shippingMethod
 ) {
-  try {
-    const cartData = await setShippingMethodRequest(
-      appDispatch,
-      shippingMethod
-    );
+  const cartData = await setShippingMethodRequest(appDispatch, shippingMethod);
 
-    dispatch({
-      type: SET_CART_INFO,
-      payload: cartData,
-    });
-  } catch (error) {
-    /** @todo error message */
-  }
+  dispatch({
+    type: SET_CART_INFO,
+    payload: cartData,
+  });
 }
 
 // NEW ACTION — only touches shipping_methods / selected_shipping_method,

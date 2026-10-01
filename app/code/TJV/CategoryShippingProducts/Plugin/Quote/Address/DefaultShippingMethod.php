@@ -7,7 +7,7 @@ use Magento\Quote\Model\Quote\Address;
 class DefaultShippingMethod
 {
     /**
-     * Select this carrier when no shipping method has been chosen yet.
+     * Keep the category method selected whenever it is available.
      *
      * @param Address $subject
      * @param Address $result
@@ -15,7 +15,7 @@ class DefaultShippingMethod
      */
     public function afterCollectShippingRates(Address $subject, Address $result): Address
     {
-        if ($result->getShippingMethod() || !$result->getCountryId()) {
+        if (!$result->getCountryId()) {
             return $result;
         }
 
