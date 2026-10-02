@@ -45,6 +45,6 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
             'option_id'
         )->where('product_id = ?', $productId);
 
-        return $connection->fetchCol($selectOldOptions, 'option_id');
+        return $connection->fetchCol($selectOldOptions);
     }
 }
