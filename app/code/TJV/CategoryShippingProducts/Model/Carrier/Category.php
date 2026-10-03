@@ -147,11 +147,22 @@ class Category extends AbstractCarrier implements CarrierInterface
             }
         }
 
+        $firstRateSourceId = null;
+        $highestFirstRate = null;
+        foreach ($categoryRates as $sourceId => $categoryRate) {
+            if ($highestFirstRate === null || $categoryRate['first'] > $highestFirstRate) {
+                $firstRateSourceId = $sourceId;
+                $highestFirstRate = $categoryRate['first'];
+            }
+        }
+
         $baseAmount = 0.0;
-        foreach ($categoryRates as $categoryRate) {
-            $baseAmount += $categoryRate['first'];
-            if ($categoryRate['qty'] > 1) {
+        foreach ($categoryRates as $sourceId => $categoryRate) {
+            if ($sourceId === $firstRateSourceId) {
+                $baseAmount += $categoryRate['first'];
                 $baseAmount += $categoryRate['second'] * ($categoryRate['qty'] - 1);
+            } else {
+                $baseAmount += $categoryRate['second'] * $categoryRate['qty'];
             }
         }
 
